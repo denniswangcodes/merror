@@ -1,4 +1,4 @@
-import { PrismaClient, FeedbackType } from '@prisma/client';
+import { PrismaClient, FeedbackType } from '../src/generated/prisma';
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();

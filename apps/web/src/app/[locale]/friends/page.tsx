@@ -41,7 +41,7 @@ export default function FriendsPage() {
 
   const handleAccept = async (friendshipId: string) => {
     try {
-      await friendsApi.acceptRequest(friendshipId);
+      await friendsApi.accept(friendshipId);
       const accepted = pending.find((f) => f.id === friendshipId);
       if (accepted) {
         setFriends((prev) => [...prev, { ...accepted, status: 'ACCEPTED' }]);

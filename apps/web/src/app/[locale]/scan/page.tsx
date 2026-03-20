@@ -32,7 +32,7 @@ export default function ScanPage() {
   useEffect(() => {
     if (mode !== 'scan') return;
 
-    let scanner: { stop: () => Promise<void> } | null = null;
+    let scanner: { clear: () => Promise<void> } | null = null;
 
     const startScanner = async () => {
       try {
@@ -69,7 +69,7 @@ export default function ScanPage() {
 
     startScanner();
     return () => {
-      scanner?.stop().catch(() => {});
+      scanner?.clear().catch(() => {});
     };
   }, [mode, locale, router]);
 

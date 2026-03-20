@@ -23,7 +23,7 @@ export default function SignupPage() {
     setLoading(true);
     setError(null);
     try {
-      await signup(form.email, form.password, form.username, form.displayName || undefined);
+      await signup({ email: form.email, password: form.password, username: form.username, displayName: form.displayName || undefined });
       router.push(`/${locale}/feed`);
     } catch (err) {
       setError((err as Error).message || 'Signup failed');

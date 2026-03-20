@@ -13,7 +13,7 @@
     "db:push": "pnpm --filter @merror/api prisma:push",
     "db:seed": "pnpm --filter @merror/api prisma:seed",
     "db:studio": "pnpm --filter @merror/api prisma:studio",
-    "ship": "git add -A && git commit -m \"updated code\" && git push"
+    "push": "git add -A && git commit -m \"updated code\" && git push"
   },
   "devDependencies": {
     "typescript": "^5.3.0"

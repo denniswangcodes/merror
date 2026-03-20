@@ -3,7 +3,7 @@ import {
   View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Alert,
   ActivityIndicator, Keyboard,
 } from 'react-native';
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { Camera, requestCameraPermissionsAsync } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
 import { usersApi } from '../../src/lib/api';
@@ -15,9 +15,15 @@ export default function ScanScreen() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<PublicUser[]>([]);
   const [searching, setSearching] = useState(false);
-  const [permission, requestPermission] = useCameraPermissions();
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    requestCameraPermissionsAsync().then(({ status }) => {
+      setHasPermission(status === 'granted');
+    });
+  }, []);
 
   useEffect(() => {
     if (!query.trim()) { setResults([]); return; }
@@ -102,24 +108,24 @@ export default function ScanScreen() {
         </View>
       ) : (
         <View style={{ flex: 1 }}>
-          {!permission?.granted ? (
+          {!hasPermission ? (
             <View style={styles.permContainer}>
               <Text style={styles.permText}>Camera permission needed to scan QR codes</Text>
-              <TouchableOpacity style={styles.permBtn} onPress={requestPermission}>
+              <TouchableOpacity style={styles.permBtn} onPress={() => requestCameraPermissionsAsync().then(({ status }) => setHasPermission(status === 'granted'))}>
                 <Text style={styles.permBtnText}>Grant Permission</Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <CameraView
+            <Camera
               style={{ flex: 1 }}
-              barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
-              onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+              barCodeScannerSettings={{ barCodeTypes: ['qr'] }}
+              onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
             >
               <View style={styles.overlay}>
                 <View style={styles.scanBox} />
                 <Text style={styles.scanHint}>Point at a Merror QR code</Text>
               </View>
-            </CameraView>
+            </Camera>
           )}
         </View>
       )}

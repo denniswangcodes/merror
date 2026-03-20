@@ -10,7 +10,8 @@
     "incremental": true,
     "strictPropertyInitialization": false,
     "paths": {
-      "@merror/shared": ["../../packages/shared/src/index.ts"]
+      "@merror/shared": ["../../packages/shared/src/index.ts"],
+      "@prisma/client": ["./src/generated/prisma"]
     }
   },
   "include": ["src/**/*"],
