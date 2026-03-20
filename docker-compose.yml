@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: merror_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: merror
+      POSTGRES_PASSWORD: merror_password
+      POSTGRES_DB: merror_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - merror_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U merror -d merror_db']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  merror_postgres_data:
