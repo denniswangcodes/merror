@@ -1,10 +1,11 @@
 import { PrismaClient, FeedbackType } from '../src/generated/prisma';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
   const hash = (pw: string) => bcrypt.hash(pw, 12);
+  const pw = await hash('password123');
 
   // Seed 6 users matching the JSX prototype
   const users = await Promise.all([
@@ -12,8 +13,8 @@ async function main() {
       where: { username: 'maya_chen' },
       update: {},
       create: {
-        email: 'maya@merror.app',
-        passwordHash: await hash('Password123!'),
+        email: 'maya@test.com',
+        passwordHash: pw,
         username: 'maya_chen',
         displayName: 'Maya Chen',
         bio: 'Spreading kindness one day at a time ✨',
@@ -24,8 +25,8 @@ async function main() {
       where: { username: 'javi_reyes' },
       update: {},
       create: {
-        email: 'javi@merror.app',
-        passwordHash: await hash('Password123!'),
+        email: 'javi@test.com',
+        passwordHash: pw,
         username: 'javi_reyes',
         displayName: 'Javier Reyes',
         bio: 'Coffee lover, community builder.',
@@ -36,8 +37,8 @@ async function main() {
       where: { username: 'priya_s' },
       update: {},
       create: {
-        email: 'priya@merror.app',
-        passwordHash: await hash('Password123!'),
+        email: 'priya@test.com',
+        passwordHash: pw,
         username: 'priya_s',
         displayName: 'Priya Singh',
         bio: 'Making the world a little warmer.',
@@ -48,8 +49,8 @@ async function main() {
       where: { username: 'tom_okafor' },
       update: {},
       create: {
-        email: 'tom@merror.app',
-        passwordHash: await hash('Password123!'),
+        email: 'tom@test.com',
+        passwordHash: pw,
         username: 'tom_okafor',
         displayName: 'Tom Okafor',
         bio: 'Friend to all, enemy to none.',
@@ -60,8 +61,8 @@ async function main() {
       where: { username: 'lena_bauer' },
       update: {},
       create: {
-        email: 'lena@merror.app',
-        passwordHash: await hash('Password123!'),
+        email: 'lena@test.com',
+        passwordHash: pw,
         username: 'lena_bauer',
         displayName: 'Lena Bauer',
         bio: 'Art, empathy, and a good laugh.',
@@ -72,8 +73,8 @@ async function main() {
       where: { username: 'alex_rivera' },
       update: {},
       create: {
-        email: 'alex@merror.app',
-        passwordHash: await hash('Password123!'),
+        email: 'alex@test.com',
+        passwordHash: pw,
         username: 'alex_rivera',
         displayName: 'Alex Rivera',
         bio: 'Just here to make someone\'s day.',
