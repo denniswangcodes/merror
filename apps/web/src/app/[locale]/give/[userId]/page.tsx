@@ -64,7 +64,7 @@ export default function GiveFeedbackPage() {
     return (
       <div className="px-4 py-10 text-center">
         <div className="text-[64px] mb-4">🌟</div>
-        <h2 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 24, color: '#111827', margin: '0 0 8px' }}>
+        <h2 style={{ fontSize: 24, fontWeight: 700, color: '#111827', margin: '0 0 8px' }}>
           Sent with love
         </h2>
         <p className="text-[14px] text-gray-500">
@@ -81,7 +81,7 @@ export default function GiveFeedbackPage() {
   const currentType = FEEDBACK_TYPES.find((t) => t.key === type)!;
 
   return (
-    <div className="px-4 py-4">
+    <div className="py-8 max-w-lg">
       <button
         onClick={() => router.push(`/${locale}/scan`)}
         className="text-indigo-600 text-[13px] mb-5 flex items-center gap-1 bg-none border-none cursor-pointer p-0"
@@ -130,7 +130,7 @@ export default function GiveFeedbackPage() {
         maxLength={280}
         placeholder={`Share a genuine ${currentType.label.toLowerCase()} for ${receiver.displayName || receiver.username}...`}
         className="w-full min-h-[120px] px-3.5 py-3 rounded-xl border border-gray-300 text-[15px] leading-relaxed text-gray-800 resize-none outline-none mb-1.5 box-border"
-        style={{ fontFamily: "'DM Serif Display', serif" }}
+        style={{ fontFamily: 'inherit' }}
       />
       <div className="flex justify-between mb-4">
         <span className="text-[11px] text-gray-400">{280 - message.length} characters left</span>

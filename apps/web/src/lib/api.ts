@@ -84,6 +84,8 @@ async function doRefresh(): Promise<boolean> {
   }
 }
 
+const AUTH_PATHS = ['/api/auth/login', '/api/auth/signup', '/api/auth/logout', '/api/auth/refresh'];
+
 export async function apiFetch<T = unknown>(
   path: string,
   options: RequestInit = {},
@@ -101,8 +103,8 @@ export async function apiFetch<T = unknown>(
     headers,
   });
 
-  // Auto-refresh on 401
-  if (res.status === 401) {
+  // Auto-refresh on 401 — skip for auth endpoints (their 401s mean bad credentials, not expired tokens)
+  if (res.status === 401 && !AUTH_PATHS.includes(path)) {
     if (!isRefreshing) {
       isRefreshing = true;
       refreshPromise = doRefresh().finally(() => {

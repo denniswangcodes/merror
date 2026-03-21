@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.merror.app"
@@ -31,9 +33,12 @@
       "expo-router",
       [
         "expo-camera",
-        { "cameraPermission": "Allow Merror to access your camera to scan QR codes." }
+        {
+          "cameraPermission": "Allow Merror to access your camera to scan QR codes."
+        }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,4 +1,4 @@
-import { NavBar } from '@/components/NavBar';
+import { AuthGuard } from '@/components/AuthGuard';
 
 export default function LocaleLayout({
   children,
@@ -8,9 +8,6 @@ export default function LocaleLayout({
   params: { locale: string };
 }) {
   return (
-    <div className="max-w-[480px] mx-auto min-h-screen bg-gray-50 relative">
-      <div className="pb-16">{children}</div>
-      <NavBar locale={params.locale} />
-    </div>
+    <AuthGuard locale={params.locale}>{children}</AuthGuard>
   );
 }

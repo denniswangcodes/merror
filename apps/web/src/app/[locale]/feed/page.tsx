@@ -49,15 +49,8 @@ export default function FeedPage() {
   }, [loadFeed]);
 
   return (
-    <div className="pb-20">
-      <div className="px-4 py-5 bg-white border-b border-gray-100 mb-4">
-        <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 26, margin: 0, color: '#111827' }}>
-          Merror
-        </h1>
-        <p className="text-[13px] text-gray-500 mt-0.5 mb-0">A reflection of the good in people</p>
-      </div>
-
-      <div className="px-3">
+    <div className="pb-6">
+      <div>
         <div className="flex justify-between items-center mb-3.5">
           <span className="text-[13px] font-semibold text-gray-500 tracking-wider uppercase">
             Recent moments
@@ -89,15 +82,7 @@ export default function FeedPage() {
         )}
       </div>
 
-      {user && (
-        <button
-          onClick={() => router.push(`/${locale}/scan`)}
-          className="fixed bottom-20 right-5 bg-indigo-600 text-white border-none rounded-[28px] px-5 py-3.5 font-semibold text-sm cursor-pointer flex items-center gap-2 z-10"
-          style={{ boxShadow: '0 4px 20px rgba(79,70,229,0.4)' }}
-        >
-          <span className="text-lg">+</span> Give Feedback
-        </button>
-      )}
+
 
       <Toast message={toast} onDismiss={() => setToast(null)} />
     </div>

@@ -30,10 +30,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9] flex flex-col justify-center items-center px-4">
+    <div className="flex flex-col justify-center items-center py-16 min-h-[70vh]">
       <div className="w-full max-w-sm bg-white border border-gray-200 rounded-2xl p-7 shadow-sm">
         <h1
-          style={{ fontFamily: "'DM Serif Display', serif", fontSize: 28, color: '#111827', marginBottom: 6 }}
+          style={{ fontSize: 26, fontWeight: 700, color: '#111827', marginBottom: 6 }}
           className="text-center"
         >
           Welcome back

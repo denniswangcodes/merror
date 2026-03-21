@@ -4,8 +4,7 @@ import * as bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  const hash = (pw: string) => bcrypt.hash(pw, 12);
-  const pw = await hash('password123');
+  const hashedPassword = await bcrypt.hash('password123', 12);
 
   // Seed 6 users matching the JSX prototype
   const users = await Promise.all([
@@ -14,7 +13,7 @@ async function main() {
       update: {},
       create: {
         email: 'maya@test.com',
-        passwordHash: pw,
+        passwordHash: hashedPassword,
         username: 'maya_chen',
         displayName: 'Maya Chen',
         bio: 'Spreading kindness one day at a time ✨',
@@ -26,7 +25,7 @@ async function main() {
       update: {},
       create: {
         email: 'javi@test.com',
-        passwordHash: pw,
+        passwordHash: hashedPassword,
         username: 'javi_reyes',
         displayName: 'Javier Reyes',
         bio: 'Coffee lover, community builder.',
@@ -38,7 +37,7 @@ async function main() {
       update: {},
       create: {
         email: 'priya@test.com',
-        passwordHash: pw,
+        passwordHash: hashedPassword,
         username: 'priya_s',
         displayName: 'Priya Singh',
         bio: 'Making the world a little warmer.',
@@ -50,7 +49,7 @@ async function main() {
       update: {},
       create: {
         email: 'tom@test.com',
-        passwordHash: pw,
+        passwordHash: hashedPassword,
         username: 'tom_okafor',
         displayName: 'Tom Okafor',
         bio: 'Friend to all, enemy to none.',
@@ -62,7 +61,7 @@ async function main() {
       update: {},
       create: {
         email: 'lena@test.com',
-        passwordHash: pw,
+        passwordHash: hashedPassword,
         username: 'lena_bauer',
         displayName: 'Lena Bauer',
         bio: 'Art, empathy, and a good laugh.',
@@ -74,7 +73,7 @@ async function main() {
       update: {},
       create: {
         email: 'alex@test.com',
-        passwordHash: pw,
+        passwordHash: hashedPassword,
         username: 'alex_rivera',
         displayName: 'Alex Rivera',
         bio: 'Just here to make someone\'s day.',

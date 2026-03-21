@@ -74,8 +74,8 @@ export default function ScanPage() {
   }, [mode, locale, router]);
 
   return (
-    <div className="px-4 py-5">
-      <h2 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, margin: '0 0 4px', color: '#111827' }}>
+    <div className="py-8">
+      <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 4px', color: '#111827' }}>
         Find someone
       </h2>
       <p className="text-[13px] text-gray-500 mt-0 mb-5">Scan their QR code or search by name</p>

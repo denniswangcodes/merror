@@ -3,7 +3,7 @@ import {
   View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Alert,
   ActivityIndicator, Keyboard,
 } from 'react-native';
-import { Camera, requestCameraPermissionsAsync } from 'expo-camera';
+import { CameraView, requestCameraPermissionsAsync } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
 import { usersApi } from '../../src/lib/api';
@@ -116,16 +116,16 @@ export default function ScanScreen() {
               </TouchableOpacity>
             </View>
           ) : (
-            <Camera
+            <CameraView
               style={{ flex: 1 }}
-              barCodeScannerSettings={{ barCodeTypes: ['qr'] }}
-              onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+              barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+              onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
             >
               <View style={styles.overlay}>
                 <View style={styles.scanBox} />
                 <Text style={styles.scanHint}>Point at a Merror QR code</Text>
               </View>
-            </Camera>
+            </CameraView>
           )}
         </View>
       )}

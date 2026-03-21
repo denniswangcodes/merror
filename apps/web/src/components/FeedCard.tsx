@@ -52,7 +52,7 @@ export function FeedCard({ item, locale }: FeedCardProps) {
       </div>
       <p
         className="text-sm text-gray-700 m-0 leading-relaxed"
-        style={{ fontFamily: "'DM Serif Display', serif" }}
+        style={{ fontFamily: 'inherit' }}
       >
         &ldquo;{item.message}&rdquo;
       </p>

@@ -88,9 +88,9 @@ export default function FriendsPage() {
   };
 
   return (
-    <div className="pb-20">
-      <div className="px-4 pt-5">
-        <h2 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: '#111827', marginBottom: 0 }}>
+    <div className="pb-8">
+      <div className="pt-8 pb-2">
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 0 }}>
           Friends
         </h2>
         <p className="text-[13px] text-gray-500 mt-0.5 mb-0">Your Merror community</p>
@@ -128,7 +128,7 @@ export default function FriendsPage() {
       {loading ? (
         <p className="text-center text-gray-400 text-sm mt-8">Loading...</p>
       ) : tab === 'friends' ? (
-        <div className="px-3">
+        <div>
           {friends.length === 0 ? (
             <div className="text-center mt-10">
               <p className="text-gray-400 text-sm mb-3">No friends yet</p>
@@ -163,7 +163,7 @@ export default function FriendsPage() {
           )}
         </div>
       ) : (
-        <div className="px-3">
+        <div>
           {pending.length === 0 ? (
             <p className="text-center text-gray-400 text-sm mt-8">No pending requests</p>
           ) : (

@@ -47,46 +47,48 @@ export default function PublicProfilePage() {
   const items = tab === 'received' ? received : given;
 
   return (
-    <div className="pb-20">
+    <div className="pb-8">
       <button
         onClick={() => router.back()}
-        className="text-indigo-600 text-[13px] mx-4 mt-4 flex items-center gap-1 bg-none border-none cursor-pointer p-0"
+        className="text-indigo-600 text-[13px] mt-6 mb-4 flex items-center gap-1 bg-none border-none cursor-pointer p-0"
       >
         ← Back
       </button>
 
-      <div className="px-4 pt-5 text-center">
-        <div className="flex justify-center mb-3">
+      <div className="pt-2 text-center lg:text-left lg:flex lg:items-start lg:gap-8">
+        <div className="flex justify-center lg:justify-start mb-3 lg:mb-0 lg:flex-shrink-0">
           <Avatar displayName={profile.displayName} username={profile.username} avatarUrl={profile.avatarUrl} size={80} />
         </div>
-        <h2 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, margin: '0 0 2px', color: '#111827' }}>
-          {profile.displayName || profile.username}
-        </h2>
-        <p className="text-[13px] text-gray-500 mt-0 mb-2">@{profile.username}</p>
-        {profile.bio && <p className="text-[14px] text-gray-600 mb-3">{profile.bio}</p>}
+        <div className="flex-1">
+          <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 2px', color: '#111827' }}>
+            {profile.displayName || profile.username}
+          </h2>
+          <p className="text-[13px] text-gray-500 mt-0 mb-2">@{profile.username}</p>
+          {profile.bio && <p className="text-[14px] text-gray-600 mb-3">{profile.bio}</p>}
 
-        <div className="flex justify-center items-center gap-2.5 mb-4">
-          <span className="font-bold text-xl text-indigo-600">{profile.totalPoints}</span>
-          <span className="text-xs text-gray-400">points</span>
-          <TierBadge points={profile.totalPoints} />
-        </div>
-
-        {me && me.id !== profile.id && (
-          <div className="flex gap-2.5 mb-5 justify-center">
-            <button
-              onClick={() => router.push(`/${locale}/give/${profile.id}`)}
-              className="bg-indigo-600 text-white border-none rounded-[10px] px-5 py-2.5 font-semibold text-[13px] cursor-pointer"
-            >
-              Give Feedback
-            </button>
-            <button
-              onClick={handleAddFriend}
-              className="bg-white text-indigo-600 border-[1.5px] border-indigo-600 rounded-[10px] px-5 py-2.5 font-semibold text-[13px] cursor-pointer"
-            >
-              Add Friend
-            </button>
+          <div className="flex justify-center lg:justify-start items-center gap-2.5 mb-4">
+            <span className="font-bold text-xl text-indigo-600">{profile.totalPoints}</span>
+            <span className="text-xs text-gray-400">points</span>
+            <TierBadge points={profile.totalPoints} />
           </div>
-        )}
+
+          {me && me.id !== profile.id && (
+            <div className="flex gap-2.5 mb-5 justify-center lg:justify-start">
+              <button
+                onClick={() => router.push(`/${locale}/give/${profile.id}`)}
+                className="bg-indigo-600 text-white border-none rounded-[10px] px-5 py-2.5 font-semibold text-[13px] cursor-pointer hover:bg-indigo-700 transition-colors"
+              >
+                Give Feedback
+              </button>
+              <button
+                onClick={handleAddFriend}
+                className="bg-white text-indigo-600 border-[1.5px] border-indigo-600 rounded-[10px] px-5 py-2.5 font-semibold text-[13px] cursor-pointer hover:bg-indigo-50 transition-colors"
+              >
+                Add Friend
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Tabs */}
@@ -107,7 +109,7 @@ export default function PublicProfilePage() {
         ))}
       </div>
 
-      <div className="px-3">
+      <div>
         {items.length === 0 ? (
           <p className="text-[14px] text-gray-400 text-center mt-8">No public {tab} feedback yet</p>
         ) : (
@@ -127,7 +129,7 @@ export default function PublicProfilePage() {
                   <Badge type={item.type} />
                   <span className="text-[11px] text-gray-400 ml-auto">{timeAgo(item.createdAt)}</span>
                 </div>
-                <p className="text-[14px] text-gray-700 m-0 leading-relaxed" style={{ fontFamily: "'DM Serif Display', serif" }}>
+                <p className="text-[14px] text-gray-700 m-0 leading-relaxed">
                   &ldquo;{item.message}&rdquo;
                 </p>
               </div>
