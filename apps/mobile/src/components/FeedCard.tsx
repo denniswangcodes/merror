@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Avatar } from './Avatar';
 import { Badge } from './Badge';
 import { timeAgo } from '@merror/shared';
@@ -22,17 +22,17 @@ export function FeedCard({ item, onGiverPress, onReceiverPress }: FeedCardProps)
     <View style={styles.card}>
       <View style={styles.header}>
         {giver && (
-          <View style={styles.userRow}>
+          <TouchableOpacity style={styles.userRow} onPress={onGiverPress} disabled={!onGiverPress} activeOpacity={0.7}>
             <Avatar displayName={giver.displayName} username={giver.username} size={26} />
             <Text style={styles.username}>{giver.displayName || giver.username}</Text>
-          </View>
+          </TouchableOpacity>
         )}
         <Text style={styles.arrow}>→</Text>
         {receiver && (
-          <View style={styles.userRow}>
+          <TouchableOpacity style={styles.userRow} onPress={onReceiverPress} disabled={!onReceiverPress} activeOpacity={0.7}>
             <Avatar displayName={receiver.displayName} username={receiver.username} size={26} />
             <Text style={styles.username}>{receiver.displayName || receiver.username}</Text>
-          </View>
+          </TouchableOpacity>
         )}
         <View style={styles.spacer} />
         <Badge type={item.type} />

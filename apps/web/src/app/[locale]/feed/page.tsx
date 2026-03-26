@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { FeedCard } from '@/components/FeedCard';
 import { Toast } from '@/components/Toast';
 import { useAuth } from '@/context/auth.context';
@@ -12,6 +12,7 @@ export default function FeedPage() {
   const params = useParams<{ locale: string }>();
   const locale = params.locale || 'en';
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useAuth();
   const [feed, setFeed] = useState<FeedbackItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,12 +22,11 @@ export default function FeedPage() {
 
   // Check for success toast from URL
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('success') === '1') {
+    if (searchParams.get('success') === '1') {
       setToast('Your kind words were sent ✨');
-      window.history.replaceState({}, '', window.location.pathname);
+      router.replace(`/${locale}/feed`);
     }
-  }, []);
+  }, [searchParams, locale, router]);
 
   const loadFeed = useCallback(async (p: number) => {
     try {
@@ -48,16 +48,16 @@ export default function FeedPage() {
     loadFeed(1);
   }, [loadFeed]);
 
-  return (
-    <div className="pb-6">
-      <div>
-        <div className="flex justify-between items-center mb-3.5">
-          <span className="text-[13px] font-semibold text-gray-500 tracking-wider uppercase">
-            Recent moments
-          </span>
-          <span className="text-[12px] text-gray-400">{feed.length} posts</span>
-        </div>
+  // Silently refresh when browser tab regains focus
+  useEffect(() => {
+    const onVisible = () => { if (document.visibilityState === 'visible') loadFeed(1); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [loadFeed]);
 
+  return (
+    <div className="pt-5 pb-6">
+      <div>
         {loading ? (
           <div className="text-center py-12 text-gray-400 text-sm">Loading moments...</div>
         ) : feed.length === 0 ? (
@@ -75,7 +75,7 @@ export default function FeedPage() {
               setPage(next);
               loadFeed(next);
             }}
-            className="w-full py-3 text-sm font-semibold text-indigo-600 bg-white rounded-xl border border-gray-200 hover:bg-gray-50 mt-2"
+            className="w-full py-3 text-sm font-semibold text-indigo-600 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 mt-2"
           >
             Load more
           </button>

@@ -2,8 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider      = "prisma-client-js"
+  output        = "../src/generated/prisma"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -53,6 +54,7 @@ model Feedback {
   receiverId String
   type       FeedbackType
   message    String
+  imageUrl   String?
   points     Int          @default(1)
   isPublic   Boolean      @default(true)
   createdAt  DateTime     @default(now())

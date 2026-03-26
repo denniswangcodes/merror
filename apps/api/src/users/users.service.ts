@@ -97,4 +97,58 @@ export class UsersService {
     });
     return user;
   }
+
+  async getLeaderboard() {
+    return this.prisma.user.findMany({
+      orderBy: { totalPoints: 'desc' },
+      take: 10,
+      select: { id: true, displayName: true, username: true, avatarUrl: true, totalPoints: true },
+    });
+  }
+
+  async getMyStats(userId: string) {
+    const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const [given, received] = await Promise.all([
+      this.prisma.feedback.count({ where: { giverId: userId, createdAt: { gte: since } } }),
+      this.prisma.feedback.count({ where: { receiverId: userId, createdAt: { gte: since } } }),
+    ]);
+    return { given, received };
+  }
+
+  async getSuggestions(userId: string) {
+    const myFriendships = await this.prisma.friendship.findMany({
+      where: { OR: [{ userAId: userId }, { userBId: userId }] },
+      select: { userAId: true, userBId: true },
+    });
+    const excludeIds = new Set([
+      userId,
+      ...myFriendships.map((f) => (f.userAId === userId ? f.userBId : f.userAId)),
+    ]);
+    const friendIds = myFriendships
+      .filter((f) => true)
+      .map((f) => (f.userAId === userId ? f.userBId : f.userAId));
+
+    if (friendIds.length === 0) return [];
+
+    const fofFriendships = await this.prisma.friendship.findMany({
+      where: {
+        status: 'ACCEPTED',
+        OR: [{ userAId: { in: friendIds } }, { userBId: { in: friendIds } }],
+      },
+      select: { userAId: true, userBId: true },
+    });
+    const suggestedIds = [
+      ...new Set(
+        fofFriendships
+          .flatMap((f) => [f.userAId, f.userBId])
+          .filter((id) => !excludeIds.has(id)),
+      ),
+    ].slice(0, 5);
+    if (suggestedIds.length === 0) return [];
+    return this.prisma.user.findMany({
+      where: { id: { in: suggestedIds } },
+      select: { id: true, displayName: true, username: true, avatarUrl: true, totalPoints: true },
+      take: 3,
+    });
+  }
 }

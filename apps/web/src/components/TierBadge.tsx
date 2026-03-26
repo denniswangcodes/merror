@@ -11,7 +11,7 @@ export function TierBadge({ points }: { points: number }) {
         fontSize: 11,
         fontWeight: 600,
         padding: '2px 10px',
-        borderRadius: 20,
+        borderRadius: 6,
         fontFamily: "'DM Sans', sans-serif",
         display: 'inline-block',
       }}

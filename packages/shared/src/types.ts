@@ -28,6 +28,7 @@ export interface FeedbackItem {
   receiverId: string;
   type: FeedbackType;
   message: string;
+  imageUrl?: string | null;
   points: number;
   isPublic: boolean;
   createdAt: string | Date;

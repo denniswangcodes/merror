@@ -103,7 +103,7 @@ export const authApi = {
 export const usersApi = {
   search: (q: string) => apiFetch(`/api/users/search?q=${encodeURIComponent(q)}`),
   getById: (id: string) => apiFetch(`/api/users/${id}`),
-  getByUsername: (username: string) => apiFetch(`/api/users/username/${username}`),
+  getByUsername: (username: string) => apiFetch(`/api/users/by-username/${username}`),
   getByQr: (qrCode: string) => apiFetch(`/api/users/qr/${encodeURIComponent(qrCode)}`),
   updateProfile: (data: { displayName?: string; bio?: string }) =>
     apiFetch('/api/users/me', { method: 'PATCH', body: JSON.stringify(data) }),
@@ -111,13 +111,13 @@ export const usersApi = {
 
 // Feedback
 export const feedbackApi = {
-  getFeed: (page = 1, limit = 20) => apiFetch(`/api/feedback?page=${page}&limit=${limit}`),
+  getFeed: (page = 1, limit = 20) => apiFetch(`/api/feedback/feed?page=${page}&limit=${limit}`),
   getReceived: () => apiFetch('/api/feedback/received'),
   getGiven: () => apiFetch('/api/feedback/given'),
-  create: (receiverId: string, type: string, message: string, isPublic: boolean) =>
+  create: (receiverId: string, type: string, message: string, isPublic: boolean, imageUrl?: string) =>
     apiFetch('/api/feedback', {
       method: 'POST',
-      body: JSON.stringify({ receiverId, type, message, isPublic }),
+      body: JSON.stringify({ receiverId, type, message, isPublic, ...(imageUrl ? { imageUrl } : {}) }),
     }),
 };
 
@@ -126,7 +126,7 @@ export const friendsApi = {
   getFriends: () => apiFetch('/api/friends'),
   getPending: () => apiFetch('/api/friends/pending'),
   sendRequest: (targetUserId: string) =>
-    apiFetch('/api/friends', { method: 'POST', body: JSON.stringify({ targetUserId }) }),
+    apiFetch('/api/friends/request', { method: 'POST', body: JSON.stringify({ targetUserId }) }),
   acceptRequest: (friendshipId: string) =>
     apiFetch(`/api/friends/${friendshipId}/accept`, { method: 'PATCH' }),
   remove: (friendshipId: string) => apiFetch(`/api/friends/${friendshipId}`, { method: 'DELETE' }),

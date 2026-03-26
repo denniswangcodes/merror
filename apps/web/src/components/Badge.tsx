@@ -10,7 +10,7 @@ export function Badge({ type }: { type: FeedbackType }) {
   };
 
   return (
-    <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${classMap[type]}`}>
+    <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-md ${classMap[type]}`}>
       {meta.label}
     </span>
   );

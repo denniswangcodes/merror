@@ -1,4 +1,4 @@
-import { PrismaClient, FeedbackType } from '../src/generated/prisma';
+import { PrismaClient, FeedbackType } from '../generated/prisma';
 import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -91,6 +91,7 @@ async function main() {
     { giverId: tom.id, receiverId: priya.id, type: 'MEMORY' as FeedbackType, message: 'Remember that rainy afternoon we got stuck in that tiny bookshop and ended up reading to each other for two hours? One of my favourite memories ever.' },
     { giverId: javi.id, receiverId: lena.id, type: 'COMPLIMENT' as FeedbackType, message: "Lena's art installations at the community centre completely transformed the space. People kept stopping just to stare and smile." },
     { giverId: lena.id, receiverId: tom.id, type: 'HELPFUL_ACT' as FeedbackType, message: 'Tom spent his entire lunch break helping me fix my bike chain even though he had a meeting right after. The kindest thing.' },
+    { giverId: alex.id, receiverId: priya.id, type: 'COMPLIMENT' as FeedbackType, message: "Priya has this incredible way of making every single person in a room feel seen and valued. Truly one of the most warm-hearted people I've ever met." },
   ];
 
   for (const item of feedItems) {

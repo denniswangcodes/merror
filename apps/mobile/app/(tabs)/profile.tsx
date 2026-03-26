@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator,
-  TextInput, Alert,
+  TextInput, Alert, RefreshControl,
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
 import { Badge } from '../../src/components/Badge';
 import { useAuth } from '../../src/context/auth.context';
@@ -22,14 +22,34 @@ export default function ProfileScreen() {
   const [bio, setBio] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [saving, setSaving] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadFeedback = useCallback(async () => {
+    if (!user) return;
+    await Promise.all([
+      feedbackApi.getReceived().then((r) => setReceived((r as PaginatedResponse<FeedbackItem>).data)),
+      feedbackApi.getGiven().then((r) => setGiven((r as PaginatedResponse<FeedbackItem>).data)),
+    ]);
+  }, [user]);
+
+  useFocusEffect(useCallback(() => {
+    if (!user) return;
+    setBio(user.bio || '');
+    setDisplayName(user.displayName || '');
+    loadFeedback();
+  }, [user, loadFeedback]));
 
   useEffect(() => {
     if (!user) return;
-    feedbackApi.getReceived().then((r) => setReceived((r as PaginatedResponse<FeedbackItem>).data));
-    feedbackApi.getGiven().then((r) => setGiven((r as PaginatedResponse<FeedbackItem>).data));
     setBio(user.bio || '');
     setDisplayName(user.displayName || '');
   }, [user]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await Promise.all([refreshUser(), loadFeedback()]);
+    setRefreshing(false);
+  }, [refreshUser, loadFeedback]);
 
   if (authLoading) return <View style={styles.center}><ActivityIndicator color="#4F46E5" /></View>;
 
@@ -62,7 +82,11 @@ export default function ProfileScreen() {
   const items = tab === 'received' ? received : given;
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#FAFAF9' }} contentContainerStyle={{ paddingBottom: 32 }}>
+    <ScrollView
+      style={{ flex: 1, backgroundColor: '#FAFAF9' }}
+      contentContainerStyle={{ paddingBottom: 32 }}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#4F46E5" />}
+    >
       <View style={styles.header}>
         <Avatar displayName={user.displayName} username={user.username} size={72} />
 

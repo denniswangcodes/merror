@@ -33,6 +33,23 @@ export class UsersController {
     return this.usersService.updateProfile(userId, dto);
   }
 
+  @Get('leaderboard')
+  getLeaderboard() {
+    return this.usersService.getLeaderboard();
+  }
+
+  @Get('me/stats')
+  @UseGuards(JwtGuard)
+  getMyStats(@GetUser('id') userId: string) {
+    return this.usersService.getMyStats(userId);
+  }
+
+  @Get('suggestions')
+  @UseGuards(JwtGuard)
+  getSuggestions(@GetUser('id') userId: string) {
+    return this.usersService.getSuggestions(userId);
+  }
+
   @Get(':id')
   findById(@Param('id') id: string) {
     return this.usersService.findById(id);

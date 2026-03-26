@@ -12,6 +12,13 @@ const config: Config = {
         indigo: {
           600: '#4F46E5',
         },
+        // Override default blue-tinted gray with neutral zinc values
+        gray: {
+          700: '#3f3f46',
+          800: '#27272a',
+          900: '#18181b',
+          950: '#0a0a0a',
+        },
       },
       fontFamily: {
         sans: ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
@@ -19,6 +26,7 @@ const config: Config = {
       },
     },
   },
+  darkMode: 'class',
   plugins: [],
 };
 

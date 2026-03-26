@@ -5,9 +5,9 @@ services:
     region: oregon
     plan: free
     rootDir: apps/api
-    buildCommand: cd ../.. && pnpm install && pnpm --filter @merror/api build
+    buildCommand: cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @merror/api exec prisma generate && pnpm --filter @merror/api exec prisma db push && pnpm --filter @merror/api build
     startCommand: node dist/main
-    healthCheckPath: /api/auth/me
+    healthCheckPath: /api/health
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -19,10 +19,8 @@ services:
         generateValue: true
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 4000
       - key: WEB_ORIGIN
-        sync: false
+        sync: false  # Set this to your Vercel URL after first deploy, e.g. https://merror.vercel.app
 
 databases:
   - name: merror-db

@@ -143,6 +143,7 @@ exports.Prisma.FeedbackScalarFieldEnum = {
   receiverId: 'receiverId',
   type: 'type',
   message: 'message',
+  imageUrl: 'imageUrl',
   points: 'points',
   isPublic: 'isPublic',
   createdAt: 'createdAt'

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator,
+  View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, RefreshControl,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
 import { useAuth } from '../../src/context/auth.context';
 import { friendsApi } from '../../src/lib/api';
@@ -18,17 +18,22 @@ export default function FriendsScreen() {
   const [friends, setFriends] = useState<FriendshipWithUsers[]>([]);
   const [pending, setPending] = useState<FriendshipWithUsers[]>([]);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
+  const loadData = useCallback(async (silent = false) => {
     if (!user) return;
-    setLoading(true);
-    Promise.all([friendsApi.getFriends(), friendsApi.getPending()])
-      .then(([f, p]) => {
-        setFriends(f as FriendshipWithUsers[]);
-        setPending(p as FriendshipWithUsers[]);
-      })
-      .finally(() => setLoading(false));
+    if (silent) setRefreshing(true);
+    else setLoading(true);
+    try {
+      const [f, p] = await Promise.all([friendsApi.getFriends(), friendsApi.getPending()]);
+      setFriends(f as FriendshipWithUsers[]);
+      setPending(p as FriendshipWithUsers[]);
+    } catch { /* noop */ }
+    if (silent) setRefreshing(false);
+    else setLoading(false);
   }, [user]);
+
+  useFocusEffect(useCallback(() => { loadData(false); }, [loadData]));
 
   const handleAccept = async (id: string) => {
     await friendsApi.acceptRequest(id);
@@ -62,6 +67,10 @@ export default function FriendsScreen() {
     );
   }
 
+  const refreshControl = (
+    <RefreshControl refreshing={refreshing} onRefresh={() => loadData(true)} tintColor="#4F46E5" />
+  );
+
   return (
     <View style={styles.container}>
       {/* Tabs */}
@@ -82,6 +91,7 @@ export default function FriendsScreen() {
           data={friends}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ padding: 12 }}
+          refreshControl={refreshControl}
           renderItem={({ item }) => {
             const f = getFriendUser(item);
             if (!f) return null;
@@ -106,6 +116,7 @@ export default function FriendsScreen() {
           data={pending}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ padding: 12 }}
+          refreshControl={refreshControl}
           renderItem={({ item }) => {
             const requester = item.userA;
             if (!requester) return null;

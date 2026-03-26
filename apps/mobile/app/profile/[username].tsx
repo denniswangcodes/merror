@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Alert,
+  View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, RefreshControl,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
@@ -19,10 +19,19 @@ export default function PublicProfileScreen() {
     feedbackGiven?: FeedbackItem[];
   } | null>(null);
   const [tab, setTab] = useState<'received' | 'given'>('received');
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
+  const fetchProfile = useCallback(() => {
     if (username) usersApi.getByUsername(username).then((u) => setProfile(u as typeof profile)).catch(() => router.back());
-  }, [username]);
+  }, [username, router]);
+
+  useEffect(() => { fetchProfile(); }, [fetchProfile]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    fetchProfile();
+    setRefreshing(false);
+  }, [fetchProfile]);
 
   if (!profile) return <View style={styles.center}><ActivityIndicator color="#4F46E5" /></View>;
 
@@ -41,7 +50,11 @@ export default function PublicProfileScreen() {
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#FAFAF9' }} contentContainerStyle={{ paddingBottom: 32 }}>
+    <ScrollView
+      style={{ flex: 1, backgroundColor: '#FAFAF9' }}
+      contentContainerStyle={{ paddingBottom: 32 }}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#4F46E5" />}
+    >
       <View style={styles.header}>
         <Avatar displayName={profile.displayName} username={profile.username} size={72} />
         <Text style={styles.name}>{profile.displayName || profile.username}</Text>

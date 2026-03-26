@@ -147,6 +147,8 @@ export const authApi = {
 };
 
 // ─── Users API ────────────────────────────────────────────────────────────────
+type SlimUser = { id: string; displayName: string | null; username: string; avatarUrl: string | null; totalPoints: number };
+
 export const usersApi = {
   search: (q: string) => apiFetch<PublicUser[]>(`/api/users/search?q=${encodeURIComponent(q)}`),
   getById: (id: string) => apiFetch<PublicUser>(`/api/users/${id}`),
@@ -154,15 +156,25 @@ export const usersApi = {
   getByQr: (qrCode: string) => apiFetch<PublicUser>(`/api/users/qr/${qrCode}`),
   updateProfile: (data: Partial<PublicUser>) =>
     apiFetch<PublicUser>('/api/users/me', { method: 'PATCH', body: JSON.stringify(data) }),
+  getLeaderboard: () => apiFetch<SlimUser[]>('/api/users/leaderboard'),
+  getMyStats: () => apiFetch<{ given: number; received: number }>('/api/users/me/stats'),
+  getSuggestions: () => apiFetch<SlimUser[]>('/api/users/suggestions'),
 };
 
 // ─── Feedback API ─────────────────────────────────────────────────────────────
 export const feedbackApi = {
   getFeed: (page = 1) => apiFetch(`/api/feedback/feed?page=${page}&limit=20`),
-  create: (data: { receiverId: string; type: string; message: string; isPublic: boolean }) =>
+  create: (data: { receiverId: string; type: string; message: string; isPublic: boolean; imageUrl?: string }) =>
     apiFetch('/api/feedback', { method: 'POST', body: JSON.stringify(data) }),
   getReceived: (page = 1) => apiFetch(`/api/feedback/received?page=${page}&limit=20`),
   getGiven: (page = 1) => apiFetch(`/api/feedback/given?page=${page}&limit=20`),
+};
+
+// ─── News API ─────────────────────────────────────────────────────────────────
+export type NewsItem = { title: string; link: string; pubDate: string; description: string };
+
+export const newsApi = {
+  getPositiveNews: () => apiFetch<NewsItem[]>('/api/news'),
 };
 
 // ─── Friends API ──────────────────────────────────────────────────────────────

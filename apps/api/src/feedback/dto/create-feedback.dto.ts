@@ -14,6 +14,10 @@ export class CreateFeedbackDto {
   message: string;
 
   @IsOptional()
+  @IsString()
+  imageUrl?: string;
+
+  @IsOptional()
   @IsBoolean()
   isPublic?: boolean;
 }

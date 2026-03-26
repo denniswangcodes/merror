@@ -28,6 +28,27 @@ export default function FriendsPage() {
   const [toast, setToast] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Search within existing friends (client-side only)
+  const [friendSearch, setFriendSearch] = useState('');
+
+  const getFriendUser = (friendship: FriendshipWithUsers): FriendUser | null => {
+    if (!user) return null;
+    if (friendship.userA?.id === user.id) return friendship.userB || null;
+    return friendship.userA || null;
+  };
+
+  const filteredFriends = friendSearch.trim()
+    ? friends.filter((f) => {
+        const u = getFriendUser(f);
+        if (!u) return false;
+        const q = friendSearch.toLowerCase();
+        return (
+          (u.displayName || '').toLowerCase().includes(q) ||
+          u.username.toLowerCase().includes(q)
+        );
+      })
+    : friends;
+
   useEffect(() => {
     if (!user) return;
     setLoading(true);
@@ -81,23 +102,25 @@ export default function FriendsPage() {
     );
   }
 
-  const getFriendUser = (friendship: FriendshipWithUsers): FriendUser | null => {
-    if (!user) return null;
-    if (friendship.userA?.id === user.id) return friendship.userB || null;
-    return friendship.userA || null;
-  };
-
   return (
-    <div className="pb-8">
-      <div className="pt-8 pb-2">
-        <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 0 }}>
+    <div className="pt-6 pb-8">
+      <div className="mb-5">
+        <h2 className="text-gray-900 dark:text-white" style={{ fontSize: 22, fontWeight: 700, margin: '0 0 2px' }}>
           Friends
         </h2>
-        <p className="text-[13px] text-gray-500 mt-0.5 mb-0">Your Merror community</p>
+        <p className="text-sm text-gray-500 mt-0 mb-0">Your Merror community</p>
       </div>
 
+      <input
+        type="text"
+        value={friendSearch}
+        onChange={(e) => setFriendSearch(e.target.value)}
+        placeholder="Search your friends…"
+        className="w-full px-4 py-3.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-base text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 outline-none box-border focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition"
+      />
+
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 mt-4 mb-4">
+      <div className="flex border-b border-gray-200 dark:border-gray-700 mt-4 mb-4">
         <button
           onClick={() => setTab('friends')}
           className="flex-1 py-3 border-none bg-none cursor-pointer text-[13px]"
@@ -131,27 +154,24 @@ export default function FriendsPage() {
         <div>
           {friends.length === 0 ? (
             <div className="text-center mt-10">
-              <p className="text-gray-400 text-sm mb-3">No friends yet</p>
-              <button
-                onClick={() => router.push(`/${locale}/scan`)}
-                className="text-indigo-600 text-sm font-semibold"
-              >
-                Scan a QR code to connect
-              </button>
+              <p className="text-gray-400 text-sm mb-1">No friends yet</p>
+              <p className="text-gray-300 text-xs">Use the navbar search to find people and add them</p>
             </div>
+          ) : filteredFriends.length === 0 ? (
+            <p className="text-center text-gray-400 text-sm mt-8">No friends match &ldquo;{friendSearch}&rdquo;</p>
           ) : (
-            friends.map((friendship) => {
+            filteredFriends.map((friendship) => {
               const friend = getFriendUser(friendship);
               if (!friend) return null;
               return (
                 <Link
                   key={friendship.id}
                   href={`/${locale}/profile/${friend.username}`}
-                  className="flex items-center gap-3 bg-white border border-gray-200 rounded-[14px] px-3.5 py-3 mb-2.5 no-underline"
+                  className="flex items-center gap-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-[14px] px-3.5 py-3 mb-2.5 no-underline"
                 >
                   <Avatar displayName={friend.displayName} username={friend.username} avatarUrl={friend.avatarUrl} size={44} />
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-gray-800 m-0 truncate">
+                    <p className="font-semibold text-sm text-gray-800 dark:text-gray-200 m-0 truncate">
                       {friend.displayName || friend.username}
                     </p>
                     <p className="text-[12px] text-gray-500 m-0">@{friend.username}</p>
@@ -171,10 +191,10 @@ export default function FriendsPage() {
               const requester = friendship.userA;
               if (!requester) return null;
               return (
-                <div key={friendship.id} className="flex items-center gap-3 bg-white border border-gray-200 rounded-[14px] px-3.5 py-3 mb-2.5">
+                <div key={friendship.id} className="flex items-center gap-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-[14px] px-3.5 py-3 mb-2.5">
                   <Avatar displayName={requester.displayName} username={requester.username} avatarUrl={requester.avatarUrl} size={44} />
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-gray-800 m-0 truncate">
+                    <p className="font-semibold text-sm text-gray-800 dark:text-gray-200 m-0 truncate">
                       {requester.displayName || requester.username}
                     </p>
                     <p className="text-[12px] text-gray-500 m-0">@{requester.username}</p>
@@ -188,7 +208,7 @@ export default function FriendsPage() {
                     </button>
                     <button
                       onClick={() => handleDecline(friendship.id)}
-                      className="bg-gray-100 text-gray-600 text-[12px] font-semibold px-3 py-1.5 rounded-lg border-none cursor-pointer"
+                      className="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-[12px] font-semibold px-3 py-1.5 rounded-lg border-none cursor-pointer"
                     >
                       Decline
                     </button>

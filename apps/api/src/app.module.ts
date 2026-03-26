@@ -5,6 +5,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { FriendsModule } from './friends/friends.module';
+import { NewsModule } from './news/news.module';
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { FriendsModule } from './friends/friends.module';
     UsersModule,
     FeedbackModule,
     FriendsModule,
+    NewsModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}
