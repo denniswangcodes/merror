@@ -39,7 +39,7 @@ function compressImage(file: File, maxPx = 1080, quality = 0.75): Promise<string
   });
 }
 
-export default function GiveFeedbackPage() {
+export default function GiveFeedbackPage(): JSX.Element {
   const params = useParams<{ locale: string; userId: string }>();
   const { locale, userId } = params;
   const router = useRouter();

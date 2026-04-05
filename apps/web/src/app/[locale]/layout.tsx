@@ -6,7 +6,7 @@ export default function LocaleLayout({
 }: {
   children: React.ReactNode;
   params: { locale: string };
-}) {
+}): JSX.Element {
   return (
     <AuthGuard locale={params.locale}>{children}</AuthGuard>
   );

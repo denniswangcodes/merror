@@ -17,7 +17,7 @@ type FriendshipWithUsers = FriendshipItem & {
   userB?: FriendUser;
 };
 
-export default function FriendsPage() {
+export default function FriendsPage(): JSX.Element {
   const params = useParams<{ locale: string }>();
   const locale = params.locale || 'en';
   const router = useRouter();

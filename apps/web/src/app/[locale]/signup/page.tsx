@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/auth.context';
 
-export default function SignupPage() {
+export default function SignupPage(): JSX.Element {
   const params = useParams<{ locale: string }>();
   const locale = params.locale || 'en';
   const router = useRouter();

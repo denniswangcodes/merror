@@ -7,7 +7,7 @@ import { usersApi } from '@/lib/api';
 import { useAuth } from '@/context/auth.context';
 import type { PublicUser } from '@merror/shared';
 
-export default function ScanPage() {
+export default function ScanPage(): JSX.Element {
   const params = useParams<{ locale: string }>();
   const locale = params.locale || 'en';
   const router = useRouter();

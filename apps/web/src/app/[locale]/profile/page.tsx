@@ -10,7 +10,7 @@ import { feedbackApi, usersApi } from '@/lib/api';
 import { timeAgo } from '@merror/shared';
 import type { FeedbackItem, PaginatedResponse } from '@merror/shared';
 
-export default function OwnProfilePage() {
+export default function OwnProfilePage(): JSX.Element {
   const params = useParams<{ locale: string }>();
   const locale = params.locale || 'en';
   const router = useRouter();

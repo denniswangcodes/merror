@@ -8,7 +8,7 @@ import { useAuth } from '@/context/auth.context';
 import { feedbackApi } from '@/lib/api';
 import type { FeedbackItem, PaginatedResponse } from '@merror/shared';
 
-export default function FeedPage() {
+export default function FeedPage(): JSX.Element {
   const params = useParams<{ locale: string }>();
   const locale = params.locale || 'en';
   const router = useRouter();

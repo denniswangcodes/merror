@@ -14,7 +14,7 @@ import type { PublicUser, FeedbackItem, FriendshipItem } from '@merror/shared';
 
 type FriendStatus = 'none' | 'pending' | 'friends';
 
-export default function PublicProfilePage() {
+export default function PublicProfilePage(): JSX.Element {
   const params = useParams<{ locale: string; username: string }>();
   const { locale, username } = params;
   const router = useRouter();
