@@ -20,7 +20,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: WEB_ORIGIN
-        sync: false  # Set this to your Vercel URL after first deploy, e.g. https://merror.vercel.app
+        value: https://merror.vercel.app
 
 databases:
   - name: merror-db
