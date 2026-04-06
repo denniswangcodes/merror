@@ -9,9 +9,15 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.use(cookieParser());
 
-  const webOrigin = process.env.WEB_ORIGIN || 'http://localhost:3000';
+  const allowedOrigins = [
+    process.env.WEB_ORIGIN,
+    'https://merror.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:8081',
+  ].filter(Boolean) as string[];
+
   app.enableCors({
-    origin: [webOrigin, 'http://localhost:3000', 'http://localhost:8081'],
+    origin: allowedOrigins,
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Refresh-Token'],
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
