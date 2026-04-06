@@ -107,7 +107,7 @@ export default function OwnProfilePage(): JSX.Element {
           <div className="flex justify-center lg:justify-start items-center gap-2.5 mb-4">
             <span className="font-bold text-xl text-indigo-600">{user.totalPoints}</span>
             <span className="text-xs text-gray-400">points</span>
-            <TierBadge points={user.totalPoints} />
+            <TierBadge points={user.totalPoints} locale={locale} />
           </div>
 
           <div className="flex gap-2 justify-center lg:justify-start mb-2">

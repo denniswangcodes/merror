@@ -37,7 +37,7 @@ function ProfileWidget({ locale }: { locale: string }) {
           <p className="text-xs text-gray-400 m-0 mt-0.5">@{user.username}</p>
         </div>
         <div className="flex items-center gap-1.5">
-          <TierBadge points={user.totalPoints} />
+          <TierBadge points={user.totalPoints} locale={locale} />
           <span className="text-xs text-gray-500 font-medium">{user.totalPoints} pts</span>
         </div>
       </Link>

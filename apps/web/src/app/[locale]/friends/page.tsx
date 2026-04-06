@@ -106,7 +106,7 @@ export default function FriendsPage(): JSX.Element {
     <div className="pt-6 pb-8">
       <div className="mb-5">
         <h2 className="text-gray-900 dark:text-white" style={{ fontSize: 22, fontWeight: 700, margin: '0 0 2px' }}>
-          Friends
+          Your Friends
         </h2>
         <p className="text-sm text-gray-500 mt-0 mb-0">Your Merror community</p>
       </div>
@@ -176,7 +176,7 @@ export default function FriendsPage(): JSX.Element {
                     </p>
                     <p className="text-[12px] text-gray-500 m-0">@{friend.username}</p>
                   </div>
-                  <TierBadge points={friend.totalPoints} />
+                  <TierBadge points={friend.totalPoints} locale={locale} />
                 </Link>
               );
             })

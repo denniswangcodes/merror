@@ -29,8 +29,8 @@ export default function ScanPage(): JSX.Element {
   return (
     <div className="pt-6 pb-8">
       <div className="mb-5">
-        <h2 className="text-gray-900 dark:text-white" style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: '0 0 2px' }}>
-          Find someone
+        <h2 className="text-gray-900 dark:text-white" style={{ fontSize: 22, fontWeight: 700, margin: '0 0 2px' }}>
+          Give Reflection
         </h2>
         <p className="text-sm text-gray-500 mt-0 mb-0">Search by name or username to send them a reflection</p>
       </div>

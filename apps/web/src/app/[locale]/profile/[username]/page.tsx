@@ -107,7 +107,7 @@ export default function PublicProfilePage(): JSX.Element {
           <div className="flex justify-center lg:justify-start items-center gap-2.5 mb-4">
             <span className="font-bold text-xl text-indigo-600">{profile.totalPoints}</span>
             <span className="text-xs text-gray-400">points</span>
-            <TierBadge points={profile.totalPoints} />
+            <TierBadge points={profile.totalPoints} locale={locale} />
           </div>
 
           {me && me.id !== profile.id && (

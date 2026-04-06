@@ -9,12 +9,12 @@ export interface TierInfo {
 
 export function getTier(points: number): TierInfo {
   if (points >= 100)
-    return { label: 'Merror Legend', color: '#92400E', bg: '#FEF3C7', border: '#F59E0B' };
+    return { label: 'Merror Legend', color: '#78350F', bg: '#FDE68A', border: '#F59E0B' };
   if (points >= 50)
-    return { label: 'Shining Star', color: '#713F12', bg: '#FFFBEB', border: '#EAB308' };
+    return { label: 'Shining Star', color: '#713F12', bg: '#FEF9C3', border: '#EAB308' };
   if (points >= 10)
-    return { label: 'Kind Soul', color: '#14532D', bg: '#F0FDF4', border: '#22C55E' };
-  return { label: 'New Friend', color: '#374151', bg: '#F9FAFB', border: '#D1D5DB' };
+    return { label: 'Kind Soul', color: '#15803D', bg: '#DCFCE7', border: '#86EFAC' };
+  return { label: 'New Friend', color: '#4B5563', bg: '#F3F4F6', border: '#E5E7EB' };
 }
 
 export function timeAgo(date: Date | string): string {

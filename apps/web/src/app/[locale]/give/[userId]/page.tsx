@@ -140,7 +140,7 @@ export default function GiveFeedbackPage(): JSX.Element {
         <div>
           <div className="font-bold text-[15px] text-gray-900 dark:text-gray-100">{receiver.displayName || receiver.username}</div>
           <div className="text-xs text-gray-500">@{receiver.username}</div>
-          <TierBadge points={receiver.totalPoints} />
+          <TierBadge points={receiver.totalPoints} locale={locale} />
         </div>
       </div>
 

@@ -70,7 +70,7 @@ export function NavBar({ locale }: { locale: string }) {
         </div>
 
         {/* Center: Search */}
-        <div ref={wrapperRef} className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10" style={{ width: 280 }}>
+        <div ref={wrapperRef} className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10" style={{ width: 300 }}>
           <input
             type="text"
             value={query}
@@ -98,7 +98,7 @@ export function NavBar({ locale }: { locale: string }) {
         </div>
 
         {/* Right: Nav tabs + dark toggle + Avatar */}
-        <div className="hidden sm:flex items-center gap-0.5">
+        <div className="hidden sm:flex items-center justify-end gap-0.5" style={{ width: 300 }}>
           {tabs.map((tab) => {
             const active = pathname.startsWith(tab.href);
             return (
