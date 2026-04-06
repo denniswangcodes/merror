@@ -157,6 +157,16 @@ exports.Prisma.FriendshipScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  fromUserId: 'fromUserId',
+  referenceId: 'referenceId',
+  read: 'read',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -187,10 +197,17 @@ exports.FriendStatus = exports.$Enums.FriendStatus = {
   ACCEPTED: 'ACCEPTED'
 };
 
+exports.NotificationType = exports.$Enums.NotificationType = {
+  FRIEND_REQUEST: 'FRIEND_REQUEST',
+  FRIEND_ACCEPTED: 'FRIEND_ACCEPTED',
+  FEEDBACK_RECEIVED: 'FEEDBACK_RECEIVED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Feedback: 'Feedback',
-  Friendship: 'Friendship'
+  Friendship: 'Friendship',
+  Notification: 'Notification'
 };
 
 /**

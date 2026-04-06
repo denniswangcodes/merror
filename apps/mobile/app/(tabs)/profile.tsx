@@ -8,13 +8,15 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
 import { Badge } from '../../src/components/Badge';
 import { useAuth } from '../../src/context/auth.context';
-import { feedbackApi, usersApi } from '../../src/lib/api';
+import { feedbackApi, usersApi, notificationsApi } from '../../src/lib/api';
+import { useNotifications } from '../../src/context/notifications.context';
 import { getTier, timeAgo } from '@merror/shared';
 import type { FeedbackItem, PaginatedResponse } from '@merror/shared';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, loading: authLoading, logout, refreshUser } = useAuth();
+  const { refresh: refreshNotifications } = useNotifications();
   const [received, setReceived] = useState<FeedbackItem[]>([]);
   const [tab, setTab] = useState<'received' | 'given'>('received');
   const [given, setGiven] = useState<FeedbackItem[]>([]);
@@ -37,7 +39,8 @@ export default function ProfileScreen() {
     setBio(user.bio || '');
     setDisplayName(user.displayName || '');
     loadFeedback();
-  }, [user, loadFeedback]));
+    notificationsApi.markAllRead().then(() => refreshNotifications()).catch(() => {});
+  }, [user, loadFeedback, refreshNotifications]));
 
   useEffect(() => {
     if (!user) return;

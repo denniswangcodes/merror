@@ -6,6 +6,7 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
 import { useAuth } from '../../src/context/auth.context';
 import { friendsApi } from '../../src/lib/api';
+import { useNotifications } from '../../src/context/notifications.context';
 import type { FriendshipItem, PublicUser } from '@merror/shared';
 
 type FUsr = Pick<PublicUser, 'id' | 'displayName' | 'username' | 'avatarUrl' | 'totalPoints'>;
@@ -14,6 +15,7 @@ type FriendshipWithUsers = FriendshipItem & { userA?: FUsr; userB?: FUsr };
 export default function FriendsScreen() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
+  const { refresh: refreshNotifications } = useNotifications();
   const [tab, setTab] = useState<'friends' | 'pending'>('friends');
   const [friends, setFriends] = useState<FriendshipWithUsers[]>([]);
   const [pending, setPending] = useState<FriendshipWithUsers[]>([]);
@@ -42,11 +44,13 @@ export default function FriendsScreen() {
       setFriends((prev) => [...prev, { ...accepted, status: 'ACCEPTED' }]);
       setPending((prev) => prev.filter((f) => f.id !== id));
     }
+    refreshNotifications();
   };
 
   const handleDecline = async (id: string) => {
     await friendsApi.remove(id);
     setPending((prev) => prev.filter((f) => f.id !== id));
+    refreshNotifications();
   };
 
   const getFriendUser = (f: FriendshipWithUsers): FUsr | null => {

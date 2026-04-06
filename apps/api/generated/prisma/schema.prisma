@@ -28,6 +28,12 @@ enum FriendStatus {
   ACCEPTED
 }
 
+enum NotificationType {
+  FRIEND_REQUEST
+  FRIEND_ACCEPTED
+  FEEDBACK_RECEIVED
+}
+
 model User {
   id                String   @id @default(cuid())
   email             String   @unique
@@ -42,10 +48,12 @@ model User {
   totalPoints       Int      @default(0)
   createdAt         DateTime @default(now())
 
-  feedbackReceived Feedback[]   @relation("Receiver")
-  feedbackGiven    Feedback[]   @relation("Giver")
-  friends          Friendship[] @relation("UserA")
-  friendOf         Friendship[] @relation("UserB")
+  feedbackReceived  Feedback[]     @relation("Receiver")
+  feedbackGiven     Feedback[]     @relation("Giver")
+  friends           Friendship[]   @relation("UserA")
+  friendOf          Friendship[]   @relation("UserB")
+  notifications     Notification[] @relation("NotificationRecipient")
+  notificationsSent Notification[] @relation("NotificationSender")
 }
 
 model Feedback {
@@ -74,4 +82,17 @@ model Friendship {
   userB User @relation("UserB", fields: [userBId], references: [id], onDelete: Cascade)
 
   @@unique([userAId, userBId])
+}
+
+model Notification {
+  id          String           @id @default(cuid())
+  userId      String
+  type        NotificationType
+  fromUserId  String?
+  referenceId String?
+  read        Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+
+  user     User  @relation("NotificationRecipient", fields: [userId], references: [id], onDelete: Cascade)
+  fromUser User? @relation("NotificationSender", fields: [fromUserId], references: [id], onDelete: SetNull)
 }

@@ -6,6 +6,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { FriendRequestDto } from './dto/friend-request.dto';
 
 const FRIENDSHIP_WITH_USERS = {
@@ -24,7 +25,10 @@ const FRIENDSHIP_WITH_USERS = {
 
 @Injectable()
 export class FriendsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notifications: NotificationsService,
+  ) {}
 
   async sendRequest(userAId: string, dto: FriendRequestDto) {
     if (userAId === dto.targetUserId) {
@@ -51,10 +55,19 @@ export class FriendsService {
       );
     }
 
-    return this.prisma.friendship.create({
+    const friendship = await this.prisma.friendship.create({
       data: { userAId, userBId: dto.targetUserId, status: 'PENDING' },
       select: FRIENDSHIP_WITH_USERS,
     });
+
+    await this.notifications.create({
+      userId: dto.targetUserId,
+      type: 'FRIEND_REQUEST',
+      fromUserId: userAId,
+      referenceId: friendship.id,
+    });
+
+    return friendship;
   }
 
   async acceptRequest(currentUserId: string, friendshipId: string) {
@@ -67,11 +80,20 @@ export class FriendsService {
       throw new BadRequestException('Already accepted');
     }
 
-    return this.prisma.friendship.update({
+    const updated = await this.prisma.friendship.update({
       where: { id: friendshipId },
       data: { status: 'ACCEPTED' },
       select: FRIENDSHIP_WITH_USERS,
     });
+
+    await this.notifications.create({
+      userId: friendship.userAId,
+      type: 'FRIEND_ACCEPTED',
+      fromUserId: currentUserId,
+      referenceId: friendshipId,
+    });
+
+    return updated;
   }
 
   async remove(currentUserId: string, friendshipId: string) {

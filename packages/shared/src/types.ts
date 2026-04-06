@@ -59,3 +59,16 @@ export interface AuthTokens {
   refreshToken: string;
   user: PublicUser;
 }
+
+export type NotificationType = 'FRIEND_REQUEST' | 'FRIEND_ACCEPTED' | 'FEEDBACK_RECEIVED';
+
+export interface NotificationItem {
+  id: string;
+  userId: string;
+  type: NotificationType;
+  fromUserId: string | null;
+  referenceId: string | null;
+  read: boolean;
+  createdAt: string | Date;
+  fromUser?: Pick<PublicUser, 'id' | 'displayName' | 'username' | 'avatarUrl'> | null;
+}

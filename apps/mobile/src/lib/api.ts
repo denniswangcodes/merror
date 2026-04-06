@@ -131,3 +131,11 @@ export const friendsApi = {
     apiFetch(`/api/friends/${friendshipId}/accept`, { method: 'PATCH' }),
   remove: (friendshipId: string) => apiFetch(`/api/friends/${friendshipId}`, { method: 'DELETE' }),
 };
+
+// Notifications
+export const notificationsApi = {
+  getAll: () => apiFetch('/api/notifications'),
+  getUnreadCount: () => apiFetch<{ count: number }>('/api/notifications/unread-count'),
+  markRead: (id: string) => apiFetch(`/api/notifications/${id}/read`, { method: 'PATCH' }),
+  markAllRead: () => apiFetch('/api/notifications/read-all', { method: 'PATCH' }),
+};

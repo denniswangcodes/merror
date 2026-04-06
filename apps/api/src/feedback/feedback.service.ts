@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 
 const FEEDBACK_WITH_USERS = {
@@ -26,7 +27,10 @@ const FEEDBACK_WITH_USERS = {
 
 @Injectable()
 export class FeedbackService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notifications: NotificationsService,
+  ) {}
 
   async create(giverId: string, dto: CreateFeedbackDto) {
     if (giverId === dto.receiverId) {
@@ -54,6 +58,13 @@ export class FeedbackService {
         data: { totalPoints: { increment: 1 } },
       }),
     ]);
+
+    await this.notifications.create({
+      userId: dto.receiverId,
+      type: 'FEEDBACK_RECEIVED',
+      fromUserId: giverId,
+      referenceId: feedback.id,
+    });
 
     return feedback;
   }

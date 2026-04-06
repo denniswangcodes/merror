@@ -1,5 +1,6 @@
 import { Stack, Redirect } from 'expo-router';
 import { AuthProvider, useAuth } from '../src/context/auth.context';
+import { NotificationsProvider } from '../src/context/notifications.context';
 import { View, ActivityIndicator } from 'react-native';
 
 function RootLayoutInner() {
@@ -27,7 +28,9 @@ function RootLayoutInner() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <RootLayoutInner />
+      <NotificationsProvider>
+        <RootLayoutInner />
+      </NotificationsProvider>
     </AuthProvider>
   );
 }
