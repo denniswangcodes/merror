@@ -5,8 +5,8 @@ services:
     region: oregon
     plan: free
     rootDir: apps/api
-    buildCommand: cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @merror/api run prisma:generate && pnpm --filter @merror/api run prisma:deploy && pnpm --filter @merror/api run prisma:seed && pnpm --filter @merror/api build
-    startCommand: node dist/main
+    buildCommand: cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @merror/api run prisma:generate && pnpm --filter @merror/api build
+    startCommand: pnpm run prisma:deploy && pnpm run prisma:seed && node dist/main
     healthCheckPath: /api/health
     envVars:
       - key: DATABASE_URL
