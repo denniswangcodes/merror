@@ -3,14 +3,18 @@
 import { useState, FormEvent } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { useAuth } from '@/context/auth.context';
+import { AuthBrandPanel } from '@/components/auth/AuthBrandPanel';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
 
 export default function SignupPage(): JSX.Element {
   const params = useParams<{ locale: string }>();
   const locale = params.locale || 'en';
   const router = useRouter();
   const { signup } = useAuth();
-  const [form, setForm] = useState({ email: '', password: '', username: '', displayName: '' });
+  const [form, setForm] = useState({ email: '', password: '', confirmPassword: '', username: '', displayName: '' });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -18,8 +22,14 @@ export default function SignupPage(): JSX.Element {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const passwordMismatch = form.confirmPassword.length > 0 && form.password !== form.confirmPassword;
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -33,39 +43,38 @@ export default function SignupPage(): JSX.Element {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center py-16 min-h-[70vh]">
-      <div className="w-full max-w-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-7 shadow-sm">
-        <h1
-          style={{ fontSize: 26, fontWeight: 700, marginBottom: 6 }}
-          className="text-center text-gray-900 dark:text-white"
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      <AuthBrandPanel />
+      <div className="flex-1 flex items-center justify-center px-6 py-10 lg:py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+          className="w-full max-w-sm"
         >
-          Join Merror
-        </h1>
-        <p className="text-center text-[13px] text-gray-500 mb-6">Start spreading good vibes 🌟</p>
+          <h1 className="font-display text-2xl font-bold text-text-primary mb-1.5">Join Merror</h1>
+          <p className="text-sm text-text-muted mb-7">Start spreading good vibes 🌟</p>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm mb-4">
-            {error}
-          </div>
-        )}
+          {error && (
+            <div className="bg-danger/10 border border-danger/25 text-danger rounded-xl px-3.5 py-2.5 text-sm mb-4">
+              {error}
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1">Email</label>
-            <input
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <Input
+              label="Email"
               type="email"
               name="email"
               value={form.email}
               onChange={handleChange}
               required
               placeholder="you@example.com"
-              className="w-full px-3.5 py-2.5 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              autoComplete="email"
             />
-          </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1">Username</label>
-            <input
+            <Input
+              label="Username"
               type="text"
               name="username"
               value={form.username}
@@ -76,29 +85,22 @@ export default function SignupPage(): JSX.Element {
               title="Lowercase letters, numbers, and underscores only"
               minLength={3}
               maxLength={30}
-              className="w-full px-3.5 py-2.5 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              hint="Lowercase letters, numbers, underscores only"
+              autoComplete="username"
             />
-            <p className="text-[11px] text-gray-400 mt-1">Lowercase letters, numbers, underscores only</p>
-          </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1">
-              Display Name <span className="text-gray-400 font-normal">(optional)</span>
-            </label>
-            <input
+            <Input
+              label="Display Name (optional)"
               type="text"
               name="displayName"
               value={form.displayName}
               onChange={handleChange}
               placeholder="Your Name"
               maxLength={60}
-              className="w-full px-3.5 py-2.5 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
-          </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1">Password</label>
-            <input
+            <Input
+              label="Password"
               type="password"
               name="password"
               value={form.password}
@@ -106,25 +108,33 @@ export default function SignupPage(): JSX.Element {
               required
               minLength={8}
               placeholder="Min 8 characters"
-              className="w-full px-3.5 py-2.5 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              autoComplete="new-password"
             />
-          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full mt-1 bg-indigo-600 text-white font-semibold py-3 rounded-xl text-sm disabled:opacity-60 hover:bg-indigo-700 transition-colors"
-          >
-            {loading ? 'Creating account...' : 'Create Account'}
-          </button>
-        </form>
+            <Input
+              label="Confirm Password"
+              type="password"
+              name="confirmPassword"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              required
+              placeholder="Re-enter your password"
+              autoComplete="new-password"
+              error={passwordMismatch ? 'Passwords do not match' : undefined}
+            />
 
-        <p className="text-center text-[12px] text-gray-500 mt-5">
-          Already have an account?{' '}
-          <Link href={`/${locale}/login`} className="text-indigo-600 font-semibold">
-            Sign in
-          </Link>
-        </p>
+            <Button type="submit" loading={loading} size="lg" className="w-full mt-1">
+              {loading ? 'Creating account…' : 'Create Account'}
+            </Button>
+          </form>
+
+          <p className="text-center text-sm text-text-muted mt-6">
+            Already have an account?{' '}
+            <Link href={`/${locale}/login`} className="text-accent font-semibold no-underline hover:underline">
+              Sign in
+            </Link>
+          </p>
+        </motion.div>
       </div>
     </div>
   );

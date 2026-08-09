@@ -2,7 +2,11 @@
 
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { ChevronLeft, Sparkles, HandHeart, Infinity as InfinityIcon } from 'lucide-react';
 import { TierBadge } from '@/components/TierBadge';
+import { Badge } from '@/components/Badge';
+import { Card } from '@/components/ui/Card';
+import type { FeedbackType } from '@merror/shared';
 
 const TIERS = [
   {
@@ -35,6 +39,34 @@ const TIERS = [
   },
 ];
 
+const EARNING_POINTS = [
+  {
+    icon: Sparkles,
+    title: 'Receive a Reflection',
+    description:
+      'Every time someone sends you a reflection — a compliment, helpful act, or memory — you earn +1 point. The more people appreciate you, the higher you climb.',
+  },
+  {
+    icon: HandHeart,
+    title: 'Give a Reflection',
+    description:
+      'Giving reflections doesn\'t cost you points, and it earns your friends their points. Generosity is its own reward — be the reason someone levels up.',
+  },
+  {
+    icon: InfinityIcon,
+    title: 'Points accumulate forever',
+    description: 'Points never reset or expire. Your total reflects your entire journey on Merror.',
+  },
+];
+
+const REFLECTION_TYPES: { type: FeedbackType; desc: string }[] = [
+  { type: 'COMPLIMENT', desc: 'Acknowledge something wonderful about someone — their personality, work, or presence.' },
+  { type: 'HELPFUL_ACT', desc: 'Recognise something someone did for you or others. Actions big and small count.' },
+  { type: 'MEMORY', desc: 'Share a cherished moment you shared together. A reminder that they matter to you.' },
+];
+
+const SECTION_LABEL = 'text-xs font-semibold text-text-muted uppercase tracking-widest mb-3';
+
 export default function PointsPage(): JSX.Element {
   const params = useParams<{ locale: string }>();
   const locale = params.locale || 'en';
@@ -44,106 +76,69 @@ export default function PointsPage(): JSX.Element {
       {/* Back */}
       <Link
         href={`/${locale}/profile`}
-        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition-colors no-underline mb-6"
+        className="inline-flex items-center gap-1 text-sm text-text-muted hover:text-text-primary transition-colors no-underline mb-6"
       >
-        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
+        <ChevronLeft className="h-4 w-4" />
         Back
       </Link>
 
-      <h1 className="text-gray-900 dark:text-white" style={{ fontSize: 24, fontWeight: 800, margin: '0 0 6px', letterSpacing: '-0.3px' }}>
+      <h1 className="font-display text-2xl font-extrabold text-text-primary m-0 mb-1.5 tracking-tight">
         How Points Work
       </h1>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
+      <p className="text-sm text-text-muted mb-8">
         Points reflect the positive impact you have on your community.
       </p>
 
       {/* How you earn points */}
       <section className="mb-8">
-        <h2 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">
-          Earning Points
-        </h2>
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden divide-y divide-gray-100 dark:divide-gray-800">
-          <div className="flex items-start gap-4 px-5 py-4">
-            <span className="mt-0.5 text-2xl leading-none select-none">✦</span>
-            <div>
-              <p className="font-semibold text-[14px] text-gray-800 dark:text-gray-200 m-0">Receive a Reflection</p>
-              <p className="text-sm text-gray-500 m-0 mt-0.5">
-                Every time someone sends you a reflection — a compliment, helpful act, or memory —
-                you earn <strong>+1 point</strong>. The more people appreciate you, the higher you climb.
-              </p>
+        <h2 className={SECTION_LABEL}>Earning Points</h2>
+        <Card className="overflow-hidden divide-y divide-border">
+          {EARNING_POINTS.map(({ icon: Icon, title, description }) => (
+            <div key={title} className="flex items-start gap-4 px-5 py-4">
+              <div className="mt-0.5 w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                <Icon className="h-4 w-4 text-accent" />
+              </div>
+              <div>
+                <p className="font-semibold text-sm text-text-primary m-0">{title}</p>
+                <p className="text-sm text-text-muted m-0 mt-0.5">{description}</p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-start gap-4 px-5 py-4">
-            <span className="mt-0.5 text-2xl leading-none select-none">♡</span>
-            <div>
-              <p className="font-semibold text-[14px] text-gray-800 dark:text-gray-200 m-0">Give a Reflection</p>
-              <p className="text-sm text-gray-500 m-0 mt-0.5">
-                Giving reflections doesn&apos;t cost you points, and it earns your friends their points.
-                Generosity is its own reward — be the reason someone levels up.
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4 px-5 py-4">
-            <span className="mt-0.5 text-2xl leading-none select-none">∞</span>
-            <div>
-              <p className="font-semibold text-[14px] text-gray-800 dark:text-gray-200 m-0">Points accumulate forever</p>
-              <p className="text-sm text-gray-500 m-0 mt-0.5">
-                Points never reset or expire. Your total reflects your entire journey on Merror.
-              </p>
-            </div>
-          </div>
-        </div>
+          ))}
+        </Card>
       </section>
 
       {/* Tiers */}
       <section className="mb-8">
-        <h2 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">
-          Tiers
-        </h2>
+        <h2 className={SECTION_LABEL}>Tiers</h2>
         <div className="flex flex-col gap-3">
           {TIERS.map((tier) => (
-            <div
-              key={tier.title}
-              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 flex items-start gap-4"
-            >
+            <Card key={tier.title} className="px-5 py-4 flex items-start gap-4">
               <div className="pt-0.5">
                 <TierBadge points={tier.points} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className="font-bold text-[14px] text-gray-900 dark:text-gray-100">{tier.title}</span>
-                  <span className="text-xs text-gray-400 font-medium">{tier.range}</span>
+                  <span className="font-bold text-sm text-text-primary">{tier.title}</span>
+                  <span className="text-xs text-text-muted font-medium">{tier.range}</span>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 m-0">{tier.description}</p>
+                <p className="text-sm text-text-muted m-0">{tier.description}</p>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </section>
 
       {/* Reflection types quick ref */}
       <section>
-        <h2 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">
-          Reflection Types
-        </h2>
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden divide-y divide-gray-100 dark:divide-gray-800">
-          {[
-            { label: 'Compliment', bg: '#DBEAFE', color: '#1E40AF', desc: 'Acknowledge something wonderful about someone — their personality, work, or presence.' },
-            { label: 'Helpful Act', bg: '#DCFCE7', color: '#166534', desc: 'Recognise something someone did for you or others. Actions big and small count.' },
-            { label: 'Memory', bg: '#F3E8FF', color: '#6B21A8', desc: 'Share a cherished moment you shared together. A reminder that they matter to you.' },
-          ].map((t) => (
-            <div key={t.label} className="flex items-start gap-3 px-5 py-4">
-              <span
-                style={{ background: t.bg, color: t.color, fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 50, whiteSpace: 'nowrap', lineHeight: 1.5, letterSpacing: '0.03em' }}
-              >
-                {t.label}
-              </span>
-              <p className="text-sm text-gray-500 dark:text-gray-400 m-0 pt-0.5">{t.desc}</p>
+        <h2 className={SECTION_LABEL}>Reflection Types</h2>
+        <Card className="overflow-hidden divide-y divide-border">
+          {REFLECTION_TYPES.map((t) => (
+            <div key={t.type} className="flex items-start gap-3 px-5 py-4">
+              <Badge type={t.type} />
+              <p className="text-sm text-text-muted m-0 pt-0.5">{t.desc}</p>
             </div>
           ))}
-        </div>
+        </Card>
       </section>
     </div>
   );

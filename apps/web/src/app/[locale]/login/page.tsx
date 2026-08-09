@@ -3,7 +3,11 @@
 import { useState, FormEvent } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { useAuth } from '@/context/auth.context';
+import { AuthBrandPanel } from '@/components/auth/AuthBrandPanel';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
 
 export default function LoginPage(): JSX.Element {
   const params = useParams<{ locale: string }>();
@@ -30,62 +34,56 @@ export default function LoginPage(): JSX.Element {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center py-16 min-h-[70vh]">
-      <div className="w-full max-w-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-7 shadow-sm">
-        <h1
-          style={{ fontSize: 26, fontWeight: 700, marginBottom: 6 }}
-          className="text-center text-gray-900 dark:text-white"
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      <AuthBrandPanel />
+      <div className="flex-1 flex items-center justify-center px-6 py-10 lg:py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+          className="w-full max-w-sm"
         >
-          Welcome back
-        </h1>
-        <p className="text-center text-[13px] text-gray-500 mb-6">Sign in to your Merror account</p>
+          <h1 className="font-display text-2xl font-bold text-text-primary mb-1.5">Welcome back</h1>
+          <p className="text-sm text-text-muted mb-7">Sign in to your Merror account</p>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm mb-4">
-            {error}
-          </div>
-        )}
+          {error && (
+            <div className="bg-danger/10 border border-danger/25 text-danger rounded-xl px-3.5 py-2.5 text-sm mb-4">
+              {error}
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1">Email</label>
-            <input
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <Input
+              label="Email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="you@example.com"
-              className="w-full px-3.5 py-2.5 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              autoComplete="email"
             />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1">Password</label>
-            <input
+            <Input
+              label="Password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
-              className="w-full px-3.5 py-2.5 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              autoComplete="current-password"
             />
-          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full mt-1 bg-indigo-600 text-white font-semibold py-3 rounded-xl text-sm disabled:opacity-60 hover:bg-indigo-700 transition-colors"
-          >
-            {loading ? 'Signing in...' : 'Sign In'}
-          </button>
-        </form>
+            <Button type="submit" loading={loading} size="lg" className="w-full mt-1">
+              {loading ? 'Signing in…' : 'Sign In'}
+            </Button>
+          </form>
 
-        <p className="text-center text-[12px] text-gray-500 mt-5">
-          Don&apos;t have an account?{' '}
-          <Link href={`/${locale}/signup`} className="text-indigo-600 font-semibold">
-            Sign up
-          </Link>
-        </p>
+          <p className="text-center text-sm text-text-muted mt-6">
+            Don&apos;t have an account?{' '}
+            <Link href={`/${locale}/signup`} className="text-accent font-semibold no-underline hover:underline">
+              Sign up
+            </Link>
+          </p>
+        </motion.div>
       </div>
     </div>
   );

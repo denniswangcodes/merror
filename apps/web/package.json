@@ -9,12 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@merror/shared": "workspace:*",
+    "clsx": "^2.1.1",
+    "framer-motion": "^13.0.0",
+    "html5-qrcode": "^2.3.8",
+    "lucide-react": "^1.31.0",
     "next": "14.1.4",
+    "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "qrcode.react": "^3.1.0",
-    "html5-qrcode": "^2.3.8",
-    "@merror/shared": "workspace:*"
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

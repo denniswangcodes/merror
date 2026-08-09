@@ -2,17 +2,19 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { ChevronLeft, ImagePlus, X, Sparkles } from 'lucide-react';
 import { Avatar } from '@/components/Avatar';
 import { TierBadge } from '@/components/TierBadge';
+import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/context/auth.context';
+import { useTheme } from '@/context/theme.context';
 import { usersApi, feedbackApi } from '@/lib/api';
-import type { PublicUser } from '@merror/shared';
+import { FEEDBACK_TYPE_META } from '@merror/shared';
+import type { PublicUser, FeedbackType } from '@merror/shared';
+import { cn } from '@/lib/utils';
 
-const FEEDBACK_TYPES = [
-  { key: 'COMPLIMENT', label: 'Compliment', color: '#1D4ED8', bg: '#DBEAFE', textColor: '#1E40AF' },
-  { key: 'HELPFUL_ACT', label: 'Helpful Act', color: '#15803D', bg: '#DCFCE7', textColor: '#166534' },
-  { key: 'MEMORY', label: 'Memory', color: '#7E22CE', bg: '#F3E8FF', textColor: '#6B21A8' },
-];
+const FEEDBACK_TYPES: FeedbackType[] = ['COMPLIMENT', 'HELPFUL_ACT', 'MEMORY'];
 
 /** Compress an image file to a base64 JPEG ≤ given dimension and quality */
 function compressImage(file: File, maxPx = 1080, quality = 0.75): Promise<string> {
@@ -44,10 +46,12 @@ export default function GiveFeedbackPage(): JSX.Element {
   const { locale, userId } = params;
   const router = useRouter();
   const { user: me } = useAuth();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [receiver, setReceiver] = useState<PublicUser | null>(null);
-  const [type, setType] = useState('COMPLIMENT');
+  const [type, setType] = useState<FeedbackType>('COMPLIMENT');
   const [message, setMessage] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isPublic, setIsPublic] = useState(true);
@@ -94,95 +98,106 @@ export default function GiveFeedbackPage(): JSX.Element {
   if (!me) {
     return (
       <div className="px-4 py-8 text-center">
-        <p className="text-gray-500 mb-4">You need to be logged in to give feedback.</p>
-        <button
-          onClick={() => router.push(`/${locale}/login`)}
-          className="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-semibold text-sm"
-        >
-          Login
-        </button>
+        <p className="text-text-secondary mb-4">You need to be logged in to give feedback.</p>
+        <Button onClick={() => router.push(`/${locale}/login`)}>Login</Button>
       </div>
     );
   }
 
   if (submitted) {
     return (
-      <div className="px-4 py-10 text-center">
-        <div className="text-[64px] mb-4">🌟</div>
-        <h2 className="text-gray-900 dark:text-white" style={{ fontSize: 24, fontWeight: 700, margin: '0 0 8px' }}>
-          Sent with love
-        </h2>
-        <p className="text-[14px] text-gray-500">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.35, ease: 'easeOut' }}
+        className="px-4 py-10 text-center"
+      >
+        <motion.div
+          initial={{ scale: 0, rotate: -15 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: 'spring', stiffness: 260, damping: 14, delay: 0.1 }}
+          className="text-[64px] mb-4"
+        >
+          🌟
+        </motion.div>
+        <h2 className="font-display text-2xl font-bold text-text-primary m-0 mb-2">Sent with love</h2>
+        <p className="text-sm text-text-muted">
           Your kind words are on their way to {receiver?.displayName || receiver?.username}
         </p>
-      </div>
+      </motion.div>
     );
   }
 
   if (!receiver) {
-    return <div className="px-4 py-8 text-center text-gray-400 text-sm">Loading...</div>;
+    return <div className="px-4 py-8 text-center text-text-muted text-sm">Loading...</div>;
   }
 
-  const currentType = FEEDBACK_TYPES.find((t) => t.key === type)!;
+  const currentMeta = FEEDBACK_TYPE_META[type];
 
   return (
     <div className="py-8 max-w-lg">
       <button
         onClick={() => router.push(`/${locale}/scan`)}
-        className="text-indigo-600 text-[13px] mb-5 flex items-center gap-1 bg-none border-none cursor-pointer p-0"
+        className="text-accent text-[13px] mb-5 flex items-center gap-1 bg-none border-none cursor-pointer p-0 font-medium"
       >
-        ← Back
+        <ChevronLeft className="h-3.5 w-3.5" /> Back
       </button>
 
       {/* Receiver card */}
-      <div className="flex items-center gap-3 mb-5 p-3.5 bg-gray-50 dark:bg-gray-800 rounded-[14px] border border-gray-200 dark:border-gray-700">
+      <div className="flex items-center gap-3 mb-5 p-3.5 bg-background rounded-2xl border border-border">
         <Avatar displayName={receiver.displayName} username={receiver.username} avatarUrl={receiver.avatarUrl} size={48} />
         <div>
-          <div className="font-bold text-[15px] text-gray-900 dark:text-gray-100">{receiver.displayName || receiver.username}</div>
-          <div className="text-xs text-gray-500">@{receiver.username}</div>
-          <TierBadge points={receiver.totalPoints} locale={locale} />
+          <div className="font-bold text-[15px] text-text-primary">{receiver.displayName || receiver.username}</div>
+          <div className="text-xs text-text-muted mb-1">@{receiver.username}</div>
+          <TierBadge points={receiver.totalPoints} />
         </div>
       </div>
 
       {/* Type selector */}
-      <p className="text-[12px] font-semibold text-gray-500 tracking-wider uppercase mb-2.5">
+      <p className="text-xs font-semibold text-text-muted tracking-wider uppercase mb-2.5">
         What kind of moment is this?
       </p>
       <div className="flex gap-2 mb-5">
-        {FEEDBACK_TYPES.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setType(t.key)}
-            className={`flex-1 py-2.5 rounded-[10px] text-[11px] font-semibold cursor-pointer transition-all ${type !== t.key ? 'bg-white dark:bg-gray-800' : ''}`}
-            style={{
-              border: `2px solid ${type === t.key ? t.color : '#E5E7EB'}`,
-              ...(type === t.key ? { background: t.bg, color: t.textColor } : { color: '#6B7280' }),
-            }}
-          >
-            {t.label}
-          </button>
-        ))}
+        {FEEDBACK_TYPES.map((t) => {
+          const meta = FEEDBACK_TYPE_META[t];
+          const active = type === t;
+          return (
+            <button
+              key={t}
+              onClick={() => setType(t)}
+              className="flex-1 py-2.5 rounded-xl text-[11px] font-semibold cursor-pointer transition-all border-2"
+              style={{
+                borderColor: active ? (isDark ? meta.darkColor ?? meta.color : meta.color) : 'rgb(var(--color-border))',
+                background: active ? (isDark ? meta.darkBg ?? meta.bg : meta.bg) : 'transparent',
+                color: active
+                  ? (isDark ? meta.darkTextColor ?? meta.textColor : meta.textColor)
+                  : 'rgb(var(--color-text-muted))',
+              }}
+            >
+              {meta.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Message */}
-      <p className="text-[12px] font-semibold text-gray-500 tracking-wider uppercase mb-2">
+      <p className="text-xs font-semibold text-text-muted tracking-wider uppercase mb-2">
         Your message
       </p>
       <textarea
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         maxLength={280}
-        placeholder={`Share a genuine ${currentType.label.toLowerCase()} for ${receiver.displayName || receiver.username}...`}
-        className="w-full min-h-[120px] px-3.5 py-3 rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 text-[15px] leading-relaxed text-gray-800 resize-none outline-none mb-1.5 box-border"
-        style={{ fontFamily: 'inherit' }}
+        placeholder={`Share a genuine ${currentMeta.label.toLowerCase()} for ${receiver.displayName || receiver.username}...`}
+        className="w-full min-h-[120px] px-3.5 py-3 rounded-xl border border-border bg-surface text-text-primary text-[15px] leading-relaxed resize-none outline-none mb-1.5 box-border transition-colors focus:ring-2 focus:ring-accent/40 focus:border-accent"
       />
       <div className="flex justify-between mb-4">
-        <span className="text-[11px] text-gray-400">{280 - message.length} characters left</span>
+        <span className="text-[11px] text-text-muted">{280 - message.length} characters left</span>
       </div>
 
       {/* Image upload */}
-      <p className="text-[12px] font-semibold text-gray-500 tracking-wider uppercase mb-2">
-        Add a photo <span className="normal-case font-normal text-gray-400">(optional)</span>
+      <p className="text-xs font-semibold text-text-muted tracking-wider uppercase mb-2">
+        Add a photo <span className="normal-case font-normal text-text-muted">(optional)</span>
       </p>
       <input
         ref={fileInputRef}
@@ -192,58 +207,60 @@ export default function GiveFeedbackPage(): JSX.Element {
         onChange={handleImageChange}
       />
       {imagePreview ? (
-        <div className="relative mb-5 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+        <div className="relative mb-5 rounded-xl overflow-hidden border border-border">
           <img src={imagePreview} alt="preview" className="w-full object-cover max-h-56" />
           <button
             onClick={() => { setImagePreview(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
-            className="absolute top-2 right-2 bg-black/60 text-white rounded-full w-7 h-7 flex items-center justify-center text-base leading-none border-none cursor-pointer hover:bg-black/80 transition-colors"
+            className="absolute top-2 right-2 bg-black/60 text-white rounded-full w-7 h-7 flex items-center justify-center border-none cursor-pointer hover:bg-black/80 transition-colors"
             title="Remove image"
           >
-            ×
+            <X className="h-4 w-4" />
           </button>
         </div>
       ) : (
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="w-full py-3.5 mb-5 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 text-gray-400 dark:text-gray-500 text-[13px] font-medium hover:border-indigo-400 hover:text-indigo-500 transition-colors bg-transparent cursor-pointer"
+          className="w-full py-3.5 mb-5 rounded-xl border-2 border-dashed border-border text-text-muted text-[13px] font-medium hover:border-accent hover:text-accent transition-colors bg-transparent cursor-pointer flex items-center justify-center gap-2"
         >
-          + Tap to add a photo
+          <ImagePlus className="h-4 w-4" /> Tap to add a photo
         </button>
       )}
 
       {/* Public toggle */}
-      <div className="flex items-center justify-between px-3.5 py-3 bg-gray-50 dark:bg-gray-800 rounded-[10px] mb-5">
+      <div className="flex items-center justify-between px-3.5 py-3 bg-background rounded-xl mb-5">
         <div>
-          <div className="font-semibold text-[13px] text-gray-800 dark:text-gray-200">Make this public</div>
-          <div className="text-xs text-gray-400">Visible to everyone in the feed</div>
+          <div className="font-semibold text-[13px] text-text-primary">Make this public</div>
+          <div className="text-xs text-text-muted">Visible to everyone in the feed</div>
         </div>
         <button
           onClick={() => setIsPublic(!isPublic)}
-          className="relative border-none cursor-pointer transition-colors"
-          style={{
-            width: 44,
-            height: 24,
-            borderRadius: 12,
-            background: isPublic ? '#4F46E5' : '#D1D5DB',
-          }}
+          className={cn('relative w-11 h-6 rounded-full border-none cursor-pointer transition-colors', isPublic ? 'bg-accent' : 'bg-border-strong')}
         >
-          <span
-            className="absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all"
-            style={{ left: isPublic ? 22 : 2 }}
+          <motion.span
+            className="absolute top-0.5 w-5 h-5 rounded-full bg-white"
+            animate={{ left: isPublic ? 22 : 2 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
           />
         </button>
       </div>
 
-      {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+      {error && <p className="text-danger text-sm mb-3">{error}</p>}
 
-      <button
+      <Button
         onClick={handleSubmit}
-        disabled={!message.trim() || submitting}
-        className="w-full py-3.5 rounded-xl font-bold text-[15px] text-white border-none cursor-pointer transition-colors"
-        style={{ background: message.trim() && !submitting ? '#4F46E5' : '#D1D5DB' }}
+        disabled={!message.trim()}
+        loading={submitting}
+        size="lg"
+        className="w-full"
       >
-        {submitting ? 'Sending...' : `Send ${currentType.label} ✨`}
-      </button>
+        {submitting ? (
+          'Sending…'
+        ) : (
+          <span className="inline-flex items-center gap-1.5">
+            Send {currentMeta.label} <Sparkles className="h-4 w-4" />
+          </span>
+        )}
+      </Button>
     </div>
   );
 }

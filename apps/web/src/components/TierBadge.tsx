@@ -1,39 +1,44 @@
+'use client';
+
 import Link from 'next/link';
+import { Star, Crown, type LucideIcon } from 'lucide-react';
 import { getTier } from '@merror/shared';
+import { useTheme } from '@/context/theme.context';
+import { cn } from '@/lib/utils';
+
+const TIER_ICON: Record<string, LucideIcon> = {
+  'Shining Star': Star,
+  'Merror Legend': Crown,
+};
 
 export function TierBadge({ points, locale }: { points: number; locale?: string }) {
+  const { theme } = useTheme();
   const tier = getTier(points);
-  const isLegend = points >= 100;
+  const isDark = theme === 'dark';
+  const isLegend = tier.label === 'Merror Legend';
+  const Icon = TIER_ICON[tier.label];
 
   const inner = (
     <span
+      className={cn(
+        'inline-flex items-center gap-1 whitespace-nowrap rounded-full text-[10.5px] font-semibold leading-none tracking-wide',
+        isLegend && 'shadow-[0_0_10px_-3px_rgba(251,191,36,0.5)]'
+      )}
       style={{
-        background: tier.bg,
-        color: tier.color,
-        fontSize: 11,
-        fontWeight: 700,
-        padding: '3px 10px',
-        borderRadius: 50,
-        letterSpacing: '0.03em',
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: isLegend ? 4 : 0,
-        whiteSpace: 'nowrap',
-        lineHeight: 1.5,
+        background: isDark ? tier.darkBg ?? tier.bg : tier.bg,
+        color: isDark ? tier.darkColor ?? tier.color : tier.color,
+        border: `1px solid ${isDark ? tier.darkBorder ?? tier.border : tier.border}`,
+        padding: '4px 9px',
       }}
     >
-      {isLegend && <span style={{ fontSize: 8, opacity: 0.8 }}>✦</span>}
+      {Icon && <Icon className="h-2.5 w-2.5 shrink-0" fill="currentColor" strokeWidth={0} />}
       {tier.label}
     </span>
   );
 
   if (locale) {
     return (
-      <Link
-        href={`/${locale}/points`}
-        style={{ textDecoration: 'none' }}
-        className="hover:opacity-75 transition-opacity"
-      >
+      <Link href={`/${locale}/points`} className="no-underline hover:opacity-80 transition-opacity">
         {inner}
       </Link>
     );

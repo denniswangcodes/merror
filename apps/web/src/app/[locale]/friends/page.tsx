@@ -3,9 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Users } from 'lucide-react';
 import { Avatar } from '@/components/Avatar';
 import { TierBadge } from '@/components/TierBadge';
 import { Toast } from '@/components/Toast';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/context/auth.context';
 import { friendsApi } from '@/lib/api';
 import type { FriendshipItem, PublicUser } from '@merror/shared';
@@ -85,19 +89,14 @@ export default function FriendsPage(): JSX.Element {
   };
 
   if (authLoading) {
-    return <div className="px-4 py-8 text-center text-gray-400 text-sm">Loading...</div>;
+    return <div className="px-4 py-8 text-center text-text-muted text-sm">Loading...</div>;
   }
 
   if (!user) {
     return (
       <div className="px-4 py-8 text-center">
-        <p className="text-gray-500 mb-4">Sign in to see your friends</p>
-        <button
-          onClick={() => router.push(`/${locale}/login`)}
-          className="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-semibold text-sm"
-        >
-          Login
-        </button>
+        <p className="text-text-secondary mb-4">Sign in to see your friends</p>
+        <Button onClick={() => router.push(`/${locale}/login`)}>Login</Button>
       </div>
     );
   }
@@ -105,60 +104,72 @@ export default function FriendsPage(): JSX.Element {
   return (
     <div className="pt-6 pb-8">
       <div className="mb-5">
-        <h2 className="text-gray-900 dark:text-white" style={{ fontSize: 22, fontWeight: 700, margin: '0 0 2px' }}>
+        <h2 className="font-display text-[22px] font-bold text-text-primary m-0 mb-0.5">
           Your Friends
         </h2>
-        <p className="text-sm text-gray-500 mt-0 mb-0">Your Merror community</p>
+        <p className="text-sm text-text-muted mt-0 mb-0">Your Merror community</p>
       </div>
 
-      <input
+      <Input
         type="text"
         value={friendSearch}
         onChange={(e) => setFriendSearch(e.target.value)}
         placeholder="Search your friends…"
-        className="w-full px-4 py-3.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-base text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 outline-none box-border focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition"
       />
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 dark:border-gray-700 mt-4 mb-4">
+      <div className="flex border-b border-border mt-4 mb-4">
         <button
           onClick={() => setTab('friends')}
-          className="flex-1 py-3 border-none bg-none cursor-pointer text-[13px]"
-          style={{
-            borderBottom: `2px solid ${tab === 'friends' ? '#4F46E5' : 'transparent'}`,
-            fontWeight: tab === 'friends' ? 700 : 400,
-            color: tab === 'friends' ? '#4F46E5' : '#6B7280',
-          }}
+          className={`relative flex-1 py-3 text-[13px] transition-colors ${
+            tab === 'friends' ? 'font-bold text-accent' : 'font-normal text-text-muted'
+          }`}
         >
           Friends ({friends.length})
+          {tab === 'friends' && (
+            <motion.span
+              layoutId="friends-tab-indicator"
+              className="absolute left-0 right-0 -bottom-px h-0.5 bg-accent"
+              transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+            />
+          )}
         </button>
         <button
           onClick={() => setTab('pending')}
-          className="flex-1 py-3 border-none bg-none cursor-pointer text-[13px] relative"
-          style={{
-            borderBottom: `2px solid ${tab === 'pending' ? '#4F46E5' : 'transparent'}`,
-            fontWeight: tab === 'pending' ? 700 : 400,
-            color: tab === 'pending' ? '#4F46E5' : '#6B7280',
-          }}
+          className={`relative flex-1 py-3 text-[13px] transition-colors ${
+            tab === 'pending' ? 'font-bold text-accent' : 'font-normal text-text-muted'
+          }`}
         >
           Requests
           {pending.length > 0 && (
-            <span className="ml-1.5 bg-red-500 text-white text-[10px] rounded-full px-1.5 py-0.5">{pending.length}</span>
+            <span className="ml-1.5 bg-danger text-white text-[10px] rounded-full px-1.5 py-0.5">{pending.length}</span>
+          )}
+          {tab === 'pending' && (
+            <motion.span
+              layoutId="friends-tab-indicator"
+              className="absolute left-0 right-0 -bottom-px h-0.5 bg-accent"
+              transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+            />
           )}
         </button>
       </div>
 
       {loading ? (
-        <p className="text-center text-gray-400 text-sm mt-8">Loading...</p>
+        <p className="text-center text-text-muted text-sm mt-8">Loading...</p>
       ) : tab === 'friends' ? (
         <div>
           {friends.length === 0 ? (
-            <div className="text-center mt-10">
-              <p className="text-gray-400 text-sm mb-1">No friends yet</p>
-              <p className="text-gray-300 text-xs">Use the navbar search to find people and add them</p>
+            <div className="flex flex-col items-center gap-3 text-center py-16">
+              <div className="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center">
+                <Users className="h-6 w-6 text-accent" />
+              </div>
+              <div>
+                <p className="text-text-secondary text-sm mb-1">No friends yet</p>
+                <p className="text-text-muted text-xs">Use the navbar search to find people and add them</p>
+              </div>
             </div>
           ) : filteredFriends.length === 0 ? (
-            <p className="text-center text-gray-400 text-sm mt-8">No friends match &ldquo;{friendSearch}&rdquo;</p>
+            <p className="text-center text-text-muted text-sm mt-8">No friends match &ldquo;{friendSearch}&rdquo;</p>
           ) : (
             filteredFriends.map((friendship) => {
               const friend = getFriendUser(friendship);
@@ -167,16 +178,16 @@ export default function FriendsPage(): JSX.Element {
                 <Link
                   key={friendship.id}
                   href={`/${locale}/profile/${friend.username}`}
-                  className="flex items-center gap-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-[14px] px-3.5 py-3 mb-2.5 no-underline"
+                  className="flex items-center gap-3 bg-surface border border-border rounded-2xl px-3.5 py-3 mb-2.5 no-underline hover:border-border-strong transition-colors"
                 >
                   <Avatar displayName={friend.displayName} username={friend.username} avatarUrl={friend.avatarUrl} size={44} />
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-gray-800 dark:text-gray-200 m-0 truncate">
+                    <p className="font-semibold text-sm text-text-primary m-0 truncate">
                       {friend.displayName || friend.username}
                     </p>
-                    <p className="text-[12px] text-gray-500 m-0">@{friend.username}</p>
+                    <p className="text-xs text-text-muted m-0">@{friend.username}</p>
                   </div>
-                  <TierBadge points={friend.totalPoints} locale={locale} />
+                  <TierBadge points={friend.totalPoints} />
                 </Link>
               );
             })
@@ -185,33 +196,27 @@ export default function FriendsPage(): JSX.Element {
       ) : (
         <div>
           {pending.length === 0 ? (
-            <p className="text-center text-gray-400 text-sm mt-8">No pending requests</p>
+            <p className="text-center text-text-muted text-sm mt-8">No pending requests</p>
           ) : (
             pending.map((friendship) => {
               const requester = friendship.userA;
               if (!requester) return null;
               return (
-                <div key={friendship.id} className="flex items-center gap-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-[14px] px-3.5 py-3 mb-2.5">
+                <div key={friendship.id} className="flex items-center gap-3 bg-surface border border-border rounded-2xl px-3.5 py-3 mb-2.5">
                   <Avatar displayName={requester.displayName} username={requester.username} avatarUrl={requester.avatarUrl} size={44} />
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-gray-800 dark:text-gray-200 m-0 truncate">
+                    <p className="font-semibold text-sm text-text-primary m-0 truncate">
                       {requester.displayName || requester.username}
                     </p>
-                    <p className="text-[12px] text-gray-500 m-0">@{requester.username}</p>
+                    <p className="text-xs text-text-muted m-0">@{requester.username}</p>
                   </div>
                   <div className="flex gap-2">
-                    <button
-                      onClick={() => handleAccept(friendship.id)}
-                      className="bg-indigo-600 text-white text-[12px] font-semibold px-3 py-1.5 rounded-lg border-none cursor-pointer"
-                    >
+                    <Button size="sm" onClick={() => handleAccept(friendship.id)}>
                       Accept
-                    </button>
-                    <button
-                      onClick={() => handleDecline(friendship.id)}
-                      className="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-[12px] font-semibold px-3 py-1.5 rounded-lg border-none cursor-pointer"
-                    >
+                    </Button>
+                    <Button variant="secondary" size="sm" onClick={() => handleDecline(friendship.id)}>
                       Decline
-                    </button>
+                    </Button>
                   </div>
                 </div>
               );

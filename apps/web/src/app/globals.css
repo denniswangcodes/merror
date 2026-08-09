@@ -2,10 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;600;700&display=swap');
-
 :root {
-  --font-sans: 'Inter', 'DM Sans', system-ui, sans-serif;
+  --font-sans: var(--font-inter), var(--font-dm-sans), system-ui, sans-serif;
+
+  /* Design tokens — light (default) */
+  --color-background: 250 250 249;
+  --color-surface: 255 255 255;
+  --color-surface-raised: 255 255 255;
+  --color-border: 228 228 231;
+  --color-border-strong: 212 212 216;
+  --color-text-primary: 24 24 27;
+  --color-text-secondary: 82 82 91;
+  --color-text-muted: 161 161 170;
+  --color-accent: 91 79 224;
+  --color-accent-hover: 76 63 209;
+  --color-success: 21 128 61;
+  --color-warning: 180 83 9;
+  --color-danger: 185 28 28;
+}
+
+html.dark {
+  /* Design tokens — dark: hand-tuned, not a mechanical invert */
+  --color-background: 10 10 11;
+  --color-surface: 24 24 27;
+  --color-surface-raised: 39 39 42;
+  --color-border: 63 63 70;
+  --color-border-strong: 82 82 91;
+  --color-text-primary: 250 250 249;
+  --color-text-secondary: 212 212 216;
+  --color-text-muted: 161 161 170;
+  --color-accent: 139 124 255;
+  --color-accent-hover: 163 149 255;
+  --color-success: 74 222 128;
+  --color-warning: 251 191 36;
+  --color-danger: 248 113 113;
 }
 
 html,
@@ -16,8 +46,10 @@ body {
 
 body {
   font-family: var(--font-sans);
-  background-color: #f9fafb;
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-text-primary));
   font-size: 17px;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 * {
@@ -29,10 +61,6 @@ body {
   -ms-overflow-style: none; /* IE/Edge */
 }
 
-html.dark body {
-  background-color: #0a0a0a;
-  color: #f9fafb;
-}
 .no-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome/Safari */
 }

@@ -2,10 +2,14 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
+import { Trophy, Gift, HandHeart, Check, UserRound, TrendingUp } from 'lucide-react';
 import { useAuth } from '@/context/auth.context';
 import { usersApi, friendsApi } from '@/lib/api';
 import { Avatar } from '@/components/Avatar';
 import { TierBadge } from '@/components/TierBadge';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { Button } from '@/components/ui/Button';
+import { cn } from '@/lib/utils';
 
 type SlimUser = {
   id: string;
@@ -15,6 +19,8 @@ type SlimUser = {
   totalPoints: number;
 };
 
+const SECTION_LABEL = 'text-xs font-semibold text-text-muted uppercase tracking-wide mb-3 flex items-center gap-1.5';
+
 // ─── Profile widget ──────────────────────────────────────────────────────────
 function ProfileWidget({ locale }: { locale: string }) {
   const { user } = useAuth();
@@ -22,7 +28,10 @@ function ProfileWidget({ locale }: { locale: string }) {
 
   return (
     <div className="pb-5">
-      <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">Profile</p>
+      <p className={SECTION_LABEL}>
+        <UserRound className="h-3.5 w-3.5" />
+        Profile
+      </p>
       <Link href={`/${locale}/profile`} className="flex flex-col items-center text-center no-underline group gap-2">
         <Avatar
           displayName={user.displayName}
@@ -31,14 +40,14 @@ function ProfileWidget({ locale }: { locale: string }) {
           size={72}
         />
         <div>
-          <p className="font-bold text-base text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors m-0 leading-tight">
+          <p className="font-bold text-base text-text-primary group-hover:text-accent transition-colors m-0 leading-tight">
             {user.displayName || user.username}
           </p>
-          <p className="text-xs text-gray-400 m-0 mt-0.5">@{user.username}</p>
+          <p className="text-xs text-text-muted m-0 mt-0.5">@{user.username}</p>
         </div>
         <div className="flex items-center gap-1.5">
-          <TierBadge points={user.totalPoints} locale={locale} />
-          <span className="text-xs text-gray-500 font-medium">{user.totalPoints} pts</span>
+          <TierBadge points={user.totalPoints} />
+          <span className="text-xs text-text-secondary font-medium">{user.totalPoints} pts</span>
         </div>
       </Link>
     </div>
@@ -46,6 +55,12 @@ function ProfileWidget({ locale }: { locale: string }) {
 }
 
 // ─── Leaderboard widget ───────────────────────────────────────────────────────
+const RANK_COLORS = [
+  'text-amber-500 dark:text-amber-400',
+  'text-zinc-400 dark:text-zinc-500',
+  'text-orange-700 dark:text-orange-500',
+];
+
 function LeaderboardWidget({ locale }: { locale: string }) {
   const [leaders, setLeaders] = useState<SlimUser[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,16 +80,17 @@ function LeaderboardWidget({ locale }: { locale: string }) {
 
   return (
     <div className="py-4 flex-1 flex flex-col">
-      <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">
+      <p className={SECTION_LABEL}>
+        <Trophy className="h-3.5 w-3.5" />
         Leaderboard
       </p>
       {loading ? (
         <div className="space-y-2.5 flex-1">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="flex items-center gap-2 animate-pulse">
-              <div className="w-5 h-4 bg-gray-100 dark:bg-gray-800 rounded" />
-              <div className="w-7 h-7 bg-gray-100 dark:bg-gray-800 rounded-full" />
-              <div className="flex-1 h-3 bg-gray-100 dark:bg-gray-800 rounded" />
+            <div key={i} className="flex items-center gap-2">
+              <Skeleton className="w-5 h-4" />
+              <Skeleton className="w-7 h-7 rounded-full" />
+              <Skeleton className="flex-1 h-3" />
             </div>
           ))}
         </div>
@@ -82,7 +98,7 @@ function LeaderboardWidget({ locale }: { locale: string }) {
         <ol className="flex-1 flex flex-col">
           {filledLeaders.map((u, i) => (
             <li key={i} className="flex items-center gap-2 flex-1">
-              <span className={`w-5 text-xs font-bold text-center shrink-0 ${i === 0 ? 'text-yellow-500' : i === 1 ? 'text-gray-400' : i === 2 ? 'text-amber-600' : 'text-gray-300'}`}>
+              <span className={cn('w-5 text-xs font-bold text-center shrink-0', i < 3 ? RANK_COLORS[i] : 'text-text-muted')}>
                 {i + 1}
               </span>
               {u ? (
@@ -94,16 +110,16 @@ function LeaderboardWidget({ locale }: { locale: string }) {
                     size={34}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate group-hover:text-indigo-600 transition-colors">
+                    <p className="text-sm font-semibold text-text-primary truncate group-hover:text-accent transition-colors">
                       {u.displayName || u.username}
                     </p>
                   </div>
-                  <span className="text-sm text-gray-400 font-medium shrink-0">{u.totalPoints}</span>
+                  <span className="text-sm text-text-muted font-medium shrink-0">{u.totalPoints}</span>
                 </Link>
               ) : (
                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <div className="w-7 h-7 rounded-full bg-gray-50 dark:bg-gray-800 border border-dashed border-gray-200 dark:border-gray-700" />
-                  <div className="flex-1 h-2.5 rounded bg-gray-50 dark:bg-gray-800" />
+                  <div className="w-7 h-7 rounded-full bg-background border border-dashed border-border" />
+                  <div className="flex-1 h-2.5 rounded bg-background" />
                 </div>
               )}
             </li>
@@ -124,21 +140,24 @@ function WeekStatsWidget() {
 
   return (
     <div className="py-4 flex flex-col">
-      <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">
+      <p className={SECTION_LABEL}>
+        <TrendingUp className="h-3.5 w-3.5" />
         Your week
       </p>
       <div className="grid grid-cols-2 gap-2">
-        <div className="bg-indigo-50 dark:bg-indigo-950 rounded-xl p-2.5 text-center">
-          <p className="text-xl font-bold text-indigo-600">
+        <div className="bg-accent/10 rounded-xl p-2.5 text-center flex flex-col items-center gap-0.5">
+          <HandHeart className="h-3.5 w-3.5 text-accent" />
+          <p className="text-xl font-bold text-accent m-0">
             {stats == null ? '—' : stats.given}
           </p>
-          <p className="text-[11px] text-indigo-400 font-medium mt-0.5">given</p>
+          <p className="text-[11px] text-accent/70 font-medium m-0">given</p>
         </div>
-        <div className="bg-teal-50 dark:bg-teal-950 rounded-xl p-2.5 text-center">
-          <p className="text-xl font-bold text-teal-600">
+        <div className="bg-success/10 rounded-xl p-2.5 text-center flex flex-col items-center gap-0.5">
+          <Gift className="h-3.5 w-3.5 text-success" />
+          <p className="text-xl font-bold text-success m-0">
             {stats == null ? '—' : stats.received}
           </p>
-          <p className="text-[11px] text-teal-400 font-medium mt-0.5">received</p>
+          <p className="text-[11px] text-success/70 font-medium m-0">received</p>
         </div>
       </div>
     </div>
@@ -172,15 +191,13 @@ function SuggestionsWidget({ locale }: { locale: string }) {
 
   return (
     <div className="py-4">
-      <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">
-        People you may know
-      </p>
+      <p className={SECTION_LABEL}>People you may know</p>
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="flex items-center gap-2 animate-pulse">
-              <div className="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-full" />
-              <div className="flex-1 h-3 bg-gray-100 dark:bg-gray-800 rounded" />
+            <div key={i} className="flex items-center gap-2">
+              <Skeleton className="w-8 h-8 rounded-full" />
+              <Skeleton className="flex-1 h-3" />
             </div>
           ))}
         </div>
@@ -196,7 +213,7 @@ function SuggestionsWidget({ locale }: { locale: string }) {
                   size={32}
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate group-hover:text-indigo-600 transition-colors">
+                  <p className="text-xs font-semibold text-text-primary truncate group-hover:text-accent transition-colors">
                     {u.displayName || u.username}
                   </p>
                   <div className="mt-0.5">
@@ -204,17 +221,21 @@ function SuggestionsWidget({ locale }: { locale: string }) {
                   </div>
                 </div>
               </Link>
-              <button
-                onClick={() => handleAdd(u.id)}
+              <Button
+                variant={sent.has(u.id) ? 'secondary' : 'primary'}
+                size="sm"
                 disabled={sent.has(u.id)}
-                className={`shrink-0 text-[11px] font-semibold px-2.5 py-1 rounded-full transition-all ${
-                  sent.has(u.id)
-                    ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-default'
-                    : 'bg-indigo-600 text-white hover:bg-indigo-700 active:scale-95'
-                }`}
+                onClick={() => handleAdd(u.id)}
+                className="shrink-0 px-2.5 py-1 text-[11px]"
               >
-                {sent.has(u.id) ? 'Sent' : 'Add'}
-              </button>
+                {sent.has(u.id) ? (
+                  <>
+                    <Check className="h-3 w-3" /> Sent
+                  </>
+                ) : (
+                  'Add'
+                )}
+              </Button>
             </div>
           ))}
         </div>
@@ -226,7 +247,7 @@ function SuggestionsWidget({ locale }: { locale: string }) {
 // ─── Right sidebar ────────────────────────────────────────────────────────────
 export function RightSidebar({ locale }: { locale: string }) {
   return (
-    <div className="pb-4 h-full flex flex-col divide-y divide-gray-100 dark:divide-gray-800 overflow-y-auto no-scrollbar">
+    <div className="pb-4 h-full flex flex-col gap-1 overflow-y-auto no-scrollbar">
       <ProfileWidget locale={locale} />
       <WeekStatsWidget />
       <LeaderboardWidget locale={locale} />

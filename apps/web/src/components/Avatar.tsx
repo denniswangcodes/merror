@@ -1,4 +1,5 @@
 import { getAvatarInitials } from '@merror/shared';
+import { cn } from '@/lib/utils';
 
 interface AvatarProps {
   displayName: string | null;
@@ -6,11 +7,12 @@ interface AvatarProps {
   avatarUrl?: string | null;
   size?: number;
   color?: string;
+  className?: string;
 }
 
 const AVATAR_COLORS = [
-  '#4F46E5', '#0D9488', '#7C3AED', '#DC2626', '#EA580C', '#0369A1',
-  '#DB2777', '#16A34A', '#D97706', '#7C3AED',
+  '#6D5BFF', '#0D9488', '#7C3AED', '#E11D48', '#EA580C', '#0369A1',
+  '#DB2777', '#16A34A', '#D97706', '#FF7A6B',
 ];
 
 function stringToColor(str: string) {
@@ -19,7 +21,7 @@ function stringToColor(str: string) {
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
 
-export function Avatar({ displayName, username, avatarUrl, size = 40, color }: AvatarProps) {
+export function Avatar({ displayName, username, avatarUrl, size = 40, color, className }: AvatarProps) {
   const initials = getAvatarInitials(displayName, username);
   const bg = color || stringToColor(username);
 
@@ -28,33 +30,16 @@ export function Avatar({ displayName, username, avatarUrl, size = 40, color }: A
       <img
         src={avatarUrl}
         alt={displayName || username}
-        style={{
-          width: size,
-          height: size,
-          borderRadius: '50%',
-          objectFit: 'cover',
-          flexShrink: 0,
-        }}
+        className={cn('rounded-full object-cover shrink-0', className)}
+        style={{ width: size, height: size }}
       />
     );
   }
 
   return (
     <div
-      style={{
-        width: size,
-        height: size,
-        borderRadius: '50%',
-        background: bg,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#fff',
-        fontWeight: 600,
-        fontSize: size * 0.35,
-        flexShrink: 0,
-        fontFamily: "'DM Sans', sans-serif",
-      }}
+      className={cn('rounded-full flex items-center justify-center shrink-0 font-display font-semibold text-white', className)}
+      style={{ width: size, height: size, background: bg, fontSize: size * 0.38 }}
     >
       {initials}
     </div>

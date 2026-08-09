@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { CheckCircle2 } from 'lucide-react';
 
 interface ToastProps {
   message: string | null;
@@ -14,26 +16,20 @@ export function Toast({ message, onDismiss }: ToastProps) {
     return () => clearTimeout(t);
   }, [message, onDismiss]);
 
-  if (!message) return null;
   return (
-    <div
-      style={{
-        position: 'fixed',
-        bottom: 80,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        background: '#111827',
-        color: '#fff',
-        padding: '10px 20px',
-        borderRadius: 24,
-        fontSize: 13,
-        fontWeight: 600,
-        whiteSpace: 'nowrap',
-        zIndex: 200,
-        boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-      }}
-    >
-      {message}
-    </div>
+    <AnimatePresence>
+      {message && (
+        <motion.div
+          initial={{ opacity: 0, y: 16, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 8, scale: 0.96 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
+          className="fixed bottom-20 left-1/2 -translate-x-1/2 z-[200] flex items-center gap-2 whitespace-nowrap rounded-full bg-surface-raised px-5 py-2.5 text-sm font-semibold text-text-primary shadow-card-hover dark:shadow-card-hover-dark border border-border"
+        >
+          <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
+          {message}
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
