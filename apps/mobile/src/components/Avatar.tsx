@@ -9,7 +9,7 @@ interface AvatarProps {
   size?: number;
 }
 
-const COLORS = ['#4F46E5', '#7C3AED', '#DB2777', '#0891B2', '#059669', '#D97706'];
+const COLORS = ['#BE5B8E', '#6D5BFF', '#E56773', '#0891B2', '#059669', '#D97706'];
 
 function hashColor(username: string): string {
   let hash = 0;

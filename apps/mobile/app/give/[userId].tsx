@@ -11,9 +11,9 @@ import { usersApi, feedbackApi } from '../../src/lib/api';
 import type { PublicUser, FeedbackType } from '@merror/shared';
 
 const TYPES: { value: FeedbackType; label: string; emoji: string }[] = [
-  { value: 'COMPLIMENT', label: 'Compliment', emoji: '✨' },
-  { value: 'HELPFUL_ACT', label: 'Helpful Act', emoji: '🤝' },
-  { value: 'MEMORY', label: 'Memory', emoji: '💜' },
+  { value: 'COMPLIMENT', label: 'Kind Word', emoji: '✨' },
+  { value: 'HELPFUL_ACT', label: 'Helping Hand', emoji: '🤝' },
+  { value: 'MEMORY', label: 'Shared Moment', emoji: '💜' },
 ];
 
 export default function GiveScreen() {
@@ -42,7 +42,7 @@ export default function GiveScreen() {
     );
   }
 
-  if (!receiver) return <View style={styles.center}><ActivityIndicator color="#4F46E5" /></View>;
+  if (!receiver) return <View style={styles.center}><ActivityIndicator color="#BE5B8E" /></View>;
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -143,7 +143,7 @@ export default function GiveScreen() {
           value={isPublic}
           onValueChange={setIsPublic}
           trackColor={{ false: '#D1D5DB', true: '#818CF8' }}
-          thumbColor={isPublic ? '#4F46E5' : '#9CA3AF'}
+          thumbColor={isPublic ? '#BE5B8E' : '#9CA3AF'}
         />
       </View>
 
@@ -157,7 +157,7 @@ export default function GiveScreen() {
 const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
   hint: { fontSize: 15, color: '#6B7280' },
-  btn: { backgroundColor: '#4F46E5', paddingHorizontal: 20, paddingVertical: 14, borderRadius: 14, alignItems: 'center' },
+  btn: { backgroundColor: '#BE5B8E', paddingHorizontal: 20, paddingVertical: 14, borderRadius: 14, alignItems: 'center' },
   btnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
   receiverCard: {
     flexDirection: 'row',
@@ -183,10 +183,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
   },
-  typeBtnActive: { borderColor: '#4F46E5', backgroundColor: '#EEF2FF' },
+  typeBtnActive: { borderColor: '#BE5B8E', backgroundColor: '#FDF2F8' },
   typeEmoji: { fontSize: 18 },
   typeBtnText: { fontSize: 11, fontWeight: '600', color: '#6B7280' },
-  typeBtnTextActive: { color: '#4F46E5' },
+  typeBtnTextActive: { color: '#BE5B8E' },
   textarea: {
     backgroundColor: '#fff',
     borderWidth: 1,
@@ -245,9 +245,9 @@ const styles = StyleSheet.create({
 
 
 const TYPES: { value: FeedbackType; label: string; emoji: string }[] = [
-  { value: 'COMPLIMENT', label: 'Compliment', emoji: '✨' },
-  { value: 'HELPFUL_ACT', label: 'Helpful Act', emoji: '🤝' },
-  { value: 'MEMORY', label: 'Memory', emoji: '💜' },
+  { value: 'COMPLIMENT', label: 'Kind Word', emoji: '✨' },
+  { value: 'HELPFUL_ACT', label: 'Helping Hand', emoji: '🤝' },
+  { value: 'MEMORY', label: 'Shared Moment', emoji: '💜' },
 ];
 
 export default function GiveScreen() {
@@ -275,7 +275,7 @@ export default function GiveScreen() {
     );
   }
 
-  if (!receiver) return <View style={styles.center}><ActivityIndicator color="#4F46E5" /></View>;
+  if (!receiver) return <View style={styles.center}><ActivityIndicator color="#BE5B8E" /></View>;
 
   const handleSubmit = async () => {
     if (!message.trim()) { Alert.alert('Required', 'Please write a message.'); return; }
@@ -343,7 +343,7 @@ export default function GiveScreen() {
           value={isPublic}
           onValueChange={setIsPublic}
           trackColor={{ false: '#D1D5DB', true: '#818CF8' }}
-          thumbColor={isPublic ? '#4F46E5' : '#9CA3AF'}
+          thumbColor={isPublic ? '#BE5B8E' : '#9CA3AF'}
         />
       </View>
 
@@ -357,7 +357,7 @@ export default function GiveScreen() {
 const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
   hint: { fontSize: 15, color: '#6B7280' },
-  btn: { backgroundColor: '#4F46E5', paddingHorizontal: 20, paddingVertical: 14, borderRadius: 14, alignItems: 'center' },
+  btn: { backgroundColor: '#BE5B8E', paddingHorizontal: 20, paddingVertical: 14, borderRadius: 14, alignItems: 'center' },
   btnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
   receiverCard: {
     flexDirection: 'row',
@@ -383,10 +383,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
   },
-  typeBtnActive: { borderColor: '#4F46E5', backgroundColor: '#EEF2FF' },
+  typeBtnActive: { borderColor: '#BE5B8E', backgroundColor: '#FDF2F8' },
   typeEmoji: { fontSize: 18 },
   typeBtnText: { fontSize: 11, fontWeight: '600', color: '#6B7280' },
-  typeBtnTextActive: { color: '#4F46E5' },
+  typeBtnTextActive: { color: '#BE5B8E' },
   textarea: {
     backgroundColor: '#fff',
     borderWidth: 1,

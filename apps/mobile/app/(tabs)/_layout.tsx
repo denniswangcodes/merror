@@ -1,51 +1,56 @@
 import { Tabs } from 'expo-router';
 import { Text } from 'react-native';
 import { useNotifications } from '../../src/context/notifications.context';
+import { useAppTheme } from '../../src/lib/theme';
 
-function TabIcon({ icon, focused }: { icon: string; focused: boolean }) {
-  return <Text style={{ fontSize: 22, opacity: focused ? 1 : 0.5 }}>{icon}</Text>;
+function TabIcon({ icon, focused, color }: { icon: string; focused: boolean; color: string }) {
+  return <Text style={{ fontSize: 20, color, fontWeight: focused ? '800' : '500' }}>{icon}</Text>;
 }
 
 export default function TabsLayout() {
   const { pendingFriendCount, unreadCount } = useNotifications();
+  const theme = useAppTheme();
 
   return (
     <Tabs
       screenOptions={{
         headerShown: true,
-        tabBarActiveTintColor: '#4F46E5',
-        tabBarInactiveTintColor: '#9CA3AF',
+        tabBarActiveTintColor: theme.accent,
+        tabBarInactiveTintColor: theme.muted,
+        tabBarLabelStyle: { fontSize: 10, fontWeight: '700', marginTop: 1 },
+        tabBarItemStyle: { paddingTop: 5 },
         tabBarStyle: {
-          backgroundColor: '#fff',
-          borderTopColor: '#E5E7EB',
-          height: 60,
-          paddingBottom: 8,
+          backgroundColor: theme.surface,
+          borderTopColor: theme.border,
+          height: 66,
+          paddingBottom: 9,
         },
-        headerStyle: { backgroundColor: '#fff' },
-        headerTitleStyle: { fontWeight: '700', color: '#111827' },
+        headerStyle: { backgroundColor: theme.surface },
+        headerShadowVisible: false,
+        headerTitleStyle: { fontWeight: '800', color: theme.text, fontSize: 17 },
       }}
     >
       <Tabs.Screen
         name="feed"
         options={{
           title: 'Feed',
-          tabBarIcon: ({ focused }) => <TabIcon icon="⌂" focused={focused} />,
-          headerTitle: 'Merror ✨',
+          tabBarIcon: ({ focused, color }) => <TabIcon icon="⌂" focused={focused} color={color} />,
+          headerTitle: 'Merror',
         }}
       />
       <Tabs.Screen
         name="scan"
         options={{
-          title: 'Give',
-          tabBarIcon: ({ focused }) => <TabIcon icon="＋" focused={focused} />,
-          headerTitle: 'Give Feedback',
+          title: 'Recognize',
+          tabBarIcon: ({ focused, color }) => <TabIcon icon="＋" focused={focused} color={color} />,
+          headerTitle: 'Recognize someone',
         }}
       />
       <Tabs.Screen
         name="friends"
         options={{
           title: 'Friends',
-          tabBarIcon: ({ focused }) => <TabIcon icon="♡" focused={focused} />,
+          tabBarIcon: ({ focused, color }) => <TabIcon icon="♡" focused={focused} color={color} />,
           tabBarBadge: pendingFriendCount > 0 ? pendingFriendCount : undefined,
           headerTitle: 'Friends',
         }}
@@ -54,7 +59,7 @@ export default function TabsLayout() {
         name="profile"
         options={{
           title: 'Me',
-          tabBarIcon: ({ focused }) => <TabIcon icon="◉" focused={focused} />,
+          tabBarIcon: ({ focused, color }) => <TabIcon icon="◉" focused={focused} color={color} />,
           tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
           headerTitle: 'My Profile',
         }}

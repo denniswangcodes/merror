@@ -2,6 +2,7 @@
 // Enum types
 // ─────────────────────────────
 export type FeedbackType = 'COMPLIMENT' | 'HELPFUL_ACT' | 'MEMORY';
+export type FeedbackStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 export type FriendStatus = 'PENDING' | 'ACCEPTED';
 export type Role = 'USER' | 'ADMIN';
 
@@ -31,6 +32,8 @@ export interface FeedbackItem {
   imageUrl?: string | null;
   points: number;
   isPublic: boolean;
+  status?: FeedbackStatus;
+  reviewedAt?: string | Date | null;
   createdAt: string | Date;
   giver?: Pick<PublicUser, 'id' | 'displayName' | 'username' | 'avatarUrl'>;
   receiver?: Pick<PublicUser, 'id' | 'displayName' | 'username' | 'avatarUrl'>;
@@ -60,7 +63,7 @@ export interface AuthTokens {
   user: PublicUser;
 }
 
-export type NotificationType = 'FRIEND_REQUEST' | 'FRIEND_ACCEPTED' | 'FEEDBACK_RECEIVED';
+export type NotificationType = 'FRIEND_REQUEST' | 'FRIEND_ACCEPTED' | 'FEEDBACK_RECEIVED' | 'FEEDBACK_APPROVED' | 'FEEDBACK_REJECTED';
 
 export interface NotificationItem {
   id: string;
@@ -71,4 +74,5 @@ export interface NotificationItem {
   read: boolean;
   createdAt: string | Date;
   fromUser?: Pick<PublicUser, 'id' | 'displayName' | 'username' | 'avatarUrl'> | null;
+  feedback?: Pick<FeedbackItem, 'id' | 'type' | 'message' | 'imageUrl' | 'status'> | null;
 }

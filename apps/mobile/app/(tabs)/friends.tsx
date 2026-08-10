@@ -58,7 +58,7 @@ export default function FriendsScreen() {
     return f.userA?.id === user.id ? f.userB || null : f.userA || null;
   };
 
-  if (authLoading) return <View style={styles.center}><ActivityIndicator color="#4F46E5" /></View>;
+  if (authLoading) return <View style={styles.center}><ActivityIndicator color="#BE5B8E" /></View>;
 
   if (!user) {
     return (
@@ -72,7 +72,7 @@ export default function FriendsScreen() {
   }
 
   const refreshControl = (
-    <RefreshControl refreshing={refreshing} onRefresh={() => loadData(true)} tintColor="#4F46E5" />
+    <RefreshControl refreshing={refreshing} onRefresh={() => loadData(true)} tintColor="#BE5B8E" />
   );
 
   return (
@@ -89,7 +89,7 @@ export default function FriendsScreen() {
       </View>
 
       {loading ? (
-        <ActivityIndicator color="#4F46E5" style={{ marginTop: 40 }} />
+        <ActivityIndicator color="#BE5B8E" style={{ marginTop: 40 }} />
       ) : tab === 'friends' ? (
         <FlatList
           data={friends}
@@ -109,7 +109,7 @@ export default function FriendsScreen() {
                   <Text style={styles.name}>{f.displayName || f.username}</Text>
                   <Text style={styles.uname}>@{f.username}</Text>
                 </View>
-                <Text style={styles.points}>{f.totalPoints} pts</Text>
+                <Text style={styles.points}>{f.totalPoints} lumens</Text>
               </TouchableOpacity>
             );
           }}
@@ -151,13 +151,13 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FAFAF9' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
   hint: { fontSize: 15, color: '#6B7280' },
-  btn: { backgroundColor: '#4F46E5', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
+  btn: { backgroundColor: '#BE5B8E', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
   btnText: { color: '#fff', fontWeight: '700' },
   tabs: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#E5E7EB' },
   tab: { flex: 1, paddingVertical: 13, alignItems: 'center' },
-  tabActive: { borderBottomWidth: 2, borderBottomColor: '#4F46E5' },
+  tabActive: { borderBottomWidth: 2, borderBottomColor: '#BE5B8E' },
   tabText: { fontSize: 13, fontWeight: '500', color: '#6B7280' },
-  tabTextActive: { fontWeight: '700', color: '#4F46E5' },
+  tabTextActive: { fontWeight: '700', color: '#BE5B8E' },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -172,8 +172,8 @@ const styles = StyleSheet.create({
   userInfo: { flex: 1 },
   name: { fontSize: 14, fontWeight: '600', color: '#111827' },
   uname: { fontSize: 12, color: '#6B7280' },
-  points: { fontSize: 13, fontWeight: '700', color: '#4F46E5' },
+  points: { fontSize: 13, fontWeight: '700', color: '#BE5B8E' },
   empty: { textAlign: 'center', color: '#9CA3AF', fontSize: 14, marginTop: 60 },
-  acceptBtn: { backgroundColor: '#4F46E5', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8 },
+  acceptBtn: { backgroundColor: '#BE5B8E', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8 },
   declineBtn: { backgroundColor: '#F3F4F6', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 },
 });

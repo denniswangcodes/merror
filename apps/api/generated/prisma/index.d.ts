@@ -55,6 +55,15 @@ export const FeedbackType: {
 export type FeedbackType = (typeof FeedbackType)[keyof typeof FeedbackType]
 
 
+export const FeedbackStatus: {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+export type FeedbackStatus = (typeof FeedbackStatus)[keyof typeof FeedbackStatus]
+
+
 export const FriendStatus: {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED'
@@ -66,7 +75,9 @@ export type FriendStatus = (typeof FriendStatus)[keyof typeof FriendStatus]
 export const NotificationType: {
   FRIEND_REQUEST: 'FRIEND_REQUEST',
   FRIEND_ACCEPTED: 'FRIEND_ACCEPTED',
-  FEEDBACK_RECEIVED: 'FEEDBACK_RECEIVED'
+  FEEDBACK_RECEIVED: 'FEEDBACK_RECEIVED',
+  FEEDBACK_APPROVED: 'FEEDBACK_APPROVED',
+  FEEDBACK_REJECTED: 'FEEDBACK_REJECTED'
 };
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
@@ -80,6 +91,10 @@ export const Role: typeof $Enums.Role
 export type FeedbackType = $Enums.FeedbackType
 
 export const FeedbackType: typeof $Enums.FeedbackType
+
+export type FeedbackStatus = $Enums.FeedbackStatus
+
+export const FeedbackStatus: typeof $Enums.FeedbackStatus
 
 export type FriendStatus = $Enums.FriendStatus
 
@@ -2446,6 +2461,8 @@ export namespace Prisma {
     imageUrl: string | null
     points: number | null
     isPublic: boolean | null
+    status: $Enums.FeedbackStatus | null
+    reviewedAt: Date | null
     createdAt: Date | null
   }
 
@@ -2458,6 +2475,8 @@ export namespace Prisma {
     imageUrl: string | null
     points: number | null
     isPublic: boolean | null
+    status: $Enums.FeedbackStatus | null
+    reviewedAt: Date | null
     createdAt: Date | null
   }
 
@@ -2470,6 +2489,8 @@ export namespace Prisma {
     imageUrl: number
     points: number
     isPublic: number
+    status: number
+    reviewedAt: number
     createdAt: number
     _all: number
   }
@@ -2492,6 +2513,8 @@ export namespace Prisma {
     imageUrl?: true
     points?: true
     isPublic?: true
+    status?: true
+    reviewedAt?: true
     createdAt?: true
   }
 
@@ -2504,6 +2527,8 @@ export namespace Prisma {
     imageUrl?: true
     points?: true
     isPublic?: true
+    status?: true
+    reviewedAt?: true
     createdAt?: true
   }
 
@@ -2516,6 +2541,8 @@ export namespace Prisma {
     imageUrl?: true
     points?: true
     isPublic?: true
+    status?: true
+    reviewedAt?: true
     createdAt?: true
     _all?: true
   }
@@ -2615,6 +2642,8 @@ export namespace Prisma {
     imageUrl: string | null
     points: number
     isPublic: boolean
+    status: $Enums.FeedbackStatus
+    reviewedAt: Date | null
     createdAt: Date
     _count: FeedbackCountAggregateOutputType | null
     _avg: FeedbackAvgAggregateOutputType | null
@@ -2646,6 +2675,8 @@ export namespace Prisma {
     imageUrl?: boolean
     points?: boolean
     isPublic?: boolean
+    status?: boolean
+    reviewedAt?: boolean
     createdAt?: boolean
     giver?: boolean | UserDefaultArgs<ExtArgs>
     receiver?: boolean | UserDefaultArgs<ExtArgs>
@@ -2660,6 +2691,8 @@ export namespace Prisma {
     imageUrl?: boolean
     points?: boolean
     isPublic?: boolean
+    status?: boolean
+    reviewedAt?: boolean
     createdAt?: boolean
     giver?: boolean | UserDefaultArgs<ExtArgs>
     receiver?: boolean | UserDefaultArgs<ExtArgs>
@@ -2674,6 +2707,8 @@ export namespace Prisma {
     imageUrl?: boolean
     points?: boolean
     isPublic?: boolean
+    status?: boolean
+    reviewedAt?: boolean
     createdAt?: boolean
   }
 
@@ -2701,6 +2736,8 @@ export namespace Prisma {
       imageUrl: string | null
       points: number
       isPublic: boolean
+      status: $Enums.FeedbackStatus
+      reviewedAt: Date | null
       createdAt: Date
     }, ExtArgs["result"]["feedback"]>
     composites: {}
@@ -3105,6 +3142,8 @@ export namespace Prisma {
     readonly imageUrl: FieldRef<"Feedback", 'String'>
     readonly points: FieldRef<"Feedback", 'Int'>
     readonly isPublic: FieldRef<"Feedback", 'Boolean'>
+    readonly status: FieldRef<"Feedback", 'FeedbackStatus'>
+    readonly reviewedAt: FieldRef<"Feedback", 'DateTime'>
     readonly createdAt: FieldRef<"Feedback", 'DateTime'>
   }
     
@@ -5396,6 +5435,8 @@ export namespace Prisma {
     imageUrl: 'imageUrl',
     points: 'points',
     isPublic: 'isPublic',
+    status: 'status',
+    reviewedAt: 'reviewedAt',
     createdAt: 'createdAt'
   };
 
@@ -5529,6 +5570,20 @@ export namespace Prisma {
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+
+
+
+  /**
+   * Reference to a field of type 'FeedbackStatus'
+   */
+  export type EnumFeedbackStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FeedbackStatus'>
+
+
+
+  /**
+   * Reference to a field of type 'FeedbackStatus[]'
+   */
+  export type ListEnumFeedbackStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FeedbackStatus[]'>
     
 
 
@@ -5696,6 +5751,8 @@ export namespace Prisma {
     imageUrl?: StringNullableFilter<"Feedback"> | string | null
     points?: IntFilter<"Feedback"> | number
     isPublic?: BoolFilter<"Feedback"> | boolean
+    status?: EnumFeedbackStatusFilter<"Feedback"> | $Enums.FeedbackStatus
+    reviewedAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
     createdAt?: DateTimeFilter<"Feedback"> | Date | string
     giver?: XOR<UserRelationFilter, UserWhereInput>
     receiver?: XOR<UserRelationFilter, UserWhereInput>
@@ -5710,6 +5767,8 @@ export namespace Prisma {
     imageUrl?: SortOrderInput | SortOrder
     points?: SortOrder
     isPublic?: SortOrder
+    status?: SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     giver?: UserOrderByWithRelationInput
     receiver?: UserOrderByWithRelationInput
@@ -5727,6 +5786,8 @@ export namespace Prisma {
     imageUrl?: StringNullableFilter<"Feedback"> | string | null
     points?: IntFilter<"Feedback"> | number
     isPublic?: BoolFilter<"Feedback"> | boolean
+    status?: EnumFeedbackStatusFilter<"Feedback"> | $Enums.FeedbackStatus
+    reviewedAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
     createdAt?: DateTimeFilter<"Feedback"> | Date | string
     giver?: XOR<UserRelationFilter, UserWhereInput>
     receiver?: XOR<UserRelationFilter, UserWhereInput>
@@ -5741,6 +5802,8 @@ export namespace Prisma {
     imageUrl?: SortOrderInput | SortOrder
     points?: SortOrder
     isPublic?: SortOrder
+    status?: SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: FeedbackCountOrderByAggregateInput
     _avg?: FeedbackAvgOrderByAggregateInput
@@ -5761,6 +5824,8 @@ export namespace Prisma {
     imageUrl?: StringNullableWithAggregatesFilter<"Feedback"> | string | null
     points?: IntWithAggregatesFilter<"Feedback"> | number
     isPublic?: BoolWithAggregatesFilter<"Feedback"> | boolean
+    status?: EnumFeedbackStatusWithAggregatesFilter<"Feedback"> | $Enums.FeedbackStatus
+    reviewedAt?: DateTimeNullableWithAggregatesFilter<"Feedback"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Feedback"> | Date | string
   }
 
@@ -6027,6 +6092,8 @@ export namespace Prisma {
     imageUrl?: string | null
     points?: number
     isPublic?: boolean
+    status?: $Enums.FeedbackStatus
+    reviewedAt?: Date | string | null
     createdAt?: Date | string
     giver: UserCreateNestedOneWithoutFeedbackGivenInput
     receiver: UserCreateNestedOneWithoutFeedbackReceivedInput
@@ -6041,6 +6108,8 @@ export namespace Prisma {
     imageUrl?: string | null
     points?: number
     isPublic?: boolean
+    status?: $Enums.FeedbackStatus
+    reviewedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -6051,6 +6120,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     points?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     giver?: UserUpdateOneRequiredWithoutFeedbackGivenNestedInput
     receiver?: UserUpdateOneRequiredWithoutFeedbackReceivedNestedInput
@@ -6065,6 +6136,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     points?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -6077,6 +6150,8 @@ export namespace Prisma {
     imageUrl?: string | null
     points?: number
     isPublic?: boolean
+    status?: $Enums.FeedbackStatus
+    reviewedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -6087,6 +6162,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     points?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -6099,6 +6176,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     points?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -6459,6 +6538,24 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type EnumFeedbackStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FeedbackStatus | EnumFeedbackStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FeedbackStatus[] | ListEnumFeedbackStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FeedbackStatus[] | ListEnumFeedbackStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFeedbackStatusFilter<$PrismaModel> | $Enums.FeedbackStatus
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type UserRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
@@ -6473,6 +6570,8 @@ export namespace Prisma {
     imageUrl?: SortOrder
     points?: SortOrder
     isPublic?: SortOrder
+    status?: SortOrder
+    reviewedAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -6489,6 +6588,8 @@ export namespace Prisma {
     imageUrl?: SortOrder
     points?: SortOrder
     isPublic?: SortOrder
+    status?: SortOrder
+    reviewedAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -6501,6 +6602,8 @@ export namespace Prisma {
     imageUrl?: SortOrder
     points?: SortOrder
     isPublic?: SortOrder
+    status?: SortOrder
+    reviewedAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -6524,6 +6627,30 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type EnumFeedbackStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FeedbackStatus | EnumFeedbackStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FeedbackStatus[] | ListEnumFeedbackStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FeedbackStatus[] | ListEnumFeedbackStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFeedbackStatusWithAggregatesFilter<$PrismaModel> | $Enums.FeedbackStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFeedbackStatusFilter<$PrismaModel>
+    _max?: NestedEnumFeedbackStatusFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type EnumFriendStatusFilter<$PrismaModel = never> = {
@@ -6920,6 +7047,14 @@ export namespace Prisma {
     set?: boolean
   }
 
+  export type EnumFeedbackStatusFieldUpdateOperationsInput = {
+    set?: $Enums.FeedbackStatus
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type UserUpdateOneRequiredWithoutFeedbackGivenNestedInput = {
     create?: XOR<UserCreateWithoutFeedbackGivenInput, UserUncheckedCreateWithoutFeedbackGivenInput>
     connectOrCreate?: UserCreateOrConnectWithoutFeedbackGivenInput
@@ -7167,6 +7302,24 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type NestedEnumFeedbackStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FeedbackStatus | EnumFeedbackStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FeedbackStatus[] | ListEnumFeedbackStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FeedbackStatus[] | ListEnumFeedbackStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFeedbackStatusFilter<$PrismaModel> | $Enums.FeedbackStatus
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedEnumFeedbackTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.FeedbackType | EnumFeedbackTypeFieldRefInput<$PrismaModel>
     in?: $Enums.FeedbackType[] | ListEnumFeedbackTypeFieldRefInput<$PrismaModel>
@@ -7183,6 +7336,30 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFeedbackStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FeedbackStatus | EnumFeedbackStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FeedbackStatus[] | ListEnumFeedbackStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FeedbackStatus[] | ListEnumFeedbackStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFeedbackStatusWithAggregatesFilter<$PrismaModel> | $Enums.FeedbackStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFeedbackStatusFilter<$PrismaModel>
+    _max?: NestedEnumFeedbackStatusFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumFriendStatusFilter<$PrismaModel = never> = {
@@ -7226,6 +7403,8 @@ export namespace Prisma {
     imageUrl?: string | null
     points?: number
     isPublic?: boolean
+    status?: $Enums.FeedbackStatus
+    reviewedAt?: Date | string | null
     createdAt?: Date | string
     giver: UserCreateNestedOneWithoutFeedbackGivenInput
   }
@@ -7238,6 +7417,8 @@ export namespace Prisma {
     imageUrl?: string | null
     points?: number
     isPublic?: boolean
+    status?: $Enums.FeedbackStatus
+    reviewedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -7258,6 +7439,8 @@ export namespace Prisma {
     imageUrl?: string | null
     points?: number
     isPublic?: boolean
+    status?: $Enums.FeedbackStatus
+    reviewedAt?: Date | string | null
     createdAt?: Date | string
     receiver: UserCreateNestedOneWithoutFeedbackReceivedInput
   }
@@ -7270,6 +7453,8 @@ export namespace Prisma {
     imageUrl?: string | null
     points?: number
     isPublic?: boolean
+    status?: $Enums.FeedbackStatus
+    reviewedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -7415,6 +7600,8 @@ export namespace Prisma {
     imageUrl?: StringNullableFilter<"Feedback"> | string | null
     points?: IntFilter<"Feedback"> | number
     isPublic?: BoolFilter<"Feedback"> | boolean
+    status?: EnumFeedbackStatusFilter<"Feedback"> | $Enums.FeedbackStatus
+    reviewedAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
     createdAt?: DateTimeFilter<"Feedback"> | Date | string
   }
 
@@ -8106,6 +8293,8 @@ export namespace Prisma {
     imageUrl?: string | null
     points?: number
     isPublic?: boolean
+    status?: $Enums.FeedbackStatus
+    reviewedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -8117,6 +8306,8 @@ export namespace Prisma {
     imageUrl?: string | null
     points?: number
     isPublic?: boolean
+    status?: $Enums.FeedbackStatus
+    reviewedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -8159,6 +8350,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     points?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     giver?: UserUpdateOneRequiredWithoutFeedbackGivenNestedInput
   }
@@ -8171,6 +8364,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     points?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -8182,6 +8377,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     points?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -8192,6 +8389,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     points?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     receiver?: UserUpdateOneRequiredWithoutFeedbackReceivedNestedInput
   }
@@ -8204,6 +8403,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     points?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -8215,6 +8416,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     points?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

@@ -114,6 +114,8 @@ export const feedbackApi = {
   getFeed: (page = 1, limit = 20) => apiFetch(`/api/feedback/feed?page=${page}&limit=${limit}`),
   getReceived: () => apiFetch('/api/feedback/received'),
   getGiven: () => apiFetch('/api/feedback/given'),
+  approve: (id: string) => apiFetch(`/api/feedback/${id}/approve`, { method: 'PATCH' }),
+  reject: (id: string) => apiFetch(`/api/feedback/${id}/reject`, { method: 'PATCH' }),
   create: (receiverId: string, type: string, message: string, isPublic: boolean, imageUrl?: string) =>
     apiFetch('/api/feedback', {
       method: 'POST',

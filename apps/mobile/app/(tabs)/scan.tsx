@@ -81,7 +81,7 @@ export default function ScanScreen() {
             returnKeyType="search"
           />
           {searching ? (
-            <ActivityIndicator color="#4F46E5" style={{ marginTop: 20 }} />
+            <ActivityIndicator color="#BE5B8E" style={{ marginTop: 20 }} />
           ) : (
             <FlatList
               data={results}
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   modeBtn: { flex: 1, paddingVertical: 8, alignItems: 'center', borderRadius: 8 },
   modeBtnActive: { backgroundColor: '#fff', shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 4, elevation: 2 },
   modeBtnText: { fontSize: 13, fontWeight: '600', color: '#6B7280' },
-  modeBtnTextActive: { color: '#4F46E5' },
+  modeBtnTextActive: { color: '#BE5B8E' },
   input: {
     marginHorizontal: 12,
     marginBottom: 4,
@@ -181,6 +181,6 @@ const styles = StyleSheet.create({
   scanHint: { color: '#fff', fontSize: 14, fontWeight: '600' },
   permContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 32 },
   permText: { textAlign: 'center', color: '#374151', fontSize: 15, marginBottom: 20 },
-  permBtn: { backgroundColor: '#4F46E5', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
+  permBtn: { backgroundColor: '#BE5B8E', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
   permBtnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
 });

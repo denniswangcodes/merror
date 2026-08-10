@@ -146,6 +146,8 @@ exports.Prisma.FeedbackScalarFieldEnum = {
   imageUrl: 'imageUrl',
   points: 'points',
   isPublic: 'isPublic',
+  status: 'status',
+  reviewedAt: 'reviewedAt',
   createdAt: 'createdAt'
 };
 
@@ -192,6 +194,12 @@ exports.FeedbackType = exports.$Enums.FeedbackType = {
   MEMORY: 'MEMORY'
 };
 
+exports.FeedbackStatus = exports.$Enums.FeedbackStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
 exports.FriendStatus = exports.$Enums.FriendStatus = {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED'
@@ -200,7 +208,9 @@ exports.FriendStatus = exports.$Enums.FriendStatus = {
 exports.NotificationType = exports.$Enums.NotificationType = {
   FRIEND_REQUEST: 'FRIEND_REQUEST',
   FRIEND_ACCEPTED: 'FRIEND_ACCEPTED',
-  FEEDBACK_RECEIVED: 'FEEDBACK_RECEIVED'
+  FEEDBACK_RECEIVED: 'FEEDBACK_RECEIVED',
+  FEEDBACK_APPROVED: 'FEEDBACK_APPROVED',
+  FEEDBACK_REJECTED: 'FEEDBACK_REJECTED'
 };
 
 exports.Prisma.ModelName = {

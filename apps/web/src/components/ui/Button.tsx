@@ -16,8 +16,8 @@ interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'ref' | 'children'
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-accent text-white hover:bg-accent-hover shadow-card',
-  secondary: 'bg-surface-raised text-text-primary border border-border hover:border-border-strong',
+  primary: 'bg-accent text-white hover:bg-accent-hover shadow-[0_1px_2px_rgba(16,24,40,.12),0_4px_12px_rgb(var(--color-accent)/.2)]',
+  secondary: 'bg-surface-raised text-text-primary border border-border hover:border-border-strong hover:bg-background',
   ghost: 'bg-transparent text-text-secondary hover:bg-surface-raised hover:text-text-primary',
   destructive: 'bg-transparent text-danger border border-danger/30 hover:bg-danger/10',
 };
@@ -39,7 +39,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       whileTap={isDisabled ? undefined : { scale: 0.97 }}
       disabled={isDisabled}
       className={cn(
-        'inline-flex items-center justify-center font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60',
+        'inline-flex items-center justify-center font-semibold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60',
         variantClasses[variant],
         sizeClasses[size],
         className

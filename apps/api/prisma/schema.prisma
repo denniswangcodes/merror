@@ -23,6 +23,12 @@ enum FeedbackType {
   MEMORY
 }
 
+enum FeedbackStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum FriendStatus {
   PENDING
   ACCEPTED
@@ -32,6 +38,8 @@ enum NotificationType {
   FRIEND_REQUEST
   FRIEND_ACCEPTED
   FEEDBACK_RECEIVED
+  FEEDBACK_APPROVED
+  FEEDBACK_REJECTED
 }
 
 model User {
@@ -65,6 +73,8 @@ model Feedback {
   imageUrl   String?
   points     Int          @default(1)
   isPublic   Boolean      @default(true)
+  status     FeedbackStatus @default(APPROVED)
+  reviewedAt DateTime?
   createdAt  DateTime     @default(now())
 
   giver    User @relation("Giver", fields: [giverId], references: [id], onDelete: Cascade)

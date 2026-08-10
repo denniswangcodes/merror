@@ -3,14 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Avatar } from '@/components/Avatar';
-import { Badge } from '@/components/Badge';
+import { FeedCard } from '@/components/FeedCard';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/context/auth.context';
 import { feedbackApi, usersApi } from '@/lib/api';
-import { timeAgo } from '@merror/shared';
 import type { FeedbackItem, PaginatedResponse } from '@merror/shared';
 
 export default function OwnProfilePage(): JSX.Element {
@@ -28,8 +26,8 @@ export default function OwnProfilePage(): JSX.Element {
 
   useEffect(() => {
     if (!user) return;
-    feedbackApi.getReceived().then((r) => setReceived((r as PaginatedResponse<FeedbackItem>).data));
-    feedbackApi.getGiven().then((r) => setGiven((r as PaginatedResponse<FeedbackItem>).data));
+    feedbackApi.getReceived().then((result) => setReceived((result as PaginatedResponse<FeedbackItem>).data));
+    feedbackApi.getGiven().then((result) => setGiven((result as PaginatedResponse<FeedbackItem>).data));
     setBio(user.bio || '');
     setDisplayName(user.displayName || '');
   }, [user]);
@@ -60,7 +58,11 @@ export default function OwnProfilePage(): JSX.Element {
   const items = tab === 'received' ? received : given;
 
   return (
-    <div className="pb-8">
+    <div className="pb-8 pt-7">
+      <header className="mb-4 px-1">
+        <h1 className="font-display text-[22px] font-bold text-text-primary m-0 mb-0.5">Your Profile</h1>
+        <p className="m-0 text-sm text-text-muted">Your place to settle in and make Merror yours.</p>
+      </header>
       <ProfileHeader
         displayName={user.displayName}
         username={user.username}
@@ -75,7 +77,7 @@ export default function OwnProfilePage(): JSX.Element {
                 Edit Profile
               </Button>
               <Button
-                variant="ghost"
+                variant="secondary"
                 size="sm"
                 onClick={async () => { await logout(); router.push(`/${locale}/login`); }}
               >
@@ -114,21 +116,20 @@ export default function OwnProfilePage(): JSX.Element {
         )}
       </ProfileHeader>
 
-      {/* Tabs */}
       <div className="flex border-b border-border mt-8 mb-3.5">
-        {(['received', 'given'] as const).map((t) => (
+        {(['received', 'given'] as const).map((itemTab) => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
+            key={itemTab}
+            onClick={() => setTab(itemTab)}
             className={`relative flex-1 py-3 text-[13px] capitalize transition-colors ${
-              tab === t ? 'font-bold text-accent' : 'font-normal text-text-muted'
+              tab === itemTab ? 'font-bold brand-gradient-text' : 'font-normal text-text-muted'
             }`}
           >
-            {t} ({t === 'received' ? received.length : given.length})
-            {tab === t && (
+            {itemTab} ({itemTab === 'received' ? received.length : given.length})
+            {tab === itemTab && (
               <motion.span
                 layoutId="profile-tab-indicator"
-                className="absolute left-0 right-0 -bottom-px h-0.5 bg-accent"
+                className="brand-gradient-bg absolute left-0 right-0 -bottom-px h-0.5"
                 transition={{ type: 'spring', stiffness: 500, damping: 35 }}
               />
             )}
@@ -138,30 +139,9 @@ export default function OwnProfilePage(): JSX.Element {
 
       <div>
         {items.length === 0 ? (
-          <p className="text-sm text-text-muted text-center mt-8">No {tab} feedback yet</p>
+          <p className="text-sm text-text-muted text-center mt-8">No {tab} reflections yet</p>
         ) : (
-          items.map((item) => {
-            const otherUser = tab === 'received'
-              ? (item as FeedbackItem & { giver?: { displayName: string | null; username: string; avatarUrl: string | null } }).giver
-              : (item as FeedbackItem & { receiver?: { displayName: string | null; username: string; avatarUrl: string | null } }).receiver;
-            return (
-              <div key={item.id} className="bg-surface rounded-2xl border border-border p-3.5 mb-2.5">
-                <div className="flex items-center gap-2 mb-2">
-                  {otherUser && (
-                    <Avatar displayName={otherUser.displayName} username={otherUser.username} avatarUrl={otherUser.avatarUrl} size={28} />
-                  )}
-                  {otherUser && (
-                    <span className="font-semibold text-[13px] text-text-secondary">{otherUser.displayName || otherUser.username}</span>
-                  )}
-                  <Badge type={item.type} />
-                  <span className="text-[11px] text-text-muted ml-auto">{timeAgo(item.createdAt)}</span>
-                </div>
-                <p className="text-sm text-text-secondary m-0 leading-relaxed">
-                  &ldquo;{item.message}&rdquo;
-                </p>
-              </div>
-            );
-          })
+          items.map((item, index) => <FeedCard key={item.id} item={item} locale={locale} index={index} />)
         )}
       </div>
     </div>

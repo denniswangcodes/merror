@@ -5,9 +5,10 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
 import { Badge } from '../../src/components/Badge';
+import { TierBadge } from '../../src/components/TierBadge';
 import { useAuth } from '../../src/context/auth.context';
 import { usersApi, friendsApi } from '../../src/lib/api';
-import { getTier, timeAgo } from '@merror/shared';
+import { formatReflectionDate } from '@merror/shared';
 import type { PublicUser, FeedbackItem } from '@merror/shared';
 
 export default function PublicProfileScreen() {
@@ -33,9 +34,8 @@ export default function PublicProfileScreen() {
     setRefreshing(false);
   }, [fetchProfile]);
 
-  if (!profile) return <View style={styles.center}><ActivityIndicator color="#4F46E5" /></View>;
+  if (!profile) return <View style={styles.center}><ActivityIndicator color="#BE5B8E" /></View>;
 
-  const tier = getTier(profile.totalPoints);
   const received = (profile.feedbackReceived || []) as FeedbackItem[];
   const given = (profile.feedbackGiven || []) as FeedbackItem[];
   const items = tab === 'received' ? received : given;
@@ -53,7 +53,7 @@ export default function PublicProfileScreen() {
     <ScrollView
       style={{ flex: 1, backgroundColor: '#FAFAF9' }}
       contentContainerStyle={{ paddingBottom: 32 }}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#4F46E5" />}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#BE5B8E" />}
     >
       <View style={styles.header}>
         <Avatar displayName={profile.displayName} username={profile.username} size={72} />
@@ -62,10 +62,8 @@ export default function PublicProfileScreen() {
         {profile.bio && <Text style={styles.bio}>{profile.bio}</Text>}
         <View style={styles.pointsRow}>
           <Text style={styles.pointsNum}>{profile.totalPoints}</Text>
-          <Text style={styles.pointsLabel}>points</Text>
-          <View style={[styles.tierBadge, { backgroundColor: tier.bg, borderColor: tier.border }]}>
-            <Text style={[styles.tierText, { color: tier.color }]}>{tier.label}</Text>
-          </View>
+          <Text style={styles.lumenMark} accessibilityLabel="lumens">✦</Text>
+          <TierBadge points={profile.totalPoints} />
         </View>
 
         {me && me.id !== profile.id && (
@@ -104,7 +102,7 @@ export default function PublicProfileScreen() {
                 <View style={styles.cardHeader}>
                   {other && <Text style={styles.cardUser}>{other.displayName || other.username}</Text>}
                   <Badge type={item.type} />
-                  <Text style={styles.cardTime}>{timeAgo(item.createdAt)}</Text>
+                  <Text style={styles.cardTime}>{formatReflectionDate(item.createdAt)}</Text>
                 </View>
                 <Text style={styles.cardMsg}>&ldquo;{item.message}&rdquo;</Text>
               </View>
@@ -123,19 +121,18 @@ const styles = StyleSheet.create({
   uname: { fontSize: 13, color: '#6B7280', marginTop: 2 },
   bio: { fontSize: 14, color: '#374151', textAlign: 'center', marginTop: 6, paddingHorizontal: 24 },
   pointsRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 },
-  pointsNum: { fontSize: 22, fontWeight: '800', color: '#4F46E5' },
+  pointsNum: { fontSize: 22, fontWeight: '800', color: '#BE5B8E' },
   pointsLabel: { fontSize: 12, color: '#9CA3AF' },
-  tierBadge: { paddingHorizontal: 10, paddingVertical: 3, borderRadius: 20, borderWidth: 1 },
-  tierText: { fontSize: 11, fontWeight: '700' },
-  btn: { backgroundColor: '#4F46E5', paddingHorizontal: 18, paddingVertical: 10, borderRadius: 12, alignItems: 'center' },
+  lumenMark: { fontSize: 17, color: '#BE5B8E', fontWeight: '700' },
+  btn: { backgroundColor: '#BE5B8E', paddingHorizontal: 18, paddingVertical: 10, borderRadius: 12, alignItems: 'center' },
   btnText: { color: '#fff', fontWeight: '700', fontSize: 13 },
-  outlineBtn: { borderWidth: 1.5, borderColor: '#4F46E5', paddingHorizontal: 16, paddingVertical: 9, borderRadius: 12, alignItems: 'center' },
-  outlineBtnText: { color: '#4F46E5', fontWeight: '700', fontSize: 13 },
+  outlineBtn: { borderWidth: 1.5, borderColor: '#BE5B8E', paddingHorizontal: 16, paddingVertical: 9, borderRadius: 12, alignItems: 'center' },
+  outlineBtnText: { color: '#BE5B8E', fontWeight: '700', fontSize: 13 },
   tabs: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#E5E7EB', marginTop: 16 },
   tab: { flex: 1, paddingVertical: 13, alignItems: 'center' },
-  tabActive: { borderBottomWidth: 2, borderBottomColor: '#4F46E5' },
+  tabActive: { borderBottomWidth: 2, borderBottomColor: '#BE5B8E' },
   tabText: { fontSize: 13, fontWeight: '500', color: '#6B7280' },
-  tabTextActive: { fontWeight: '700', color: '#4F46E5' },
+  tabTextActive: { fontWeight: '700', color: '#BE5B8E' },
   card: { backgroundColor: '#fff', borderRadius: 14, borderWidth: 1, borderColor: '#E5E7EB', padding: 14, marginBottom: 10 },
   cardHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8, flexWrap: 'wrap' },
   cardUser: { fontSize: 13, fontWeight: '600', color: '#374151' },

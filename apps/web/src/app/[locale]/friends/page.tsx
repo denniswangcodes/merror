@@ -122,14 +122,14 @@ export default function FriendsPage(): JSX.Element {
         <button
           onClick={() => setTab('friends')}
           className={`relative flex-1 py-3 text-[13px] transition-colors ${
-            tab === 'friends' ? 'font-bold text-accent' : 'font-normal text-text-muted'
+            tab === 'friends' ? 'font-bold brand-gradient-text' : 'font-normal text-text-muted'
           }`}
         >
           Friends ({friends.length})
           {tab === 'friends' && (
             <motion.span
               layoutId="friends-tab-indicator"
-              className="absolute left-0 right-0 -bottom-px h-0.5 bg-accent"
+              className="brand-gradient-bg absolute left-0 right-0 -bottom-px h-0.5"
               transition={{ type: 'spring', stiffness: 500, damping: 35 }}
             />
           )}
@@ -137,7 +137,7 @@ export default function FriendsPage(): JSX.Element {
         <button
           onClick={() => setTab('pending')}
           className={`relative flex-1 py-3 text-[13px] transition-colors ${
-            tab === 'pending' ? 'font-bold text-accent' : 'font-normal text-text-muted'
+            tab === 'pending' ? 'font-bold brand-gradient-text' : 'font-normal text-text-muted'
           }`}
         >
           Requests
@@ -147,7 +147,7 @@ export default function FriendsPage(): JSX.Element {
           {tab === 'pending' && (
             <motion.span
               layoutId="friends-tab-indicator"
-              className="absolute left-0 right-0 -bottom-px h-0.5 bg-accent"
+              className="brand-gradient-bg absolute left-0 right-0 -bottom-px h-0.5"
               transition={{ type: 'spring', stiffness: 500, damping: 35 }}
             />
           )}

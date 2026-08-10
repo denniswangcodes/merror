@@ -6,89 +6,49 @@ import { ArrowRight } from 'lucide-react';
 import { Avatar } from './Avatar';
 import { Badge } from './Badge';
 import { Card } from './ui/Card';
-import { timeAgo } from '@merror/shared';
-import type { FeedbackItem } from '@merror/shared';
+import { formatReflectionDate, type FeedbackItem } from '@merror/shared';
 
-interface FeedCardProps {
-  item: FeedbackItem;
-  locale: string;
-  index?: number;
-}
+interface FeedCardProps { item: FeedbackItem; locale: string; index?: number }
 
-// Default stock photos (Unsplash) shown when user hasn't uploaded an image — like LinkedIn's contextual defaults
-const TYPE_DEFAULT_IMAGE: Record<string, string> = {
-  COMPLIMENT:
-    'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=700&auto=format&fit=crop&q=80',
-  HELPFUL_ACT:
-    'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=700&auto=format&fit=crop&q=80',
-  MEMORY:
-    'https://images.unsplash.com/photo-1521543298894-ba7edd6b7cf2?w=700&auto=format&fit=crop&q=80',
+const TYPE_DEFAULT_IMAGE: Record<FeedbackItem['type'], string> = {
+  COMPLIMENT: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&auto=format&fit=crop&q=85',
+  HELPFUL_ACT: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1200&auto=format&fit=crop&q=85',
+  MEMORY: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=1200&auto=format&fit=crop&q=85',
 };
 
 export function FeedCard({ item, locale, index = 0 }: FeedCardProps) {
   const giver = item.giver;
   const receiver = item.receiver;
+  const imageUrl = item.imageUrl || TYPE_DEFAULT_IMAGE[item.type];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: Math.min(index, 6) * 0.05, ease: 'easeOut' }}
-    >
-      <Card className="mb-5 overflow-hidden hover:shadow-card-hover dark:hover:shadow-card-hover-dark transition-shadow">
-        {/* Photo header — Polaroid-style top portion */}
-        <div className="relative w-full" style={{ aspectRatio: '4/3' }}>
-          <img
-            src={item.imageUrl || TYPE_DEFAULT_IMAGE[item.type] || TYPE_DEFAULT_IMAGE.COMPLIMENT}
-            alt="reflection"
-            className="w-full h-full object-cover"
-          />
-          {/* Badge overlay top-right */}
-          <div className="absolute top-3 right-3">
-            <Badge type={item.type} />
-          </div>
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: Math.min(index, 6) * 0.04, ease: 'easeOut' }}>
+      <Card className="mb-4 overflow-hidden transition-colors duration-200 hover:border-border-strong">
+        <div className="relative mx-3 mt-3 overflow-hidden rounded-xl bg-background ring-1 ring-inset ring-border/70" style={{ aspectRatio: '16/9' }}>
+            <img src={imageUrl} alt={`${item.type === 'COMPLIMENT' ? 'Kind Word' : item.type === 'HELPFUL_ACT' ? 'Helping Hand' : 'Shared Moment'} reflection`} className="h-full w-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/5" />
+            <div className="absolute left-3 top-3"><Badge type={item.type} /></div>
         </div>
 
-        {/* Caption area — like the white Polaroid bottom strip */}
-        <div className="px-4 pt-3.5 pb-4">
-          {/* Giver → Receiver row */}
-          <div className="flex items-center gap-2 flex-wrap mb-2.5">
+        <div className="flex min-h-[164px] flex-col px-6 pb-7 pt-5">
+          <div className="mb-4 flex flex-wrap items-center gap-2">
             {giver && (
-              <Link
-                href={`/${locale}/profile/${giver.username}`}
-                className="flex items-center gap-1.5 no-underline"
-              >
-                <Avatar
-                  displayName={giver.displayName}
-                  username={giver.username}
-                  avatarUrl={giver.avatarUrl}
-                  size={28}
-                />
-                <span className="font-semibold text-sm text-text-primary">{giver.displayName || giver.username}</span>
+              <Link href={`/${locale}/profile/${giver.username}`} className="flex items-center gap-2 no-underline group">
+                <Avatar displayName={giver.displayName} username={giver.username} avatarUrl={giver.avatarUrl} size={30} />
+                <span className="text-sm font-semibold text-text-primary group-hover:text-accent transition-colors">{giver.displayName || giver.username}</span>
               </Link>
             )}
-            <ArrowRight className="h-3.5 w-3.5 text-text-muted shrink-0" />
+            <ArrowRight className="h-3.5 w-3.5 shrink-0 text-text-muted" />
             {receiver && (
-              <Link
-                href={`/${locale}/profile/${receiver.username}`}
-                className="flex items-center gap-1.5 no-underline"
-              >
-                <Avatar
-                  displayName={receiver.displayName}
-                  username={receiver.username}
-                  avatarUrl={receiver.avatarUrl}
-                  size={28}
-                />
-                <span className="font-semibold text-sm text-text-primary">{receiver.displayName || receiver.username}</span>
+              <Link href={`/${locale}/profile/${receiver.username}`} className="flex items-center gap-2 no-underline group">
+                <Avatar displayName={receiver.displayName} username={receiver.username} avatarUrl={receiver.avatarUrl} size={30} />
+                <span className="text-sm font-semibold text-text-primary group-hover:text-accent transition-colors">{receiver.displayName || receiver.username}</span>
               </Link>
             )}
-            <span className="ml-auto text-xs text-text-muted">{timeAgo(item.createdAt)}</span>
+            <span className="ml-auto text-[11px] font-medium tabular-nums text-text-muted">{formatReflectionDate(item.createdAt)}</span>
           </div>
 
-          {/* Message */}
-          <p className="text-sm text-text-secondary m-0 leading-relaxed line-clamp-5">
-            &ldquo;{item.message}&rdquo;
-          </p>
+          <p className="m-0 flex-1 border-t border-border/70 pt-4 font-display text-base font-medium leading-7 text-text-primary">{item.message}</p>
         </div>
       </Card>
     </motion.div>

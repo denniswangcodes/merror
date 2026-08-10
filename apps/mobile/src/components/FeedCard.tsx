@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Avatar } from './Avatar';
 import { Badge } from './Badge';
-import { timeAgo } from '@merror/shared';
-import type { FeedbackItem, PublicUser } from '@merror/shared';
+import { useAppTheme } from '../lib/theme';
+import { formatReflectionDate, type FeedbackItem, type PublicUser } from '@merror/shared';
 
 type FeedCardProps = {
   item: FeedbackItem & {
@@ -14,78 +14,60 @@ type FeedCardProps = {
   onReceiverPress?: () => void;
 };
 
+const TYPE_DEFAULT_IMAGE: Record<FeedbackItem['type'], string> = {
+  COMPLIMENT: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&auto=format&fit=crop&q=85',
+  HELPFUL_ACT: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1200&auto=format&fit=crop&q=85',
+  MEMORY: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=1200&auto=format&fit=crop&q=85',
+};
+
 export function FeedCard({ item, onGiverPress, onReceiverPress }: FeedCardProps) {
+  const theme = useAppTheme();
   const giver = item.giver;
   const receiver = item.receiver;
+  const imageUrl = item.imageUrl || TYPE_DEFAULT_IMAGE[item.type];
 
   return (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        {giver && (
-          <TouchableOpacity style={styles.userRow} onPress={onGiverPress} disabled={!onGiverPress} activeOpacity={0.7}>
-            <Avatar displayName={giver.displayName} username={giver.username} size={26} />
-            <Text style={styles.username}>{giver.displayName || giver.username}</Text>
-          </TouchableOpacity>
-        )}
-        <Text style={styles.arrow}>→</Text>
-        {receiver && (
-          <TouchableOpacity style={styles.userRow} onPress={onReceiverPress} disabled={!onReceiverPress} activeOpacity={0.7}>
-            <Avatar displayName={receiver.displayName} username={receiver.username} size={26} />
-            <Text style={styles.username}>{receiver.displayName || receiver.username}</Text>
-          </TouchableOpacity>
-        )}
-        <View style={styles.spacer} />
-        <Badge type={item.type} />
+    <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+      <View style={styles.photoWrap}>
+        <Image source={{ uri: imageUrl }} style={styles.image} resizeMode="cover" />
+        <View style={styles.photoBadge}><Badge type={item.type} /></View>
       </View>
-      <Text style={styles.message}>&ldquo;{item.message}&rdquo;</Text>
-      <Text style={styles.time}>{timeAgo(item.createdAt)}</Text>
+      <View style={styles.body}>
+        <View style={styles.header}>
+          {giver && (
+            <TouchableOpacity style={styles.userRow} onPress={onGiverPress} disabled={!onGiverPress} activeOpacity={0.7}>
+              <Avatar displayName={giver.displayName} username={giver.username} size={28} />
+              <Text numberOfLines={1} style={[styles.username, { color: theme.text }]}>{giver.displayName || giver.username}</Text>
+            </TouchableOpacity>
+          )}
+          <Text style={[styles.arrow, { color: theme.muted }]}>→</Text>
+          {receiver && (
+            <TouchableOpacity style={styles.userRow} onPress={onReceiverPress} disabled={!onReceiverPress} activeOpacity={0.7}>
+              <Avatar displayName={receiver.displayName} username={receiver.username} size={28} />
+              <Text numberOfLines={1} style={[styles.username, { color: theme.text }]}>{receiver.displayName || receiver.username}</Text>
+            </TouchableOpacity>
+          )}
+          <Text style={[styles.time, { color: theme.muted }]}>{formatReflectionDate(item.createdAt)}</Text>
+        </View>
+        <View style={styles.meta}><Text style={[styles.quote, { color: theme.accent }]}>”</Text></View>
+        <Text style={[styles.message, { color: theme.text }]}>{item.message}</Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    padding: 14,
-    marginBottom: 10,
-    marginHorizontal: 12,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-    flexWrap: 'wrap',
-    gap: 4,
-  },
-  userRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
-  username: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#374151',
-  },
-  arrow: {
-    fontSize: 13,
-    color: '#9CA3AF',
-    marginHorizontal: 3,
-  },
-  spacer: {
-    flex: 1,
-  },
-  message: {
-    fontSize: 15,
-    color: '#111827',
-    lineHeight: 22,
-    marginBottom: 8,
-  },
-  time: {
-    fontSize: 11,
-    color: '#9CA3AF',
-  },
+  card: { borderRadius: 20, borderWidth: 1, marginBottom: 12, marginHorizontal: 14, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 2 },
+  photoWrap: { position: 'relative', margin: 10, marginBottom: 0 },
+  image: { width: '100%', aspectRatio: 16 / 9, borderRadius: 12 },
+  photoBadge: { position: 'absolute', left: 12, top: 12 },
+  body: { paddingHorizontal: 18, paddingTop: 17, paddingBottom: 22, minHeight: 154 },
+  header: { flexDirection: 'row', alignItems: 'center', marginBottom: 14, gap: 6 },
+  userRow: { flexDirection: 'row', alignItems: 'center', gap: 6, flexShrink: 1 },
+  username: { fontSize: 13, fontWeight: '700', flexShrink: 1 },
+  arrow: { fontSize: 13, marginHorizontal: 1 },
+  time: { fontSize: 10, fontWeight: '600', marginLeft: 'auto' },
+  meta: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 4 },
+  quote: { fontSize: 28, fontWeight: '900', opacity: 0.22, lineHeight: 28 },
+  message: { fontSize: 15, fontWeight: '500', lineHeight: 23 },
 });

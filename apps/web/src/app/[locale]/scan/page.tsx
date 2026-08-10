@@ -54,7 +54,7 @@ export default function ScanPage(): JSX.Element {
           <Avatar displayName={u.displayName} username={u.username} avatarUrl={u.avatarUrl} size={44} />
           <div>
             <div className="font-semibold text-base text-text-primary">{u.displayName || u.username}</div>
-            <div className="text-sm text-text-muted">@{u.username} · {u.totalPoints} pts</div>
+            <div className="text-sm text-text-muted">@{u.username} · {u.totalPoints} lumens</div>
           </div>
         </button>
       ))}

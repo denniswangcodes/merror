@@ -2,17 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
-import { Avatar } from '@/components/Avatar';
-import { Badge } from '@/components/Badge';
+import { FeedCard } from '@/components/FeedCard';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { Button } from '@/components/ui/Button';
 import { Toast } from '@/components/Toast';
 import { useAuth } from '@/context/auth.context';
 import { usersApi, friendsApi } from '@/lib/api';
-import { timeAgo } from '@merror/shared';
 import type { PublicUser, FeedbackItem, FriendshipItem } from '@merror/shared';
 
 type FriendStatus = 'none' | 'pending' | 'friends';
@@ -125,14 +122,14 @@ export default function PublicProfilePage(): JSX.Element {
             key={t}
             onClick={() => setTab(t)}
             className={`relative flex-1 py-3 text-[13px] capitalize transition-colors ${
-              tab === t ? 'font-bold text-accent' : 'font-normal text-text-muted'
+              tab === t ? 'font-bold brand-gradient-text' : 'font-normal text-text-muted'
             }`}
           >
             {t} ({t === 'received' ? received.length : given.length})
             {tab === t && (
               <motion.span
                 layoutId="public-profile-tab-indicator"
-                className="absolute left-0 right-0 -bottom-px h-0.5 bg-accent"
+                className="brand-gradient-bg absolute left-0 right-0 -bottom-px h-0.5"
                 transition={{ type: 'spring', stiffness: 500, damping: 35 }}
               />
             )}
@@ -144,28 +141,7 @@ export default function PublicProfilePage(): JSX.Element {
         {items.length === 0 ? (
           <p className="text-sm text-text-muted text-center mt-8">No public {tab} feedback yet</p>
         ) : (
-          items.map((item) => {
-            const other = tab === 'received'
-              ? (item as FeedbackItem & { giver?: PublicUser }).giver
-              : (item as FeedbackItem & { receiver?: PublicUser }).receiver;
-            return (
-              <div key={item.id} className="bg-surface rounded-2xl border border-border p-3.5 mb-2.5">
-                <div className="flex items-center gap-2 mb-2">
-                  {other && (
-                    <Link href={`/${locale}/profile/${other.username}`} className="flex items-center gap-2 no-underline">
-                      <Avatar displayName={other.displayName} username={other.username} avatarUrl={other.avatarUrl} size={28} />
-                      <span className="font-semibold text-[13px] text-text-secondary">{other.displayName || other.username}</span>
-                    </Link>
-                  )}
-                  <Badge type={item.type} />
-                  <span className="text-[11px] text-text-muted ml-auto">{timeAgo(item.createdAt)}</span>
-                </div>
-                <p className="text-sm text-text-secondary m-0 leading-relaxed">
-                  &ldquo;{item.message}&rdquo;
-                </p>
-              </div>
-            );
-          })
+          items.map((item, index) => <FeedCard key={item.id} item={item} locale={locale} index={index} />)
         )}
       </div>
 

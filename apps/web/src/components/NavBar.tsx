@@ -11,6 +11,7 @@ import { usersApi } from '@/lib/api';
 import { Avatar } from '@/components/Avatar';
 import { Logo } from '@/components/ui/Logo';
 import { cn } from '@/lib/utils';
+import { NotificationMenu } from '@/components/NotificationMenu';
 import type { PublicUser } from '@merror/shared';
 
 interface Tab {
@@ -69,16 +70,14 @@ export function NavBar({ locale }: { locale: string }) {
   return (
     <>
       {/* ── Top bar ── */}
-      <nav className="fixed top-0 left-0 right-0 h-14 bg-surface border-b border-border flex items-center justify-between px-4 sm:px-6 z-50">
-        {/* Left: Logo */}
-        <div className="flex items-center h-14">
-          <Link href={`/${locale}/feed`} className="no-underline shrink-0 inline-flex items-center h-9">
-            <Logo size={26} />
+      <nav className="fixed top-0 left-0 right-0 h-14 bg-surface/90 backdrop-blur-xl border-b border-border/80 flex items-center justify-between px-4 sm:px-6 lg:px-4 xl:px-5 z-50 shadow-[0_1px_0_rgba(16,24,40,.02)]">
+        {/* Left: brand mark + search */}
+        <div className="flex items-center gap-3 h-14">
+          <Link href={`/${locale}/feed`} className="no-underline shrink-0 inline-flex items-center h-9 transition-opacity hover:opacity-80" aria-label="Merror home">
+            <Logo size={30} showWordmark={false} />
           </Link>
-        </div>
 
-        {/* Center: Search */}
-        <div ref={wrapperRef} className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-[300px]">
+        <div ref={wrapperRef} className="relative hidden w-[278px] lg:block">
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted" />
             <input
@@ -86,7 +85,7 @@ export function NavBar({ locale }: { locale: string }) {
               value={query}
               onChange={(e) => handleSearch(e.target.value)}
               placeholder="Search people…"
-              className="w-full bg-background border border-border rounded-xl pl-9 pr-4 py-2 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition"
+              className="w-full h-9 bg-background/80 border border-border rounded-xl pl-9 pr-4 text-[13px] text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/60 focus:bg-surface transition-all"
             />
           </div>
           <AnimatePresence>
@@ -115,9 +114,10 @@ export function NavBar({ locale }: { locale: string }) {
             )}
           </AnimatePresence>
         </div>
+        </div>
 
         {/* Right: Nav tabs + dark toggle + Avatar */}
-        <div className="hidden sm:flex items-center justify-end gap-1 w-[300px]">
+        <div className="hidden sm:flex items-center justify-end gap-1">
           {tabs.map((tab) => {
             const active = pathname.startsWith(tab.href);
             const Icon = tab.icon;
@@ -126,25 +126,29 @@ export function NavBar({ locale }: { locale: string }) {
                 key={tab.href}
                 href={tab.href}
                 className={cn(
-                  'relative h-9 px-3 rounded-lg no-underline text-sm font-medium whitespace-nowrap flex items-center gap-1.5 transition-colors',
-                  active ? 'text-accent' : 'text-text-secondary hover:text-text-primary'
+                  'group relative h-10 w-10 rounded-xl no-underline flex items-center justify-center transition-colors',
+                  active ? 'text-accent' : 'text-text-secondary hover:text-text-primary hover:bg-background'
                 )}
               >
                 {active && (
                   <motion.span
                     layoutId="nav-active-tab"
-                    className="absolute inset-0 rounded-lg bg-accent/10"
+                    className="absolute inset-0 rounded-xl bg-accent/10 ring-1 ring-inset ring-accent/10"
                     transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                   />
                 )}
-                <Icon className="h-4 w-4 relative z-10 shrink-0" />
-                <span className="relative z-10 leading-none">{tab.label}</span>
+                <Icon className="h-[18px] w-[18px] relative z-10 shrink-0" strokeWidth={active ? 2.5 : 2} />
+                <span className="sr-only">{tab.label}</span>
+                <span aria-hidden="true" className="pointer-events-none absolute top-full mt-2 rounded-lg bg-text-primary px-2 py-1 text-[11px] font-semibold text-surface opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                  {tab.label}
+                </span>
               </Link>
             );
           })}
+          {user && <NotificationMenu locale={locale} />}
           <button
             onClick={toggle}
-            className="ml-2 h-9 w-9 shrink-0 flex items-center justify-center rounded-lg text-text-secondary hover:bg-background hover:text-text-primary transition-colors overflow-hidden"
+            className="ml-2 h-9 w-9 shrink-0 flex items-center justify-center rounded-xl text-text-secondary hover:bg-background hover:text-text-primary transition-colors overflow-hidden"
             aria-label="Toggle dark mode"
           >
             <AnimatePresence mode="wait" initial={false}>
@@ -169,7 +173,7 @@ export function NavBar({ locale }: { locale: string }) {
       </nav>
 
       {/* ── Mobile bottom nav (<sm) ── */}
-      <nav className="sm:hidden fixed bottom-0 left-0 w-full bg-surface border-t border-border flex z-50">
+      <nav className="sm:hidden fixed bottom-0 left-0 w-full bg-surface/95 backdrop-blur-xl border-t border-border/80 flex z-50 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(16,24,40,.06)]">
         {tabs.map((tab) => {
           const active = pathname.startsWith(tab.href);
           const Icon = tab.icon;
@@ -179,12 +183,12 @@ export function NavBar({ locale }: { locale: string }) {
               key={tab.href}
               href={tab.href}
               className={cn(
-                'flex-1 flex flex-col items-center justify-center py-2 gap-0.5 no-underline border-t-2',
-                active ? 'border-accent' : 'border-transparent'
+                'relative flex-1 flex flex-col items-center justify-center py-2 gap-0.5 no-underline',
+                active ? 'text-accent' : 'text-text-muted'
               )}
             >
               {isReflect ? (
-                <div className="w-9 h-9 rounded-full bg-accent flex items-center justify-center -mt-1.5">
+                <div className="w-10 h-10 rounded-2xl bg-accent flex items-center justify-center -mt-3 shadow-[0_5px_16px_rgb(var(--color-accent)/.32)] ring-4 ring-surface">
                   <Icon className="h-4 w-4 text-white" />
                 </div>
               ) : (

@@ -40,7 +40,7 @@ export class UsersService {
       select: {
         ...PUBLIC_USER_SELECT,
         feedbackReceived: {
-          where: { isPublic: true },
+          where: { isPublic: true, status: 'APPROVED' },
           orderBy: { createdAt: 'desc' },
           take: 20,
           include: {
@@ -59,7 +59,7 @@ export class UsersService {
       select: {
         ...PUBLIC_USER_SELECT,
         feedbackReceived: {
-          where: { isPublic: true },
+          where: { isPublic: true, status: 'APPROVED' },
           orderBy: { createdAt: 'desc' },
           take: 20,
           include: {
@@ -67,7 +67,7 @@ export class UsersService {
           },
         },
         feedbackGiven: {
-          where: { isPublic: true },
+          where: { isPublic: true, status: 'APPROVED' },
           orderBy: { createdAt: 'desc' },
           take: 20,
           include: {
@@ -109,8 +109,8 @@ export class UsersService {
   async getMyStats(userId: string) {
     const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const [given, received] = await Promise.all([
-      this.prisma.feedback.count({ where: { giverId: userId, createdAt: { gte: since } } }),
-      this.prisma.feedback.count({ where: { receiverId: userId, createdAt: { gte: since } } }),
+      this.prisma.feedback.count({ where: { giverId: userId, status: 'APPROVED', createdAt: { gte: since } } }),
+      this.prisma.feedback.count({ where: { receiverId: userId, status: 'APPROVED', createdAt: { gte: since } } }),
     ]);
     return { given, received };
   }

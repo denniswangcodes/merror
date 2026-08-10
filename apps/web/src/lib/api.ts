@@ -168,6 +168,15 @@ export const feedbackApi = {
     apiFetch('/api/feedback', { method: 'POST', body: JSON.stringify(data) }),
   getReceived: (page = 1) => apiFetch(`/api/feedback/received?page=${page}&limit=20`),
   getGiven: (page = 1) => apiFetch(`/api/feedback/given?page=${page}&limit=20`),
+  approve: (id: string) => apiFetch(`/api/feedback/${id}/approve`, { method: 'PATCH' }),
+  reject: (id: string) => apiFetch(`/api/feedback/${id}/reject`, { method: 'PATCH' }),
+};
+
+export const notificationsApi = {
+  getAll: () => apiFetch<import('@merror/shared').NotificationItem[]>('/api/notifications'),
+  getUnreadCount: () => apiFetch<{ count: number }>('/api/notifications/unread-count'),
+  markRead: (id: string) => apiFetch(`/api/notifications/${id}/read`, { method: 'PATCH' }),
+  markAllRead: () => apiFetch('/api/notifications/read-all', { method: 'PATCH' }),
 };
 
 // ─── News API ─────────────────────────────────────────────────────────────────

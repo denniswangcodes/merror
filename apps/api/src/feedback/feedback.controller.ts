@@ -8,6 +8,8 @@ import {
   ParseIntPipe,
   DefaultValuePipe,
   Optional,
+  Param,
+  Patch,
 } from '@nestjs/common';
 import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
@@ -50,5 +52,17 @@ export class FeedbackController {
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
   ) {
     return this.feedbackService.getGiven(userId, page, Math.min(limit, 50));
+  }
+
+  @Patch(':id/approve')
+  @UseGuards(JwtGuard)
+  approve(@GetUser('id') userId: string, @Param('id') id: string) {
+    return this.feedbackService.review(userId, id, true);
+  }
+
+  @Patch(':id/reject')
+  @UseGuards(JwtGuard)
+  reject(@GetUser('id') userId: string, @Param('id') id: string) {
+    return this.feedbackService.review(userId, id, false);
   }
 }

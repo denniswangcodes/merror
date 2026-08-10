@@ -25,12 +25,12 @@ export function ProfileHeader({
   children,
 }: ProfileHeaderProps) {
   return (
-    <div className="pt-8 text-center lg:text-left lg:flex lg:items-start lg:gap-8 lg:pt-10">
+    <div className="pt-3 text-center lg:text-left lg:flex lg:items-start lg:gap-8 lg:pt-4">
       <div className="flex justify-center lg:justify-start mb-3 lg:mb-0 lg:flex-shrink-0">
-        <Avatar displayName={displayName} username={username} avatarUrl={avatarUrl} size={88} />
+        <Avatar displayName={displayName} username={username} avatarUrl={avatarUrl} size={132} />
       </div>
 
-      <div className="flex-1">
+      <div className="flex-1 lg:flex lg:min-h-[132px] lg:flex-col">
         {children ?? (
           <>
             <h2 className="font-display text-[22px] font-bold text-text-primary m-0 mb-0.5">
@@ -41,13 +41,14 @@ export function ProfileHeader({
           </>
         )}
 
-        <div className="flex justify-center lg:justify-start items-center gap-2.5 mb-4">
-          <span className="font-bold text-xl text-accent">{totalPoints}</span>
-          <span className="text-xs text-text-muted">points</span>
-          <TierBadge points={totalPoints} locale={locale} />
+        <div className="mt-4 flex flex-col items-center gap-2 lg:mt-auto lg:items-start">
+          <div className="flex items-center gap-2.5">
+            <TierBadge points={totalPoints} locale={locale} />
+            <span className="font-bold text-xl text-accent">{totalPoints}</span>
+            <span className="text-lg leading-none text-accent" aria-label="lumens" title="Lumens">✦</span>
+          </div>
+          {actions && <div className="flex gap-2 justify-center lg:justify-start">{actions}</div>}
         </div>
-
-        {actions && <div className="flex gap-2 justify-center lg:justify-start mb-2">{actions}</div>}
       </div>
     </div>
   );

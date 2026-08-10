@@ -7,6 +7,7 @@ import { FeedCard } from '@/components/FeedCard';
 import { Toast } from '@/components/Toast';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { useAuth } from '@/context/auth.context';
 import { feedbackApi } from '@/lib/api';
 import type { FeedbackItem, PaginatedResponse } from '@merror/shared';
@@ -26,7 +27,7 @@ export default function FeedPage(): JSX.Element {
   // Check for success toast from URL
   useEffect(() => {
     if (searchParams.get('success') === '1') {
-      setToast('Your kind words were sent ✨');
+      setToast('Reflection sent for review');
       router.replace(`/${locale}/feed`);
     }
   }, [searchParams, locale, router]);
@@ -59,14 +60,20 @@ export default function FeedPage(): JSX.Element {
   }, [loadFeed]);
 
   return (
-    <div className="pt-5 pb-6">
+    <div className="pt-7 pb-8">
+      <header className="mb-5 px-1">
+        <div>
+          <h1 className="font-display text-[22px] font-bold text-text-primary m-0 mb-0.5">The World</h1>
+          <p className="m-0 text-sm text-text-muted">Recent reflections from around you.</p>
+        </div>
+      </header>
       <div>
         {loading ? (
           <div className="flex flex-col gap-5">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="rounded-2xl border border-border bg-surface overflow-hidden">
-                <Skeleton className="w-full aspect-[4/3] rounded-none" />
-                <div className="p-4 flex flex-col gap-2">
+              <div key={i} className="rounded-[20px] border border-border bg-surface overflow-hidden p-3">
+                <Skeleton className="w-full aspect-video rounded-xl" />
+                <div className="px-3 pb-4 pt-5 min-h-[150px] flex flex-col gap-3">
                   <Skeleton className="h-4 w-2/3" />
                   <Skeleton className="h-3 w-full" />
                   <Skeleton className="h-3 w-4/5" />
@@ -75,12 +82,13 @@ export default function FeedPage(): JSX.Element {
             ))}
           </div>
         ) : feed.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 text-center py-16">
-            <div className="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center">
+          <Card className="flex flex-col items-center gap-3 border-dashed px-6 py-16 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-accent/10 ring-1 ring-inset ring-accent/10 flex items-center justify-center">
               <Heart className="h-6 w-6 text-accent" />
             </div>
             <p className="text-sm text-text-muted">No moments yet — be the first to share one!</p>
-          </div>
+            <Button size="sm" onClick={() => router.push(`/${locale}/scan`)}>Create a reflection</Button>
+          </Card>
         ) : (
           feed.map((item, i) => <FeedCard key={item.id} item={item} locale={locale} index={i} />)
         )}

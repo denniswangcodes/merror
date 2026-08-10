@@ -80,9 +80,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginBottom: 14,
   },
-  btn: { backgroundColor: '#4F46E5', paddingVertical: 14, borderRadius: 14, alignItems: 'center' },
+  btn: { backgroundColor: '#BE5B8E', paddingVertical: 14, borderRadius: 14, alignItems: 'center' },
   btnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
   footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 20 },
   footerText: { fontSize: 13, color: '#6B7280' },
-  link: { fontSize: 13, color: '#4F46E5', fontWeight: '700' },
+  link: { fontSize: 13, color: '#BE5B8E', fontWeight: '700' },
 });

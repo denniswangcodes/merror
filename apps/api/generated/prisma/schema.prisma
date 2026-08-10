@@ -3,7 +3,7 @@
 
 generator client {
   provider      = "prisma-client-js"
-  output        = "../generated/prisma"
+  output        = "../generated/prisma-next"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
@@ -23,6 +23,12 @@ enum FeedbackType {
   MEMORY
 }
 
+enum FeedbackStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum FriendStatus {
   PENDING
   ACCEPTED
@@ -32,6 +38,8 @@ enum NotificationType {
   FRIEND_REQUEST
   FRIEND_ACCEPTED
   FEEDBACK_RECEIVED
+  FEEDBACK_APPROVED
+  FEEDBACK_REJECTED
 }
 
 model User {
@@ -57,15 +65,17 @@ model User {
 }
 
 model Feedback {
-  id         String       @id @default(cuid())
+  id         String         @id @default(cuid())
   giverId    String
   receiverId String
   type       FeedbackType
   message    String
   imageUrl   String?
-  points     Int          @default(1)
-  isPublic   Boolean      @default(true)
-  createdAt  DateTime     @default(now())
+  points     Int            @default(1)
+  isPublic   Boolean        @default(true)
+  status     FeedbackStatus @default(APPROVED)
+  reviewedAt DateTime?
+  createdAt  DateTime       @default(now())
 
   giver    User @relation("Giver", fields: [giverId], references: [id], onDelete: Cascade)
   receiver User @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)

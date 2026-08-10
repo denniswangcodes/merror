@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import { LogoMark } from '@/components/ui/Logo';
 
 const FLOATING_PILLS = [
-  { label: 'Compliment', emoji: '💬' },
-  { label: 'Helpful Act', emoji: '🤝' },
-  { label: 'Memory', emoji: '✨' },
+  { label: 'Kind Word', emoji: '💬' },
+  { label: 'Helping Hand', emoji: '🤝' },
+  { label: 'Shared Moment', emoji: '✨' },
 ];
 
 export function AuthBrandPanel() {
@@ -28,7 +28,7 @@ export function AuthBrandPanel() {
         </h2>
         <div className="hidden lg:block">
           <p className="text-white/80 text-sm leading-relaxed mb-6">
-            Send compliments, celebrate helpful acts, and hold onto the memories that matter — then watch the kindness add up.
+            Recognize kind words, celebrate helping hands, and hold onto shared moments—then watch your community’s impact add up.
           </p>
           <div className="flex flex-wrap gap-2">
             {FLOATING_PILLS.map((p, i) => (
