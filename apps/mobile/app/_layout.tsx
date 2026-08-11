@@ -3,7 +3,7 @@ import { AuthProvider, useAuth } from '../src/context/auth.context';
 import { NotificationsProvider } from '../src/context/notifications.context';
 import { View, ActivityIndicator } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useAppTheme } from '../src/lib/theme';
+import { ThemeProvider, useAppTheme } from '../src/lib/theme';
 
 function RootLayoutInner() {
   const { loading, user } = useAuth();
@@ -34,10 +34,12 @@ function RootLayoutInner() {
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <NotificationsProvider>
-        <RootLayoutInner />
-      </NotificationsProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <NotificationsProvider>
+          <RootLayoutInner />
+        </NotificationsProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

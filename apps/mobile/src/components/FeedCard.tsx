@@ -3,13 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Avatar } from './Avatar';
 import { Badge } from './Badge';
 import { useAppTheme } from '../lib/theme';
-import { formatReflectionDate, type FeedbackItem, type PublicUser } from '@merror/shared';
+import { formatReflectionDate, type FeedbackItem } from '@merror/shared';
 
 type FeedCardProps = {
-  item: FeedbackItem & {
-    giver?: Pick<PublicUser, 'id' | 'displayName' | 'username' | 'avatarUrl'>;
-    receiver?: Pick<PublicUser, 'id' | 'displayName' | 'username' | 'avatarUrl'>;
-  };
+  item: FeedbackItem;
   onGiverPress?: () => void;
   onReceiverPress?: () => void;
   onReport?: () => void;

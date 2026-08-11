@@ -1,10 +1,14 @@
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useNotifications } from '../../src/context/notifications.context';
 import { useAppTheme } from '../../src/lib/theme';
+import { LOGO_START } from '../../src/context/theme.context';
+import { HeaderLogo } from '../../src/components/Logo';
 
-function TabIcon({ icon, focused, color }: { icon: string; focused: boolean; color: string }) {
-  return <Text style={{ fontSize: 20, color, fontWeight: focused ? '800' : '500' }}>{icon}</Text>;
+type IoniconName = keyof typeof Ionicons.glyphMap;
+
+function TabIcon({ name, outlineName, focused, color }: { name: IoniconName; outlineName: IoniconName; focused: boolean; color: string }) {
+  return <Ionicons name={focused ? name : outlineName} size={22} color={color} />;
 }
 
 export default function TabsLayout() {
@@ -15,7 +19,9 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: true,
-        tabBarActiveTintColor: theme.accent,
+        headerTitleAlign: 'left',
+        headerTitle: () => <HeaderLogo />,
+        tabBarActiveTintColor: LOGO_START,
         tabBarInactiveTintColor: theme.muted,
         tabBarLabelStyle: { fontSize: 10, fontWeight: '700', marginTop: 1 },
         tabBarItemStyle: { paddingTop: 5 },
@@ -27,41 +33,43 @@ export default function TabsLayout() {
         },
         headerStyle: { backgroundColor: theme.surface },
         headerShadowVisible: false,
-        headerTitleStyle: { fontWeight: '800', color: theme.text, fontSize: 17 },
       }}
     >
       <Tabs.Screen
         name="feed"
         options={{
           title: 'Feed',
-          tabBarIcon: ({ focused, color }) => <TabIcon icon="⌂" focused={focused} color={color} />,
-          headerTitle: 'Merror',
+          tabBarIcon: ({ focused, color }) => <TabIcon name="home" outlineName="home-outline" focused={focused} color={color} />,
         }}
       />
       <Tabs.Screen
         name="scan"
         options={{
-          title: 'Recognize',
-          tabBarIcon: ({ focused, color }) => <TabIcon icon="＋" focused={focused} color={color} />,
-          headerTitle: 'Recognize someone',
+          title: 'Reflect',
+          tabBarIcon: ({ focused, color }) => <TabIcon name="sparkles" outlineName="sparkles-outline" focused={focused} color={color} />,
         }}
       />
       <Tabs.Screen
         name="friends"
         options={{
           title: 'Friends',
-          tabBarIcon: ({ focused, color }) => <TabIcon icon="♡" focused={focused} color={color} />,
+          tabBarIcon: ({ focused, color }) => <TabIcon name="people" outlineName="people-outline" focused={focused} color={color} />,
           tabBarBadge: pendingFriendCount > 0 ? pendingFriendCount : undefined,
-          headerTitle: 'Friends',
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: 'Alerts',
+          tabBarIcon: ({ focused, color }) => <TabIcon name="notifications" outlineName="notifications-outline" focused={focused} color={color} />,
+          tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Me',
-          tabBarIcon: ({ focused, color }) => <TabIcon icon="◉" focused={focused} color={color} />,
-          tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
-          headerTitle: 'My Profile',
+          tabBarIcon: ({ focused, color }) => <TabIcon name="person-circle" outlineName="person-circle-outline" focused={focused} color={color} />,
         }}
       />
     </Tabs>
