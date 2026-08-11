@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronLeft } from 'lucide-react';
 import { FeedCard } from '@/components/FeedCard';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { Button } from '@/components/ui/Button';
 import { Toast } from '@/components/Toast';
+import { SafetyMenu } from '@/components/SafetyMenu';
 import { useAuth } from '@/context/auth.context';
 import { usersApi, friendsApi } from '@/lib/api';
 import type { PublicUser, FeedbackItem, FriendshipItem } from '@merror/shared';
@@ -81,14 +81,7 @@ export default function PublicProfilePage(): JSX.Element {
   const friendBtnLabel = friendStatus === 'friends' ? 'Remove Friend' : friendStatus === 'pending' ? 'Request Sent' : 'Add Friend';
 
   return (
-    <div className="pb-8">
-      <button
-        onClick={() => router.back()}
-        className="text-accent text-[13px] mt-6 mb-4 flex items-center gap-1 bg-none border-none cursor-pointer p-0 font-medium"
-      >
-        <ChevronLeft className="h-3.5 w-3.5" /> Back
-      </button>
-
+    <div className="pb-8 pt-6">
       <ProfileHeader
         displayName={profile.displayName}
         username={profile.username}
@@ -100,7 +93,7 @@ export default function PublicProfilePage(): JSX.Element {
           me && me.id !== profile.id && (
             <>
               <Button size="sm" onClick={() => router.push(`/${locale}/give/${profile.id}`)}>
-                Give Feedback
+                Reflect
               </Button>
               <Button
                 variant={friendBtnVariant}
@@ -110,6 +103,7 @@ export default function PublicProfilePage(): JSX.Element {
               >
                 {friendBtnLabel}
               </Button>
+              <SafetyMenu userId={profile.id} onBlocked={() => router.push(`/${locale}/feed`)} />
             </>
           )
         }

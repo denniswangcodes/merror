@@ -33,6 +33,16 @@ export type Friendship = $Result.DefaultSelection<Prisma.$FriendshipPayload>
  * 
  */
 export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
+/**
+ * Model Block
+ * 
+ */
+export type Block = $Result.DefaultSelection<Prisma.$BlockPayload>
+/**
+ * Model Report
+ * 
+ */
+export type Report = $Result.DefaultSelection<Prisma.$ReportPayload>
 
 /**
  * Enums
@@ -49,7 +59,10 @@ export type Role = (typeof Role)[keyof typeof Role]
 export const FeedbackType: {
   COMPLIMENT: 'COMPLIMENT',
   HELPFUL_ACT: 'HELPFUL_ACT',
-  MEMORY: 'MEMORY'
+  MEMORY: 'MEMORY',
+  ENCOURAGEMENT: 'ENCOURAGEMENT',
+  COMMUNITY_SERVICE: 'COMMUNITY_SERVICE',
+  ENVIRONMENTAL_ACT: 'ENVIRONMENTAL_ACT'
 };
 
 export type FeedbackType = (typeof FeedbackType)[keyof typeof FeedbackType]
@@ -82,6 +95,29 @@ export const NotificationType: {
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
 
+
+export const ReportReason: {
+  HARASSMENT: 'HARASSMENT',
+  HATE_SPEECH: 'HATE_SPEECH',
+  SEXUAL_CONTENT: 'SEXUAL_CONTENT',
+  VIOLENCE: 'VIOLENCE',
+  SPAM: 'SPAM',
+  IMPERSONATION: 'IMPERSONATION',
+  PRIVACY: 'PRIVACY',
+  OTHER: 'OTHER'
+};
+
+export type ReportReason = (typeof ReportReason)[keyof typeof ReportReason]
+
+
+export const ReportStatus: {
+  OPEN: 'OPEN',
+  DISMISSED: 'DISMISSED',
+  ACTIONED: 'ACTIONED'
+};
+
+export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
+
 }
 
 export type Role = $Enums.Role
@@ -103,6 +139,14 @@ export const FriendStatus: typeof $Enums.FriendStatus
 export type NotificationType = $Enums.NotificationType
 
 export const NotificationType: typeof $Enums.NotificationType
+
+export type ReportReason = $Enums.ReportReason
+
+export const ReportReason: typeof $Enums.ReportReason
+
+export type ReportStatus = $Enums.ReportStatus
+
+export const ReportStatus: typeof $Enums.ReportStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -266,6 +310,26 @@ export class PrismaClient<
     * ```
     */
   get notification(): Prisma.NotificationDelegate<ExtArgs>;
+
+  /**
+   * `prisma.block`: Exposes CRUD operations for the **Block** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Blocks
+    * const blocks = await prisma.block.findMany()
+    * ```
+    */
+  get block(): Prisma.BlockDelegate<ExtArgs>;
+
+  /**
+   * `prisma.report`: Exposes CRUD operations for the **Report** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Reports
+    * const reports = await prisma.report.findMany()
+    * ```
+    */
+  get report(): Prisma.ReportDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -710,7 +774,9 @@ export namespace Prisma {
     User: 'User',
     Feedback: 'Feedback',
     Friendship: 'Friendship',
-    Notification: 'Notification'
+    Notification: 'Notification',
+    Block: 'Block',
+    Report: 'Report'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -726,7 +792,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "user" | "feedback" | "friendship" | "notification"
+      modelProps: "user" | "feedback" | "friendship" | "notification" | "block" | "report"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1010,6 +1076,146 @@ export namespace Prisma {
           }
         }
       }
+      Block: {
+        payload: Prisma.$BlockPayload<ExtArgs>
+        fields: Prisma.BlockFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BlockFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BlockFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockPayload>
+          }
+          findFirst: {
+            args: Prisma.BlockFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BlockFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockPayload>
+          }
+          findMany: {
+            args: Prisma.BlockFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockPayload>[]
+          }
+          create: {
+            args: Prisma.BlockCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockPayload>
+          }
+          createMany: {
+            args: Prisma.BlockCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BlockCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockPayload>[]
+          }
+          delete: {
+            args: Prisma.BlockDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockPayload>
+          }
+          update: {
+            args: Prisma.BlockUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockPayload>
+          }
+          deleteMany: {
+            args: Prisma.BlockDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BlockUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.BlockUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockPayload>
+          }
+          aggregate: {
+            args: Prisma.BlockAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBlock>
+          }
+          groupBy: {
+            args: Prisma.BlockGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BlockGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BlockCountArgs<ExtArgs>
+            result: $Utils.Optional<BlockCountAggregateOutputType> | number
+          }
+        }
+      }
+      Report: {
+        payload: Prisma.$ReportPayload<ExtArgs>
+        fields: Prisma.ReportFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReportFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReportFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportPayload>
+          }
+          findFirst: {
+            args: Prisma.ReportFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReportFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportPayload>
+          }
+          findMany: {
+            args: Prisma.ReportFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportPayload>[]
+          }
+          create: {
+            args: Prisma.ReportCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportPayload>
+          }
+          createMany: {
+            args: Prisma.ReportCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReportCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportPayload>[]
+          }
+          delete: {
+            args: Prisma.ReportDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportPayload>
+          }
+          update: {
+            args: Prisma.ReportUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReportDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReportUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ReportUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportPayload>
+          }
+          aggregate: {
+            args: Prisma.ReportAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReport>
+          }
+          groupBy: {
+            args: Prisma.ReportGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReportGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReportCountArgs<ExtArgs>
+            result: $Utils.Optional<ReportCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1177,6 +1383,10 @@ export namespace Prisma {
     friendOf: number
     notifications: number
     notificationsSent: number
+    reportsFiled: number
+    reportsAgainst: number
+    blocksInitiated: number
+    blocksReceived: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1186,6 +1396,10 @@ export namespace Prisma {
     friendOf?: boolean | UserCountOutputTypeCountFriendOfArgs
     notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
     notificationsSent?: boolean | UserCountOutputTypeCountNotificationsSentArgs
+    reportsFiled?: boolean | UserCountOutputTypeCountReportsFiledArgs
+    reportsAgainst?: boolean | UserCountOutputTypeCountReportsAgainstArgs
+    blocksInitiated?: boolean | UserCountOutputTypeCountBlocksInitiatedArgs
+    blocksReceived?: boolean | UserCountOutputTypeCountBlocksReceivedArgs
   }
 
   // Custom InputTypes
@@ -1241,6 +1455,65 @@ export namespace Prisma {
     where?: NotificationWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReportsFiledArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReportsAgainstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountBlocksInitiatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BlockWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountBlocksReceivedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BlockWhereInput
+  }
+
+
+  /**
+   * Count Type FeedbackCountOutputType
+   */
+
+  export type FeedbackCountOutputType = {
+    reports: number
+  }
+
+  export type FeedbackCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    reports?: boolean | FeedbackCountOutputTypeCountReportsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FeedbackCountOutputType without action
+   */
+  export type FeedbackCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeedbackCountOutputType
+     */
+    select?: FeedbackCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FeedbackCountOutputType without action
+   */
+  export type FeedbackCountOutputTypeCountReportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportWhereInput
+  }
+
 
   /**
    * Models
@@ -1278,6 +1551,8 @@ export namespace Prisma {
     role: $Enums.Role | null
     preferredLanguage: string | null
     totalPoints: number | null
+    suspendedAt: Date | null
+    lastActiveAt: Date | null
     createdAt: Date | null
   }
 
@@ -1293,6 +1568,8 @@ export namespace Prisma {
     role: $Enums.Role | null
     preferredLanguage: string | null
     totalPoints: number | null
+    suspendedAt: Date | null
+    lastActiveAt: Date | null
     createdAt: Date | null
   }
 
@@ -1308,6 +1585,8 @@ export namespace Prisma {
     role: number
     preferredLanguage: number
     totalPoints: number
+    suspendedAt: number
+    lastActiveAt: number
     createdAt: number
     _all: number
   }
@@ -1333,6 +1612,8 @@ export namespace Prisma {
     role?: true
     preferredLanguage?: true
     totalPoints?: true
+    suspendedAt?: true
+    lastActiveAt?: true
     createdAt?: true
   }
 
@@ -1348,6 +1629,8 @@ export namespace Prisma {
     role?: true
     preferredLanguage?: true
     totalPoints?: true
+    suspendedAt?: true
+    lastActiveAt?: true
     createdAt?: true
   }
 
@@ -1363,6 +1646,8 @@ export namespace Prisma {
     role?: true
     preferredLanguage?: true
     totalPoints?: true
+    suspendedAt?: true
+    lastActiveAt?: true
     createdAt?: true
     _all?: true
   }
@@ -1465,6 +1750,8 @@ export namespace Prisma {
     role: $Enums.Role
     preferredLanguage: string
     totalPoints: number
+    suspendedAt: Date | null
+    lastActiveAt: Date
     createdAt: Date
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
@@ -1499,6 +1786,8 @@ export namespace Prisma {
     role?: boolean
     preferredLanguage?: boolean
     totalPoints?: boolean
+    suspendedAt?: boolean
+    lastActiveAt?: boolean
     createdAt?: boolean
     feedbackReceived?: boolean | User$feedbackReceivedArgs<ExtArgs>
     feedbackGiven?: boolean | User$feedbackGivenArgs<ExtArgs>
@@ -1506,6 +1795,10 @@ export namespace Prisma {
     friendOf?: boolean | User$friendOfArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     notificationsSent?: boolean | User$notificationsSentArgs<ExtArgs>
+    reportsFiled?: boolean | User$reportsFiledArgs<ExtArgs>
+    reportsAgainst?: boolean | User$reportsAgainstArgs<ExtArgs>
+    blocksInitiated?: boolean | User$blocksInitiatedArgs<ExtArgs>
+    blocksReceived?: boolean | User$blocksReceivedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1521,6 +1814,8 @@ export namespace Prisma {
     role?: boolean
     preferredLanguage?: boolean
     totalPoints?: boolean
+    suspendedAt?: boolean
+    lastActiveAt?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["user"]>
 
@@ -1536,6 +1831,8 @@ export namespace Prisma {
     role?: boolean
     preferredLanguage?: boolean
     totalPoints?: boolean
+    suspendedAt?: boolean
+    lastActiveAt?: boolean
     createdAt?: boolean
   }
 
@@ -1546,6 +1843,10 @@ export namespace Prisma {
     friendOf?: boolean | User$friendOfArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     notificationsSent?: boolean | User$notificationsSentArgs<ExtArgs>
+    reportsFiled?: boolean | User$reportsFiledArgs<ExtArgs>
+    reportsAgainst?: boolean | User$reportsAgainstArgs<ExtArgs>
+    blocksInitiated?: boolean | User$blocksInitiatedArgs<ExtArgs>
+    blocksReceived?: boolean | User$blocksReceivedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1559,6 +1860,10 @@ export namespace Prisma {
       friendOf: Prisma.$FriendshipPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       notificationsSent: Prisma.$NotificationPayload<ExtArgs>[]
+      reportsFiled: Prisma.$ReportPayload<ExtArgs>[]
+      reportsAgainst: Prisma.$ReportPayload<ExtArgs>[]
+      blocksInitiated: Prisma.$BlockPayload<ExtArgs>[]
+      blocksReceived: Prisma.$BlockPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1572,6 +1877,8 @@ export namespace Prisma {
       role: $Enums.Role
       preferredLanguage: string
       totalPoints: number
+      suspendedAt: Date | null
+      lastActiveAt: Date
       createdAt: Date
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -1943,6 +2250,10 @@ export namespace Prisma {
     friendOf<T extends User$friendOfArgs<ExtArgs> = {}>(args?: Subset<T, User$friendOfArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FriendshipPayload<ExtArgs>, T, "findMany"> | Null>
     notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany"> | Null>
     notificationsSent<T extends User$notificationsSentArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsSentArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany"> | Null>
+    reportsFiled<T extends User$reportsFiledArgs<ExtArgs> = {}>(args?: Subset<T, User$reportsFiledArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany"> | Null>
+    reportsAgainst<T extends User$reportsAgainstArgs<ExtArgs> = {}>(args?: Subset<T, User$reportsAgainstArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany"> | Null>
+    blocksInitiated<T extends User$blocksInitiatedArgs<ExtArgs> = {}>(args?: Subset<T, User$blocksInitiatedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "findMany"> | Null>
+    blocksReceived<T extends User$blocksReceivedArgs<ExtArgs> = {}>(args?: Subset<T, User$blocksReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1983,6 +2294,8 @@ export namespace Prisma {
     readonly role: FieldRef<"User", 'Role'>
     readonly preferredLanguage: FieldRef<"User", 'String'>
     readonly totalPoints: FieldRef<"User", 'Int'>
+    readonly suspendedAt: FieldRef<"User", 'DateTime'>
+    readonly lastActiveAt: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
   }
     
@@ -2418,6 +2731,86 @@ export namespace Prisma {
   }
 
   /**
+   * User.reportsFiled
+   */
+  export type User$reportsFiledArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    where?: ReportWhereInput
+    orderBy?: ReportOrderByWithRelationInput | ReportOrderByWithRelationInput[]
+    cursor?: ReportWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReportScalarFieldEnum | ReportScalarFieldEnum[]
+  }
+
+  /**
+   * User.reportsAgainst
+   */
+  export type User$reportsAgainstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    where?: ReportWhereInput
+    orderBy?: ReportOrderByWithRelationInput | ReportOrderByWithRelationInput[]
+    cursor?: ReportWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReportScalarFieldEnum | ReportScalarFieldEnum[]
+  }
+
+  /**
+   * User.blocksInitiated
+   */
+  export type User$blocksInitiatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Block
+     */
+    select?: BlockSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BlockInclude<ExtArgs> | null
+    where?: BlockWhereInput
+    orderBy?: BlockOrderByWithRelationInput | BlockOrderByWithRelationInput[]
+    cursor?: BlockWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BlockScalarFieldEnum | BlockScalarFieldEnum[]
+  }
+
+  /**
+   * User.blocksReceived
+   */
+  export type User$blocksReceivedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Block
+     */
+    select?: BlockSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BlockInclude<ExtArgs> | null
+    where?: BlockWhereInput
+    orderBy?: BlockOrderByWithRelationInput | BlockOrderByWithRelationInput[]
+    cursor?: BlockWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BlockScalarFieldEnum | BlockScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2680,6 +3073,8 @@ export namespace Prisma {
     createdAt?: boolean
     giver?: boolean | UserDefaultArgs<ExtArgs>
     receiver?: boolean | UserDefaultArgs<ExtArgs>
+    reports?: boolean | Feedback$reportsArgs<ExtArgs>
+    _count?: boolean | FeedbackCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["feedback"]>
 
   export type FeedbackSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2715,6 +3110,8 @@ export namespace Prisma {
   export type FeedbackInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     giver?: boolean | UserDefaultArgs<ExtArgs>
     receiver?: boolean | UserDefaultArgs<ExtArgs>
+    reports?: boolean | Feedback$reportsArgs<ExtArgs>
+    _count?: boolean | FeedbackCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FeedbackIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     giver?: boolean | UserDefaultArgs<ExtArgs>
@@ -2726,6 +3123,7 @@ export namespace Prisma {
     objects: {
       giver: Prisma.$UserPayload<ExtArgs>
       receiver: Prisma.$UserPayload<ExtArgs>
+      reports: Prisma.$ReportPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3105,6 +3503,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     giver<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     receiver<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    reports<T extends Feedback$reportsArgs<ExtArgs> = {}>(args?: Subset<T, Feedback$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3460,6 +3859,26 @@ export namespace Prisma {
      * Filter which Feedbacks to delete
      */
     where?: FeedbackWhereInput
+  }
+
+  /**
+   * Feedback.reports
+   */
+  export type Feedback$reportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    where?: ReportWhereInput
+    orderBy?: ReportOrderByWithRelationInput | ReportOrderByWithRelationInput[]
+    cursor?: ReportWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReportScalarFieldEnum | ReportScalarFieldEnum[]
   }
 
   /**
@@ -5395,6 +5814,1968 @@ export namespace Prisma {
 
 
   /**
+   * Model Block
+   */
+
+  export type AggregateBlock = {
+    _count: BlockCountAggregateOutputType | null
+    _min: BlockMinAggregateOutputType | null
+    _max: BlockMaxAggregateOutputType | null
+  }
+
+  export type BlockMinAggregateOutputType = {
+    id: string | null
+    blockerId: string | null
+    blockedId: string | null
+    createdAt: Date | null
+  }
+
+  export type BlockMaxAggregateOutputType = {
+    id: string | null
+    blockerId: string | null
+    blockedId: string | null
+    createdAt: Date | null
+  }
+
+  export type BlockCountAggregateOutputType = {
+    id: number
+    blockerId: number
+    blockedId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type BlockMinAggregateInputType = {
+    id?: true
+    blockerId?: true
+    blockedId?: true
+    createdAt?: true
+  }
+
+  export type BlockMaxAggregateInputType = {
+    id?: true
+    blockerId?: true
+    blockedId?: true
+    createdAt?: true
+  }
+
+  export type BlockCountAggregateInputType = {
+    id?: true
+    blockerId?: true
+    blockedId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type BlockAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Block to aggregate.
+     */
+    where?: BlockWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Blocks to fetch.
+     */
+    orderBy?: BlockOrderByWithRelationInput | BlockOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BlockWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Blocks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Blocks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Blocks
+    **/
+    _count?: true | BlockCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BlockMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BlockMaxAggregateInputType
+  }
+
+  export type GetBlockAggregateType<T extends BlockAggregateArgs> = {
+        [P in keyof T & keyof AggregateBlock]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBlock[P]>
+      : GetScalarType<T[P], AggregateBlock[P]>
+  }
+
+
+
+
+  export type BlockGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BlockWhereInput
+    orderBy?: BlockOrderByWithAggregationInput | BlockOrderByWithAggregationInput[]
+    by: BlockScalarFieldEnum[] | BlockScalarFieldEnum
+    having?: BlockScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BlockCountAggregateInputType | true
+    _min?: BlockMinAggregateInputType
+    _max?: BlockMaxAggregateInputType
+  }
+
+  export type BlockGroupByOutputType = {
+    id: string
+    blockerId: string
+    blockedId: string
+    createdAt: Date
+    _count: BlockCountAggregateOutputType | null
+    _min: BlockMinAggregateOutputType | null
+    _max: BlockMaxAggregateOutputType | null
+  }
+
+  type GetBlockGroupByPayload<T extends BlockGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BlockGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BlockGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BlockGroupByOutputType[P]>
+            : GetScalarType<T[P], BlockGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BlockSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    blockerId?: boolean
+    blockedId?: boolean
+    createdAt?: boolean
+    blocker?: boolean | UserDefaultArgs<ExtArgs>
+    blocked?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["block"]>
+
+  export type BlockSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    blockerId?: boolean
+    blockedId?: boolean
+    createdAt?: boolean
+    blocker?: boolean | UserDefaultArgs<ExtArgs>
+    blocked?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["block"]>
+
+  export type BlockSelectScalar = {
+    id?: boolean
+    blockerId?: boolean
+    blockedId?: boolean
+    createdAt?: boolean
+  }
+
+  export type BlockInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    blocker?: boolean | UserDefaultArgs<ExtArgs>
+    blocked?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type BlockIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    blocker?: boolean | UserDefaultArgs<ExtArgs>
+    blocked?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $BlockPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Block"
+    objects: {
+      blocker: Prisma.$UserPayload<ExtArgs>
+      blocked: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      blockerId: string
+      blockedId: string
+      createdAt: Date
+    }, ExtArgs["result"]["block"]>
+    composites: {}
+  }
+
+  type BlockGetPayload<S extends boolean | null | undefined | BlockDefaultArgs> = $Result.GetResult<Prisma.$BlockPayload, S>
+
+  type BlockCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<BlockFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: BlockCountAggregateInputType | true
+    }
+
+  export interface BlockDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Block'], meta: { name: 'Block' } }
+    /**
+     * Find zero or one Block that matches the filter.
+     * @param {BlockFindUniqueArgs} args - Arguments to find a Block
+     * @example
+     * // Get one Block
+     * const block = await prisma.block.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BlockFindUniqueArgs>(args: SelectSubset<T, BlockFindUniqueArgs<ExtArgs>>): Prisma__BlockClient<$Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one Block that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {BlockFindUniqueOrThrowArgs} args - Arguments to find a Block
+     * @example
+     * // Get one Block
+     * const block = await prisma.block.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BlockFindUniqueOrThrowArgs>(args: SelectSubset<T, BlockFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BlockClient<$Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first Block that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockFindFirstArgs} args - Arguments to find a Block
+     * @example
+     * // Get one Block
+     * const block = await prisma.block.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BlockFindFirstArgs>(args?: SelectSubset<T, BlockFindFirstArgs<ExtArgs>>): Prisma__BlockClient<$Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first Block that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockFindFirstOrThrowArgs} args - Arguments to find a Block
+     * @example
+     * // Get one Block
+     * const block = await prisma.block.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BlockFindFirstOrThrowArgs>(args?: SelectSubset<T, BlockFindFirstOrThrowArgs<ExtArgs>>): Prisma__BlockClient<$Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more Blocks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Blocks
+     * const blocks = await prisma.block.findMany()
+     * 
+     * // Get first 10 Blocks
+     * const blocks = await prisma.block.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const blockWithIdOnly = await prisma.block.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BlockFindManyArgs>(args?: SelectSubset<T, BlockFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a Block.
+     * @param {BlockCreateArgs} args - Arguments to create a Block.
+     * @example
+     * // Create one Block
+     * const Block = await prisma.block.create({
+     *   data: {
+     *     // ... data to create a Block
+     *   }
+     * })
+     * 
+     */
+    create<T extends BlockCreateArgs>(args: SelectSubset<T, BlockCreateArgs<ExtArgs>>): Prisma__BlockClient<$Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many Blocks.
+     * @param {BlockCreateManyArgs} args - Arguments to create many Blocks.
+     * @example
+     * // Create many Blocks
+     * const block = await prisma.block.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BlockCreateManyArgs>(args?: SelectSubset<T, BlockCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Blocks and returns the data saved in the database.
+     * @param {BlockCreateManyAndReturnArgs} args - Arguments to create many Blocks.
+     * @example
+     * // Create many Blocks
+     * const block = await prisma.block.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Blocks and only return the `id`
+     * const blockWithIdOnly = await prisma.block.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BlockCreateManyAndReturnArgs>(args?: SelectSubset<T, BlockCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a Block.
+     * @param {BlockDeleteArgs} args - Arguments to delete one Block.
+     * @example
+     * // Delete one Block
+     * const Block = await prisma.block.delete({
+     *   where: {
+     *     // ... filter to delete one Block
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BlockDeleteArgs>(args: SelectSubset<T, BlockDeleteArgs<ExtArgs>>): Prisma__BlockClient<$Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one Block.
+     * @param {BlockUpdateArgs} args - Arguments to update one Block.
+     * @example
+     * // Update one Block
+     * const block = await prisma.block.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BlockUpdateArgs>(args: SelectSubset<T, BlockUpdateArgs<ExtArgs>>): Prisma__BlockClient<$Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more Blocks.
+     * @param {BlockDeleteManyArgs} args - Arguments to filter Blocks to delete.
+     * @example
+     * // Delete a few Blocks
+     * const { count } = await prisma.block.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BlockDeleteManyArgs>(args?: SelectSubset<T, BlockDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Blocks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Blocks
+     * const block = await prisma.block.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BlockUpdateManyArgs>(args: SelectSubset<T, BlockUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Block.
+     * @param {BlockUpsertArgs} args - Arguments to update or create a Block.
+     * @example
+     * // Update or create a Block
+     * const block = await prisma.block.upsert({
+     *   create: {
+     *     // ... data to create a Block
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Block we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BlockUpsertArgs>(args: SelectSubset<T, BlockUpsertArgs<ExtArgs>>): Prisma__BlockClient<$Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of Blocks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockCountArgs} args - Arguments to filter Blocks to count.
+     * @example
+     * // Count the number of Blocks
+     * const count = await prisma.block.count({
+     *   where: {
+     *     // ... the filter for the Blocks we want to count
+     *   }
+     * })
+    **/
+    count<T extends BlockCountArgs>(
+      args?: Subset<T, BlockCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BlockCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Block.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BlockAggregateArgs>(args: Subset<T, BlockAggregateArgs>): Prisma.PrismaPromise<GetBlockAggregateType<T>>
+
+    /**
+     * Group by Block.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BlockGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BlockGroupByArgs['orderBy'] }
+        : { orderBy?: BlockGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BlockGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBlockGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Block model
+   */
+  readonly fields: BlockFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Block.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BlockClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    blocker<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    blocked<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Block model
+   */ 
+  interface BlockFieldRefs {
+    readonly id: FieldRef<"Block", 'String'>
+    readonly blockerId: FieldRef<"Block", 'String'>
+    readonly blockedId: FieldRef<"Block", 'String'>
+    readonly createdAt: FieldRef<"Block", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Block findUnique
+   */
+  export type BlockFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Block
+     */
+    select?: BlockSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BlockInclude<ExtArgs> | null
+    /**
+     * Filter, which Block to fetch.
+     */
+    where: BlockWhereUniqueInput
+  }
+
+  /**
+   * Block findUniqueOrThrow
+   */
+  export type BlockFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Block
+     */
+    select?: BlockSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BlockInclude<ExtArgs> | null
+    /**
+     * Filter, which Block to fetch.
+     */
+    where: BlockWhereUniqueInput
+  }
+
+  /**
+   * Block findFirst
+   */
+  export type BlockFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Block
+     */
+    select?: BlockSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BlockInclude<ExtArgs> | null
+    /**
+     * Filter, which Block to fetch.
+     */
+    where?: BlockWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Blocks to fetch.
+     */
+    orderBy?: BlockOrderByWithRelationInput | BlockOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Blocks.
+     */
+    cursor?: BlockWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Blocks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Blocks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Blocks.
+     */
+    distinct?: BlockScalarFieldEnum | BlockScalarFieldEnum[]
+  }
+
+  /**
+   * Block findFirstOrThrow
+   */
+  export type BlockFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Block
+     */
+    select?: BlockSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BlockInclude<ExtArgs> | null
+    /**
+     * Filter, which Block to fetch.
+     */
+    where?: BlockWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Blocks to fetch.
+     */
+    orderBy?: BlockOrderByWithRelationInput | BlockOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Blocks.
+     */
+    cursor?: BlockWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Blocks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Blocks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Blocks.
+     */
+    distinct?: BlockScalarFieldEnum | BlockScalarFieldEnum[]
+  }
+
+  /**
+   * Block findMany
+   */
+  export type BlockFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Block
+     */
+    select?: BlockSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BlockInclude<ExtArgs> | null
+    /**
+     * Filter, which Blocks to fetch.
+     */
+    where?: BlockWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Blocks to fetch.
+     */
+    orderBy?: BlockOrderByWithRelationInput | BlockOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Blocks.
+     */
+    cursor?: BlockWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Blocks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Blocks.
+     */
+    skip?: number
+    distinct?: BlockScalarFieldEnum | BlockScalarFieldEnum[]
+  }
+
+  /**
+   * Block create
+   */
+  export type BlockCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Block
+     */
+    select?: BlockSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BlockInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Block.
+     */
+    data: XOR<BlockCreateInput, BlockUncheckedCreateInput>
+  }
+
+  /**
+   * Block createMany
+   */
+  export type BlockCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Blocks.
+     */
+    data: BlockCreateManyInput | BlockCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Block createManyAndReturn
+   */
+  export type BlockCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Block
+     */
+    select?: BlockSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Blocks.
+     */
+    data: BlockCreateManyInput | BlockCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BlockIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Block update
+   */
+  export type BlockUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Block
+     */
+    select?: BlockSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BlockInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Block.
+     */
+    data: XOR<BlockUpdateInput, BlockUncheckedUpdateInput>
+    /**
+     * Choose, which Block to update.
+     */
+    where: BlockWhereUniqueInput
+  }
+
+  /**
+   * Block updateMany
+   */
+  export type BlockUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Blocks.
+     */
+    data: XOR<BlockUpdateManyMutationInput, BlockUncheckedUpdateManyInput>
+    /**
+     * Filter which Blocks to update
+     */
+    where?: BlockWhereInput
+  }
+
+  /**
+   * Block upsert
+   */
+  export type BlockUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Block
+     */
+    select?: BlockSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BlockInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Block to update in case it exists.
+     */
+    where: BlockWhereUniqueInput
+    /**
+     * In case the Block found by the `where` argument doesn't exist, create a new Block with this data.
+     */
+    create: XOR<BlockCreateInput, BlockUncheckedCreateInput>
+    /**
+     * In case the Block was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BlockUpdateInput, BlockUncheckedUpdateInput>
+  }
+
+  /**
+   * Block delete
+   */
+  export type BlockDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Block
+     */
+    select?: BlockSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BlockInclude<ExtArgs> | null
+    /**
+     * Filter which Block to delete.
+     */
+    where: BlockWhereUniqueInput
+  }
+
+  /**
+   * Block deleteMany
+   */
+  export type BlockDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Blocks to delete
+     */
+    where?: BlockWhereInput
+  }
+
+  /**
+   * Block without action
+   */
+  export type BlockDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Block
+     */
+    select?: BlockSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BlockInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Report
+   */
+
+  export type AggregateReport = {
+    _count: ReportCountAggregateOutputType | null
+    _min: ReportMinAggregateOutputType | null
+    _max: ReportMaxAggregateOutputType | null
+  }
+
+  export type ReportMinAggregateOutputType = {
+    id: string | null
+    reporterId: string | null
+    reportedUserId: string | null
+    feedbackId: string | null
+    reason: $Enums.ReportReason | null
+    details: string | null
+    status: $Enums.ReportStatus | null
+    moderatorNote: string | null
+    reviewedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type ReportMaxAggregateOutputType = {
+    id: string | null
+    reporterId: string | null
+    reportedUserId: string | null
+    feedbackId: string | null
+    reason: $Enums.ReportReason | null
+    details: string | null
+    status: $Enums.ReportStatus | null
+    moderatorNote: string | null
+    reviewedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type ReportCountAggregateOutputType = {
+    id: number
+    reporterId: number
+    reportedUserId: number
+    feedbackId: number
+    reason: number
+    details: number
+    status: number
+    moderatorNote: number
+    reviewedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ReportMinAggregateInputType = {
+    id?: true
+    reporterId?: true
+    reportedUserId?: true
+    feedbackId?: true
+    reason?: true
+    details?: true
+    status?: true
+    moderatorNote?: true
+    reviewedAt?: true
+    createdAt?: true
+  }
+
+  export type ReportMaxAggregateInputType = {
+    id?: true
+    reporterId?: true
+    reportedUserId?: true
+    feedbackId?: true
+    reason?: true
+    details?: true
+    status?: true
+    moderatorNote?: true
+    reviewedAt?: true
+    createdAt?: true
+  }
+
+  export type ReportCountAggregateInputType = {
+    id?: true
+    reporterId?: true
+    reportedUserId?: true
+    feedbackId?: true
+    reason?: true
+    details?: true
+    status?: true
+    moderatorNote?: true
+    reviewedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ReportAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Report to aggregate.
+     */
+    where?: ReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reports to fetch.
+     */
+    orderBy?: ReportOrderByWithRelationInput | ReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Reports
+    **/
+    _count?: true | ReportCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReportMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReportMaxAggregateInputType
+  }
+
+  export type GetReportAggregateType<T extends ReportAggregateArgs> = {
+        [P in keyof T & keyof AggregateReport]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReport[P]>
+      : GetScalarType<T[P], AggregateReport[P]>
+  }
+
+
+
+
+  export type ReportGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportWhereInput
+    orderBy?: ReportOrderByWithAggregationInput | ReportOrderByWithAggregationInput[]
+    by: ReportScalarFieldEnum[] | ReportScalarFieldEnum
+    having?: ReportScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReportCountAggregateInputType | true
+    _min?: ReportMinAggregateInputType
+    _max?: ReportMaxAggregateInputType
+  }
+
+  export type ReportGroupByOutputType = {
+    id: string
+    reporterId: string
+    reportedUserId: string | null
+    feedbackId: string | null
+    reason: $Enums.ReportReason
+    details: string | null
+    status: $Enums.ReportStatus
+    moderatorNote: string | null
+    reviewedAt: Date | null
+    createdAt: Date
+    _count: ReportCountAggregateOutputType | null
+    _min: ReportMinAggregateOutputType | null
+    _max: ReportMaxAggregateOutputType | null
+  }
+
+  type GetReportGroupByPayload<T extends ReportGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReportGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReportGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReportGroupByOutputType[P]>
+            : GetScalarType<T[P], ReportGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReportSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reporterId?: boolean
+    reportedUserId?: boolean
+    feedbackId?: boolean
+    reason?: boolean
+    details?: boolean
+    status?: boolean
+    moderatorNote?: boolean
+    reviewedAt?: boolean
+    createdAt?: boolean
+    reporter?: boolean | UserDefaultArgs<ExtArgs>
+    reportedUser?: boolean | Report$reportedUserArgs<ExtArgs>
+    feedback?: boolean | Report$feedbackArgs<ExtArgs>
+  }, ExtArgs["result"]["report"]>
+
+  export type ReportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reporterId?: boolean
+    reportedUserId?: boolean
+    feedbackId?: boolean
+    reason?: boolean
+    details?: boolean
+    status?: boolean
+    moderatorNote?: boolean
+    reviewedAt?: boolean
+    createdAt?: boolean
+    reporter?: boolean | UserDefaultArgs<ExtArgs>
+    reportedUser?: boolean | Report$reportedUserArgs<ExtArgs>
+    feedback?: boolean | Report$feedbackArgs<ExtArgs>
+  }, ExtArgs["result"]["report"]>
+
+  export type ReportSelectScalar = {
+    id?: boolean
+    reporterId?: boolean
+    reportedUserId?: boolean
+    feedbackId?: boolean
+    reason?: boolean
+    details?: boolean
+    status?: boolean
+    moderatorNote?: boolean
+    reviewedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type ReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    reporter?: boolean | UserDefaultArgs<ExtArgs>
+    reportedUser?: boolean | Report$reportedUserArgs<ExtArgs>
+    feedback?: boolean | Report$feedbackArgs<ExtArgs>
+  }
+  export type ReportIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    reporter?: boolean | UserDefaultArgs<ExtArgs>
+    reportedUser?: boolean | Report$reportedUserArgs<ExtArgs>
+    feedback?: boolean | Report$feedbackArgs<ExtArgs>
+  }
+
+  export type $ReportPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Report"
+    objects: {
+      reporter: Prisma.$UserPayload<ExtArgs>
+      reportedUser: Prisma.$UserPayload<ExtArgs> | null
+      feedback: Prisma.$FeedbackPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      reporterId: string
+      reportedUserId: string | null
+      feedbackId: string | null
+      reason: $Enums.ReportReason
+      details: string | null
+      status: $Enums.ReportStatus
+      moderatorNote: string | null
+      reviewedAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["report"]>
+    composites: {}
+  }
+
+  type ReportGetPayload<S extends boolean | null | undefined | ReportDefaultArgs> = $Result.GetResult<Prisma.$ReportPayload, S>
+
+  type ReportCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ReportFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ReportCountAggregateInputType | true
+    }
+
+  export interface ReportDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Report'], meta: { name: 'Report' } }
+    /**
+     * Find zero or one Report that matches the filter.
+     * @param {ReportFindUniqueArgs} args - Arguments to find a Report
+     * @example
+     * // Get one Report
+     * const report = await prisma.report.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReportFindUniqueArgs>(args: SelectSubset<T, ReportFindUniqueArgs<ExtArgs>>): Prisma__ReportClient<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one Report that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ReportFindUniqueOrThrowArgs} args - Arguments to find a Report
+     * @example
+     * // Get one Report
+     * const report = await prisma.report.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReportFindUniqueOrThrowArgs>(args: SelectSubset<T, ReportFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReportClient<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first Report that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportFindFirstArgs} args - Arguments to find a Report
+     * @example
+     * // Get one Report
+     * const report = await prisma.report.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReportFindFirstArgs>(args?: SelectSubset<T, ReportFindFirstArgs<ExtArgs>>): Prisma__ReportClient<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first Report that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportFindFirstOrThrowArgs} args - Arguments to find a Report
+     * @example
+     * // Get one Report
+     * const report = await prisma.report.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReportFindFirstOrThrowArgs>(args?: SelectSubset<T, ReportFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReportClient<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more Reports that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Reports
+     * const reports = await prisma.report.findMany()
+     * 
+     * // Get first 10 Reports
+     * const reports = await prisma.report.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reportWithIdOnly = await prisma.report.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReportFindManyArgs>(args?: SelectSubset<T, ReportFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a Report.
+     * @param {ReportCreateArgs} args - Arguments to create a Report.
+     * @example
+     * // Create one Report
+     * const Report = await prisma.report.create({
+     *   data: {
+     *     // ... data to create a Report
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReportCreateArgs>(args: SelectSubset<T, ReportCreateArgs<ExtArgs>>): Prisma__ReportClient<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many Reports.
+     * @param {ReportCreateManyArgs} args - Arguments to create many Reports.
+     * @example
+     * // Create many Reports
+     * const report = await prisma.report.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReportCreateManyArgs>(args?: SelectSubset<T, ReportCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Reports and returns the data saved in the database.
+     * @param {ReportCreateManyAndReturnArgs} args - Arguments to create many Reports.
+     * @example
+     * // Create many Reports
+     * const report = await prisma.report.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Reports and only return the `id`
+     * const reportWithIdOnly = await prisma.report.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReportCreateManyAndReturnArgs>(args?: SelectSubset<T, ReportCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a Report.
+     * @param {ReportDeleteArgs} args - Arguments to delete one Report.
+     * @example
+     * // Delete one Report
+     * const Report = await prisma.report.delete({
+     *   where: {
+     *     // ... filter to delete one Report
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReportDeleteArgs>(args: SelectSubset<T, ReportDeleteArgs<ExtArgs>>): Prisma__ReportClient<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one Report.
+     * @param {ReportUpdateArgs} args - Arguments to update one Report.
+     * @example
+     * // Update one Report
+     * const report = await prisma.report.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReportUpdateArgs>(args: SelectSubset<T, ReportUpdateArgs<ExtArgs>>): Prisma__ReportClient<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more Reports.
+     * @param {ReportDeleteManyArgs} args - Arguments to filter Reports to delete.
+     * @example
+     * // Delete a few Reports
+     * const { count } = await prisma.report.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReportDeleteManyArgs>(args?: SelectSubset<T, ReportDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Reports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Reports
+     * const report = await prisma.report.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReportUpdateManyArgs>(args: SelectSubset<T, ReportUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Report.
+     * @param {ReportUpsertArgs} args - Arguments to update or create a Report.
+     * @example
+     * // Update or create a Report
+     * const report = await prisma.report.upsert({
+     *   create: {
+     *     // ... data to create a Report
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Report we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReportUpsertArgs>(args: SelectSubset<T, ReportUpsertArgs<ExtArgs>>): Prisma__ReportClient<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of Reports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportCountArgs} args - Arguments to filter Reports to count.
+     * @example
+     * // Count the number of Reports
+     * const count = await prisma.report.count({
+     *   where: {
+     *     // ... the filter for the Reports we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReportCountArgs>(
+      args?: Subset<T, ReportCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReportCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Report.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReportAggregateArgs>(args: Subset<T, ReportAggregateArgs>): Prisma.PrismaPromise<GetReportAggregateType<T>>
+
+    /**
+     * Group by Report.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReportGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReportGroupByArgs['orderBy'] }
+        : { orderBy?: ReportGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReportGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReportGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Report model
+   */
+  readonly fields: ReportFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Report.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    reporter<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    reportedUser<T extends Report$reportedUserArgs<ExtArgs> = {}>(args?: Subset<T, Report$reportedUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    feedback<T extends Report$feedbackArgs<ExtArgs> = {}>(args?: Subset<T, Report$feedbackArgs<ExtArgs>>): Prisma__FeedbackClient<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Report model
+   */ 
+  interface ReportFieldRefs {
+    readonly id: FieldRef<"Report", 'String'>
+    readonly reporterId: FieldRef<"Report", 'String'>
+    readonly reportedUserId: FieldRef<"Report", 'String'>
+    readonly feedbackId: FieldRef<"Report", 'String'>
+    readonly reason: FieldRef<"Report", 'ReportReason'>
+    readonly details: FieldRef<"Report", 'String'>
+    readonly status: FieldRef<"Report", 'ReportStatus'>
+    readonly moderatorNote: FieldRef<"Report", 'String'>
+    readonly reviewedAt: FieldRef<"Report", 'DateTime'>
+    readonly createdAt: FieldRef<"Report", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Report findUnique
+   */
+  export type ReportFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    /**
+     * Filter, which Report to fetch.
+     */
+    where: ReportWhereUniqueInput
+  }
+
+  /**
+   * Report findUniqueOrThrow
+   */
+  export type ReportFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    /**
+     * Filter, which Report to fetch.
+     */
+    where: ReportWhereUniqueInput
+  }
+
+  /**
+   * Report findFirst
+   */
+  export type ReportFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    /**
+     * Filter, which Report to fetch.
+     */
+    where?: ReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reports to fetch.
+     */
+    orderBy?: ReportOrderByWithRelationInput | ReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Reports.
+     */
+    cursor?: ReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reports.
+     */
+    distinct?: ReportScalarFieldEnum | ReportScalarFieldEnum[]
+  }
+
+  /**
+   * Report findFirstOrThrow
+   */
+  export type ReportFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    /**
+     * Filter, which Report to fetch.
+     */
+    where?: ReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reports to fetch.
+     */
+    orderBy?: ReportOrderByWithRelationInput | ReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Reports.
+     */
+    cursor?: ReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reports.
+     */
+    distinct?: ReportScalarFieldEnum | ReportScalarFieldEnum[]
+  }
+
+  /**
+   * Report findMany
+   */
+  export type ReportFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    /**
+     * Filter, which Reports to fetch.
+     */
+    where?: ReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reports to fetch.
+     */
+    orderBy?: ReportOrderByWithRelationInput | ReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Reports.
+     */
+    cursor?: ReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reports.
+     */
+    skip?: number
+    distinct?: ReportScalarFieldEnum | ReportScalarFieldEnum[]
+  }
+
+  /**
+   * Report create
+   */
+  export type ReportCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Report.
+     */
+    data: XOR<ReportCreateInput, ReportUncheckedCreateInput>
+  }
+
+  /**
+   * Report createMany
+   */
+  export type ReportCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Reports.
+     */
+    data: ReportCreateManyInput | ReportCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Report createManyAndReturn
+   */
+  export type ReportCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Reports.
+     */
+    data: ReportCreateManyInput | ReportCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Report update
+   */
+  export type ReportUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Report.
+     */
+    data: XOR<ReportUpdateInput, ReportUncheckedUpdateInput>
+    /**
+     * Choose, which Report to update.
+     */
+    where: ReportWhereUniqueInput
+  }
+
+  /**
+   * Report updateMany
+   */
+  export type ReportUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Reports.
+     */
+    data: XOR<ReportUpdateManyMutationInput, ReportUncheckedUpdateManyInput>
+    /**
+     * Filter which Reports to update
+     */
+    where?: ReportWhereInput
+  }
+
+  /**
+   * Report upsert
+   */
+  export type ReportUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Report to update in case it exists.
+     */
+    where: ReportWhereUniqueInput
+    /**
+     * In case the Report found by the `where` argument doesn't exist, create a new Report with this data.
+     */
+    create: XOR<ReportCreateInput, ReportUncheckedCreateInput>
+    /**
+     * In case the Report was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReportUpdateInput, ReportUncheckedUpdateInput>
+  }
+
+  /**
+   * Report delete
+   */
+  export type ReportDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    /**
+     * Filter which Report to delete.
+     */
+    where: ReportWhereUniqueInput
+  }
+
+  /**
+   * Report deleteMany
+   */
+  export type ReportDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Reports to delete
+     */
+    where?: ReportWhereInput
+  }
+
+  /**
+   * Report.reportedUser
+   */
+  export type Report$reportedUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Report.feedback
+   */
+  export type Report$feedbackArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    where?: FeedbackWhereInput
+  }
+
+  /**
+   * Report without action
+   */
+  export type ReportDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -5420,6 +7801,8 @@ export namespace Prisma {
     role: 'role',
     preferredLanguage: 'preferredLanguage',
     totalPoints: 'totalPoints',
+    suspendedAt: 'suspendedAt',
+    lastActiveAt: 'lastActiveAt',
     createdAt: 'createdAt'
   };
 
@@ -5465,6 +7848,32 @@ export namespace Prisma {
   };
 
   export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+  export const BlockScalarFieldEnum: {
+    id: 'id',
+    blockerId: 'blockerId',
+    blockedId: 'blockedId',
+    createdAt: 'createdAt'
+  };
+
+  export type BlockScalarFieldEnum = (typeof BlockScalarFieldEnum)[keyof typeof BlockScalarFieldEnum]
+
+
+  export const ReportScalarFieldEnum: {
+    id: 'id',
+    reporterId: 'reporterId',
+    reportedUserId: 'reportedUserId',
+    feedbackId: 'feedbackId',
+    reason: 'reason',
+    details: 'details',
+    status: 'status',
+    moderatorNote: 'moderatorNote',
+    reviewedAt: 'reviewedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -5570,14 +7979,14 @@ export namespace Prisma {
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-
+    
 
 
   /**
    * Reference to a field of type 'FeedbackStatus'
    */
   export type EnumFeedbackStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FeedbackStatus'>
-
+    
 
 
   /**
@@ -5616,6 +8025,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ReportReason'
+   */
+  export type EnumReportReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportReason'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReportReason[]'
+   */
+  export type ListEnumReportReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportReason[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReportStatus'
+   */
+  export type EnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReportStatus[]'
+   */
+  export type ListEnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -5647,6 +8084,8 @@ export namespace Prisma {
     role?: EnumRoleFilter<"User"> | $Enums.Role
     preferredLanguage?: StringFilter<"User"> | string
     totalPoints?: IntFilter<"User"> | number
+    suspendedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    lastActiveAt?: DateTimeFilter<"User"> | Date | string
     createdAt?: DateTimeFilter<"User"> | Date | string
     feedbackReceived?: FeedbackListRelationFilter
     feedbackGiven?: FeedbackListRelationFilter
@@ -5654,6 +8093,10 @@ export namespace Prisma {
     friendOf?: FriendshipListRelationFilter
     notifications?: NotificationListRelationFilter
     notificationsSent?: NotificationListRelationFilter
+    reportsFiled?: ReportListRelationFilter
+    reportsAgainst?: ReportListRelationFilter
+    blocksInitiated?: BlockListRelationFilter
+    blocksReceived?: BlockListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -5668,6 +8111,8 @@ export namespace Prisma {
     role?: SortOrder
     preferredLanguage?: SortOrder
     totalPoints?: SortOrder
+    suspendedAt?: SortOrderInput | SortOrder
+    lastActiveAt?: SortOrder
     createdAt?: SortOrder
     feedbackReceived?: FeedbackOrderByRelationAggregateInput
     feedbackGiven?: FeedbackOrderByRelationAggregateInput
@@ -5675,6 +8120,10 @@ export namespace Prisma {
     friendOf?: FriendshipOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
     notificationsSent?: NotificationOrderByRelationAggregateInput
+    reportsFiled?: ReportOrderByRelationAggregateInput
+    reportsAgainst?: ReportOrderByRelationAggregateInput
+    blocksInitiated?: BlockOrderByRelationAggregateInput
+    blocksReceived?: BlockOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -5692,6 +8141,8 @@ export namespace Prisma {
     role?: EnumRoleFilter<"User"> | $Enums.Role
     preferredLanguage?: StringFilter<"User"> | string
     totalPoints?: IntFilter<"User"> | number
+    suspendedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    lastActiveAt?: DateTimeFilter<"User"> | Date | string
     createdAt?: DateTimeFilter<"User"> | Date | string
     feedbackReceived?: FeedbackListRelationFilter
     feedbackGiven?: FeedbackListRelationFilter
@@ -5699,6 +8150,10 @@ export namespace Prisma {
     friendOf?: FriendshipListRelationFilter
     notifications?: NotificationListRelationFilter
     notificationsSent?: NotificationListRelationFilter
+    reportsFiled?: ReportListRelationFilter
+    reportsAgainst?: ReportListRelationFilter
+    blocksInitiated?: BlockListRelationFilter
+    blocksReceived?: BlockListRelationFilter
   }, "id" | "email" | "username" | "qrCode">
 
   export type UserOrderByWithAggregationInput = {
@@ -5713,6 +8168,8 @@ export namespace Prisma {
     role?: SortOrder
     preferredLanguage?: SortOrder
     totalPoints?: SortOrder
+    suspendedAt?: SortOrderInput | SortOrder
+    lastActiveAt?: SortOrder
     createdAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
@@ -5736,6 +8193,8 @@ export namespace Prisma {
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     preferredLanguage?: StringWithAggregatesFilter<"User"> | string
     totalPoints?: IntWithAggregatesFilter<"User"> | number
+    suspendedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    lastActiveAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
@@ -5756,6 +8215,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Feedback"> | Date | string
     giver?: XOR<UserRelationFilter, UserWhereInput>
     receiver?: XOR<UserRelationFilter, UserWhereInput>
+    reports?: ReportListRelationFilter
   }
 
   export type FeedbackOrderByWithRelationInput = {
@@ -5772,6 +8232,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     giver?: UserOrderByWithRelationInput
     receiver?: UserOrderByWithRelationInput
+    reports?: ReportOrderByRelationAggregateInput
   }
 
   export type FeedbackWhereUniqueInput = Prisma.AtLeast<{
@@ -5791,6 +8252,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Feedback"> | Date | string
     giver?: XOR<UserRelationFilter, UserWhereInput>
     receiver?: XOR<UserRelationFilter, UserWhereInput>
+    reports?: ReportListRelationFilter
   }, "id">
 
   export type FeedbackOrderByWithAggregationInput = {
@@ -5956,6 +8418,146 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
   }
 
+  export type BlockWhereInput = {
+    AND?: BlockWhereInput | BlockWhereInput[]
+    OR?: BlockWhereInput[]
+    NOT?: BlockWhereInput | BlockWhereInput[]
+    id?: StringFilter<"Block"> | string
+    blockerId?: StringFilter<"Block"> | string
+    blockedId?: StringFilter<"Block"> | string
+    createdAt?: DateTimeFilter<"Block"> | Date | string
+    blocker?: XOR<UserRelationFilter, UserWhereInput>
+    blocked?: XOR<UserRelationFilter, UserWhereInput>
+  }
+
+  export type BlockOrderByWithRelationInput = {
+    id?: SortOrder
+    blockerId?: SortOrder
+    blockedId?: SortOrder
+    createdAt?: SortOrder
+    blocker?: UserOrderByWithRelationInput
+    blocked?: UserOrderByWithRelationInput
+  }
+
+  export type BlockWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    blockerId_blockedId?: BlockBlockerIdBlockedIdCompoundUniqueInput
+    AND?: BlockWhereInput | BlockWhereInput[]
+    OR?: BlockWhereInput[]
+    NOT?: BlockWhereInput | BlockWhereInput[]
+    blockerId?: StringFilter<"Block"> | string
+    blockedId?: StringFilter<"Block"> | string
+    createdAt?: DateTimeFilter<"Block"> | Date | string
+    blocker?: XOR<UserRelationFilter, UserWhereInput>
+    blocked?: XOR<UserRelationFilter, UserWhereInput>
+  }, "id" | "blockerId_blockedId">
+
+  export type BlockOrderByWithAggregationInput = {
+    id?: SortOrder
+    blockerId?: SortOrder
+    blockedId?: SortOrder
+    createdAt?: SortOrder
+    _count?: BlockCountOrderByAggregateInput
+    _max?: BlockMaxOrderByAggregateInput
+    _min?: BlockMinOrderByAggregateInput
+  }
+
+  export type BlockScalarWhereWithAggregatesInput = {
+    AND?: BlockScalarWhereWithAggregatesInput | BlockScalarWhereWithAggregatesInput[]
+    OR?: BlockScalarWhereWithAggregatesInput[]
+    NOT?: BlockScalarWhereWithAggregatesInput | BlockScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Block"> | string
+    blockerId?: StringWithAggregatesFilter<"Block"> | string
+    blockedId?: StringWithAggregatesFilter<"Block"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Block"> | Date | string
+  }
+
+  export type ReportWhereInput = {
+    AND?: ReportWhereInput | ReportWhereInput[]
+    OR?: ReportWhereInput[]
+    NOT?: ReportWhereInput | ReportWhereInput[]
+    id?: StringFilter<"Report"> | string
+    reporterId?: StringFilter<"Report"> | string
+    reportedUserId?: StringNullableFilter<"Report"> | string | null
+    feedbackId?: StringNullableFilter<"Report"> | string | null
+    reason?: EnumReportReasonFilter<"Report"> | $Enums.ReportReason
+    details?: StringNullableFilter<"Report"> | string | null
+    status?: EnumReportStatusFilter<"Report"> | $Enums.ReportStatus
+    moderatorNote?: StringNullableFilter<"Report"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"Report"> | Date | string | null
+    createdAt?: DateTimeFilter<"Report"> | Date | string
+    reporter?: XOR<UserRelationFilter, UserWhereInput>
+    reportedUser?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+    feedback?: XOR<FeedbackNullableRelationFilter, FeedbackWhereInput> | null
+  }
+
+  export type ReportOrderByWithRelationInput = {
+    id?: SortOrder
+    reporterId?: SortOrder
+    reportedUserId?: SortOrderInput | SortOrder
+    feedbackId?: SortOrderInput | SortOrder
+    reason?: SortOrder
+    details?: SortOrderInput | SortOrder
+    status?: SortOrder
+    moderatorNote?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    reporter?: UserOrderByWithRelationInput
+    reportedUser?: UserOrderByWithRelationInput
+    feedback?: FeedbackOrderByWithRelationInput
+  }
+
+  export type ReportWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ReportWhereInput | ReportWhereInput[]
+    OR?: ReportWhereInput[]
+    NOT?: ReportWhereInput | ReportWhereInput[]
+    reporterId?: StringFilter<"Report"> | string
+    reportedUserId?: StringNullableFilter<"Report"> | string | null
+    feedbackId?: StringNullableFilter<"Report"> | string | null
+    reason?: EnumReportReasonFilter<"Report"> | $Enums.ReportReason
+    details?: StringNullableFilter<"Report"> | string | null
+    status?: EnumReportStatusFilter<"Report"> | $Enums.ReportStatus
+    moderatorNote?: StringNullableFilter<"Report"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"Report"> | Date | string | null
+    createdAt?: DateTimeFilter<"Report"> | Date | string
+    reporter?: XOR<UserRelationFilter, UserWhereInput>
+    reportedUser?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+    feedback?: XOR<FeedbackNullableRelationFilter, FeedbackWhereInput> | null
+  }, "id">
+
+  export type ReportOrderByWithAggregationInput = {
+    id?: SortOrder
+    reporterId?: SortOrder
+    reportedUserId?: SortOrderInput | SortOrder
+    feedbackId?: SortOrderInput | SortOrder
+    reason?: SortOrder
+    details?: SortOrderInput | SortOrder
+    status?: SortOrder
+    moderatorNote?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ReportCountOrderByAggregateInput
+    _max?: ReportMaxOrderByAggregateInput
+    _min?: ReportMinOrderByAggregateInput
+  }
+
+  export type ReportScalarWhereWithAggregatesInput = {
+    AND?: ReportScalarWhereWithAggregatesInput | ReportScalarWhereWithAggregatesInput[]
+    OR?: ReportScalarWhereWithAggregatesInput[]
+    NOT?: ReportScalarWhereWithAggregatesInput | ReportScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Report"> | string
+    reporterId?: StringWithAggregatesFilter<"Report"> | string
+    reportedUserId?: StringNullableWithAggregatesFilter<"Report"> | string | null
+    feedbackId?: StringNullableWithAggregatesFilter<"Report"> | string | null
+    reason?: EnumReportReasonWithAggregatesFilter<"Report"> | $Enums.ReportReason
+    details?: StringNullableWithAggregatesFilter<"Report"> | string | null
+    status?: EnumReportStatusWithAggregatesFilter<"Report"> | $Enums.ReportStatus
+    moderatorNote?: StringNullableWithAggregatesFilter<"Report"> | string | null
+    reviewedAt?: DateTimeNullableWithAggregatesFilter<"Report"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Report"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -5968,6 +8570,8 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackReceived?: FeedbackCreateNestedManyWithoutReceiverInput
     feedbackGiven?: FeedbackCreateNestedManyWithoutGiverInput
@@ -5975,6 +8579,10 @@ export namespace Prisma {
     friendOf?: FriendshipCreateNestedManyWithoutUserBInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationsSent?: NotificationCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockCreateNestedManyWithoutBlockedInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -5989,6 +8597,8 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackReceived?: FeedbackUncheckedCreateNestedManyWithoutReceiverInput
     feedbackGiven?: FeedbackUncheckedCreateNestedManyWithoutGiverInput
@@ -5996,6 +8606,10 @@ export namespace Prisma {
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutUserBInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationsSent?: NotificationUncheckedCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportUncheckedCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportUncheckedCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockUncheckedCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockUncheckedCreateNestedManyWithoutBlockedInput
   }
 
   export type UserUpdateInput = {
@@ -6010,6 +8624,8 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackReceived?: FeedbackUpdateManyWithoutReceiverNestedInput
     feedbackGiven?: FeedbackUpdateManyWithoutGiverNestedInput
@@ -6017,6 +8633,10 @@ export namespace Prisma {
     friendOf?: FriendshipUpdateManyWithoutUserBNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationsSent?: NotificationUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUpdateManyWithoutBlockedNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -6031,6 +8651,8 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackReceived?: FeedbackUncheckedUpdateManyWithoutReceiverNestedInput
     feedbackGiven?: FeedbackUncheckedUpdateManyWithoutGiverNestedInput
@@ -6038,6 +8660,10 @@ export namespace Prisma {
     friendOf?: FriendshipUncheckedUpdateManyWithoutUserBNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationsSent?: NotificationUncheckedUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUncheckedUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUncheckedUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUncheckedUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUncheckedUpdateManyWithoutBlockedNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -6052,6 +8678,8 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
   }
 
@@ -6067,6 +8695,8 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -6082,6 +8712,8 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -6097,6 +8729,7 @@ export namespace Prisma {
     createdAt?: Date | string
     giver: UserCreateNestedOneWithoutFeedbackGivenInput
     receiver: UserCreateNestedOneWithoutFeedbackReceivedInput
+    reports?: ReportCreateNestedManyWithoutFeedbackInput
   }
 
   export type FeedbackUncheckedCreateInput = {
@@ -6111,6 +8744,7 @@ export namespace Prisma {
     status?: $Enums.FeedbackStatus
     reviewedAt?: Date | string | null
     createdAt?: Date | string
+    reports?: ReportUncheckedCreateNestedManyWithoutFeedbackInput
   }
 
   export type FeedbackUpdateInput = {
@@ -6125,6 +8759,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     giver?: UserUpdateOneRequiredWithoutFeedbackGivenNestedInput
     receiver?: UserUpdateOneRequiredWithoutFeedbackReceivedNestedInput
+    reports?: ReportUpdateManyWithoutFeedbackNestedInput
   }
 
   export type FeedbackUncheckedUpdateInput = {
@@ -6139,6 +8774,7 @@ export namespace Prisma {
     status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
     reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reports?: ReportUncheckedUpdateManyWithoutFeedbackNestedInput
   }
 
   export type FeedbackCreateManyInput = {
@@ -6303,6 +8939,141 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type BlockCreateInput = {
+    id?: string
+    createdAt?: Date | string
+    blocker: UserCreateNestedOneWithoutBlocksInitiatedInput
+    blocked: UserCreateNestedOneWithoutBlocksReceivedInput
+  }
+
+  export type BlockUncheckedCreateInput = {
+    id?: string
+    blockerId: string
+    blockedId: string
+    createdAt?: Date | string
+  }
+
+  export type BlockUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    blocker?: UserUpdateOneRequiredWithoutBlocksInitiatedNestedInput
+    blocked?: UserUpdateOneRequiredWithoutBlocksReceivedNestedInput
+  }
+
+  export type BlockUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    blockerId?: StringFieldUpdateOperationsInput | string
+    blockedId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BlockCreateManyInput = {
+    id?: string
+    blockerId: string
+    blockedId: string
+    createdAt?: Date | string
+  }
+
+  export type BlockUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BlockUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    blockerId?: StringFieldUpdateOperationsInput | string
+    blockedId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportCreateInput = {
+    id?: string
+    reason: $Enums.ReportReason
+    details?: string | null
+    status?: $Enums.ReportStatus
+    moderatorNote?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    reporter: UserCreateNestedOneWithoutReportsFiledInput
+    reportedUser?: UserCreateNestedOneWithoutReportsAgainstInput
+    feedback?: FeedbackCreateNestedOneWithoutReportsInput
+  }
+
+  export type ReportUncheckedCreateInput = {
+    id?: string
+    reporterId: string
+    reportedUserId?: string | null
+    feedbackId?: string | null
+    reason: $Enums.ReportReason
+    details?: string | null
+    status?: $Enums.ReportStatus
+    moderatorNote?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ReportUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    moderatorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reporter?: UserUpdateOneRequiredWithoutReportsFiledNestedInput
+    reportedUser?: UserUpdateOneWithoutReportsAgainstNestedInput
+    feedback?: FeedbackUpdateOneWithoutReportsNestedInput
+  }
+
+  export type ReportUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reporterId?: StringFieldUpdateOperationsInput | string
+    reportedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    feedbackId?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    moderatorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportCreateManyInput = {
+    id?: string
+    reporterId: string
+    reportedUserId?: string | null
+    feedbackId?: string | null
+    reason: $Enums.ReportReason
+    details?: string | null
+    status?: $Enums.ReportStatus
+    moderatorNote?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ReportUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    moderatorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reporterId?: StringFieldUpdateOperationsInput | string
+    reportedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    feedbackId?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    moderatorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -6351,6 +9122,17 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -6380,6 +9162,18 @@ export namespace Prisma {
     none?: NotificationWhereInput
   }
 
+  export type ReportListRelationFilter = {
+    every?: ReportWhereInput
+    some?: ReportWhereInput
+    none?: ReportWhereInput
+  }
+
+  export type BlockListRelationFilter = {
+    every?: BlockWhereInput
+    some?: BlockWhereInput
+    none?: BlockWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -6397,6 +9191,14 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type ReportOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BlockOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
@@ -6409,6 +9211,8 @@ export namespace Prisma {
     role?: SortOrder
     preferredLanguage?: SortOrder
     totalPoints?: SortOrder
+    suspendedAt?: SortOrder
+    lastActiveAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -6428,6 +9232,8 @@ export namespace Prisma {
     role?: SortOrder
     preferredLanguage?: SortOrder
     totalPoints?: SortOrder
+    suspendedAt?: SortOrder
+    lastActiveAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -6443,6 +9249,8 @@ export namespace Prisma {
     role?: SortOrder
     preferredLanguage?: SortOrder
     totalPoints?: SortOrder
+    suspendedAt?: SortOrder
+    lastActiveAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -6512,6 +9320,20 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -6543,17 +9365,6 @@ export namespace Prisma {
     in?: $Enums.FeedbackStatus[] | ListEnumFeedbackStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.FeedbackStatus[] | ListEnumFeedbackStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumFeedbackStatusFilter<$PrismaModel> | $Enums.FeedbackStatus
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type UserRelationFilter = {
@@ -6637,20 +9448,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFeedbackStatusFilter<$PrismaModel>
     _max?: NestedEnumFeedbackStatusFilter<$PrismaModel>
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type EnumFriendStatusFilter<$PrismaModel = never> = {
@@ -6751,6 +9548,110 @@ export namespace Prisma {
     _max?: NestedEnumNotificationTypeFilter<$PrismaModel>
   }
 
+  export type BlockBlockerIdBlockedIdCompoundUniqueInput = {
+    blockerId: string
+    blockedId: string
+  }
+
+  export type BlockCountOrderByAggregateInput = {
+    id?: SortOrder
+    blockerId?: SortOrder
+    blockedId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BlockMaxOrderByAggregateInput = {
+    id?: SortOrder
+    blockerId?: SortOrder
+    blockedId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BlockMinOrderByAggregateInput = {
+    id?: SortOrder
+    blockerId?: SortOrder
+    blockedId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumReportReasonFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportReason | EnumReportReasonFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportReason[] | ListEnumReportReasonFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportReason[] | ListEnumReportReasonFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportReasonFilter<$PrismaModel> | $Enums.ReportReason
+  }
+
+  export type EnumReportStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportStatus | EnumReportStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportStatusFilter<$PrismaModel> | $Enums.ReportStatus
+  }
+
+  export type FeedbackNullableRelationFilter = {
+    is?: FeedbackWhereInput | null
+    isNot?: FeedbackWhereInput | null
+  }
+
+  export type ReportCountOrderByAggregateInput = {
+    id?: SortOrder
+    reporterId?: SortOrder
+    reportedUserId?: SortOrder
+    feedbackId?: SortOrder
+    reason?: SortOrder
+    details?: SortOrder
+    status?: SortOrder
+    moderatorNote?: SortOrder
+    reviewedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReportMaxOrderByAggregateInput = {
+    id?: SortOrder
+    reporterId?: SortOrder
+    reportedUserId?: SortOrder
+    feedbackId?: SortOrder
+    reason?: SortOrder
+    details?: SortOrder
+    status?: SortOrder
+    moderatorNote?: SortOrder
+    reviewedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReportMinOrderByAggregateInput = {
+    id?: SortOrder
+    reporterId?: SortOrder
+    reportedUserId?: SortOrder
+    feedbackId?: SortOrder
+    reason?: SortOrder
+    details?: SortOrder
+    status?: SortOrder
+    moderatorNote?: SortOrder
+    reviewedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumReportReasonWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportReason | EnumReportReasonFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportReason[] | ListEnumReportReasonFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportReason[] | ListEnumReportReasonFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportReasonWithAggregatesFilter<$PrismaModel> | $Enums.ReportReason
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReportReasonFilter<$PrismaModel>
+    _max?: NestedEnumReportReasonFilter<$PrismaModel>
+  }
+
+  export type EnumReportStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportStatus | EnumReportStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportStatusWithAggregatesFilter<$PrismaModel> | $Enums.ReportStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReportStatusFilter<$PrismaModel>
+    _max?: NestedEnumReportStatusFilter<$PrismaModel>
+  }
+
   export type FeedbackCreateNestedManyWithoutReceiverInput = {
     create?: XOR<FeedbackCreateWithoutReceiverInput, FeedbackUncheckedCreateWithoutReceiverInput> | FeedbackCreateWithoutReceiverInput[] | FeedbackUncheckedCreateWithoutReceiverInput[]
     connectOrCreate?: FeedbackCreateOrConnectWithoutReceiverInput | FeedbackCreateOrConnectWithoutReceiverInput[]
@@ -6791,6 +9692,34 @@ export namespace Prisma {
     connectOrCreate?: NotificationCreateOrConnectWithoutFromUserInput | NotificationCreateOrConnectWithoutFromUserInput[]
     createMany?: NotificationCreateManyFromUserInputEnvelope
     connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
+  export type ReportCreateNestedManyWithoutReporterInput = {
+    create?: XOR<ReportCreateWithoutReporterInput, ReportUncheckedCreateWithoutReporterInput> | ReportCreateWithoutReporterInput[] | ReportUncheckedCreateWithoutReporterInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutReporterInput | ReportCreateOrConnectWithoutReporterInput[]
+    createMany?: ReportCreateManyReporterInputEnvelope
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+  }
+
+  export type ReportCreateNestedManyWithoutReportedUserInput = {
+    create?: XOR<ReportCreateWithoutReportedUserInput, ReportUncheckedCreateWithoutReportedUserInput> | ReportCreateWithoutReportedUserInput[] | ReportUncheckedCreateWithoutReportedUserInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutReportedUserInput | ReportCreateOrConnectWithoutReportedUserInput[]
+    createMany?: ReportCreateManyReportedUserInputEnvelope
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+  }
+
+  export type BlockCreateNestedManyWithoutBlockerInput = {
+    create?: XOR<BlockCreateWithoutBlockerInput, BlockUncheckedCreateWithoutBlockerInput> | BlockCreateWithoutBlockerInput[] | BlockUncheckedCreateWithoutBlockerInput[]
+    connectOrCreate?: BlockCreateOrConnectWithoutBlockerInput | BlockCreateOrConnectWithoutBlockerInput[]
+    createMany?: BlockCreateManyBlockerInputEnvelope
+    connect?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+  }
+
+  export type BlockCreateNestedManyWithoutBlockedInput = {
+    create?: XOR<BlockCreateWithoutBlockedInput, BlockUncheckedCreateWithoutBlockedInput> | BlockCreateWithoutBlockedInput[] | BlockUncheckedCreateWithoutBlockedInput[]
+    connectOrCreate?: BlockCreateOrConnectWithoutBlockedInput | BlockCreateOrConnectWithoutBlockedInput[]
+    createMany?: BlockCreateManyBlockedInputEnvelope
+    connect?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
   }
 
   export type FeedbackUncheckedCreateNestedManyWithoutReceiverInput = {
@@ -6835,6 +9764,34 @@ export namespace Prisma {
     connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
+  export type ReportUncheckedCreateNestedManyWithoutReporterInput = {
+    create?: XOR<ReportCreateWithoutReporterInput, ReportUncheckedCreateWithoutReporterInput> | ReportCreateWithoutReporterInput[] | ReportUncheckedCreateWithoutReporterInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutReporterInput | ReportCreateOrConnectWithoutReporterInput[]
+    createMany?: ReportCreateManyReporterInputEnvelope
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+  }
+
+  export type ReportUncheckedCreateNestedManyWithoutReportedUserInput = {
+    create?: XOR<ReportCreateWithoutReportedUserInput, ReportUncheckedCreateWithoutReportedUserInput> | ReportCreateWithoutReportedUserInput[] | ReportUncheckedCreateWithoutReportedUserInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutReportedUserInput | ReportCreateOrConnectWithoutReportedUserInput[]
+    createMany?: ReportCreateManyReportedUserInputEnvelope
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+  }
+
+  export type BlockUncheckedCreateNestedManyWithoutBlockerInput = {
+    create?: XOR<BlockCreateWithoutBlockerInput, BlockUncheckedCreateWithoutBlockerInput> | BlockCreateWithoutBlockerInput[] | BlockUncheckedCreateWithoutBlockerInput[]
+    connectOrCreate?: BlockCreateOrConnectWithoutBlockerInput | BlockCreateOrConnectWithoutBlockerInput[]
+    createMany?: BlockCreateManyBlockerInputEnvelope
+    connect?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+  }
+
+  export type BlockUncheckedCreateNestedManyWithoutBlockedInput = {
+    create?: XOR<BlockCreateWithoutBlockedInput, BlockUncheckedCreateWithoutBlockedInput> | BlockCreateWithoutBlockedInput[] | BlockUncheckedCreateWithoutBlockedInput[]
+    connectOrCreate?: BlockCreateOrConnectWithoutBlockedInput | BlockCreateOrConnectWithoutBlockedInput[]
+    createMany?: BlockCreateManyBlockedInputEnvelope
+    connect?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -6853,6 +9810,10 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -6943,6 +9904,62 @@ export namespace Prisma {
     deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
+  export type ReportUpdateManyWithoutReporterNestedInput = {
+    create?: XOR<ReportCreateWithoutReporterInput, ReportUncheckedCreateWithoutReporterInput> | ReportCreateWithoutReporterInput[] | ReportUncheckedCreateWithoutReporterInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutReporterInput | ReportCreateOrConnectWithoutReporterInput[]
+    upsert?: ReportUpsertWithWhereUniqueWithoutReporterInput | ReportUpsertWithWhereUniqueWithoutReporterInput[]
+    createMany?: ReportCreateManyReporterInputEnvelope
+    set?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    disconnect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    delete?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    update?: ReportUpdateWithWhereUniqueWithoutReporterInput | ReportUpdateWithWhereUniqueWithoutReporterInput[]
+    updateMany?: ReportUpdateManyWithWhereWithoutReporterInput | ReportUpdateManyWithWhereWithoutReporterInput[]
+    deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
+  }
+
+  export type ReportUpdateManyWithoutReportedUserNestedInput = {
+    create?: XOR<ReportCreateWithoutReportedUserInput, ReportUncheckedCreateWithoutReportedUserInput> | ReportCreateWithoutReportedUserInput[] | ReportUncheckedCreateWithoutReportedUserInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutReportedUserInput | ReportCreateOrConnectWithoutReportedUserInput[]
+    upsert?: ReportUpsertWithWhereUniqueWithoutReportedUserInput | ReportUpsertWithWhereUniqueWithoutReportedUserInput[]
+    createMany?: ReportCreateManyReportedUserInputEnvelope
+    set?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    disconnect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    delete?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    update?: ReportUpdateWithWhereUniqueWithoutReportedUserInput | ReportUpdateWithWhereUniqueWithoutReportedUserInput[]
+    updateMany?: ReportUpdateManyWithWhereWithoutReportedUserInput | ReportUpdateManyWithWhereWithoutReportedUserInput[]
+    deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
+  }
+
+  export type BlockUpdateManyWithoutBlockerNestedInput = {
+    create?: XOR<BlockCreateWithoutBlockerInput, BlockUncheckedCreateWithoutBlockerInput> | BlockCreateWithoutBlockerInput[] | BlockUncheckedCreateWithoutBlockerInput[]
+    connectOrCreate?: BlockCreateOrConnectWithoutBlockerInput | BlockCreateOrConnectWithoutBlockerInput[]
+    upsert?: BlockUpsertWithWhereUniqueWithoutBlockerInput | BlockUpsertWithWhereUniqueWithoutBlockerInput[]
+    createMany?: BlockCreateManyBlockerInputEnvelope
+    set?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    disconnect?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    delete?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    connect?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    update?: BlockUpdateWithWhereUniqueWithoutBlockerInput | BlockUpdateWithWhereUniqueWithoutBlockerInput[]
+    updateMany?: BlockUpdateManyWithWhereWithoutBlockerInput | BlockUpdateManyWithWhereWithoutBlockerInput[]
+    deleteMany?: BlockScalarWhereInput | BlockScalarWhereInput[]
+  }
+
+  export type BlockUpdateManyWithoutBlockedNestedInput = {
+    create?: XOR<BlockCreateWithoutBlockedInput, BlockUncheckedCreateWithoutBlockedInput> | BlockCreateWithoutBlockedInput[] | BlockUncheckedCreateWithoutBlockedInput[]
+    connectOrCreate?: BlockCreateOrConnectWithoutBlockedInput | BlockCreateOrConnectWithoutBlockedInput[]
+    upsert?: BlockUpsertWithWhereUniqueWithoutBlockedInput | BlockUpsertWithWhereUniqueWithoutBlockedInput[]
+    createMany?: BlockCreateManyBlockedInputEnvelope
+    set?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    disconnect?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    delete?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    connect?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    update?: BlockUpdateWithWhereUniqueWithoutBlockedInput | BlockUpdateWithWhereUniqueWithoutBlockedInput[]
+    updateMany?: BlockUpdateManyWithWhereWithoutBlockedInput | BlockUpdateManyWithWhereWithoutBlockedInput[]
+    deleteMany?: BlockScalarWhereInput | BlockScalarWhereInput[]
+  }
+
   export type FeedbackUncheckedUpdateManyWithoutReceiverNestedInput = {
     create?: XOR<FeedbackCreateWithoutReceiverInput, FeedbackUncheckedCreateWithoutReceiverInput> | FeedbackCreateWithoutReceiverInput[] | FeedbackUncheckedCreateWithoutReceiverInput[]
     connectOrCreate?: FeedbackCreateOrConnectWithoutReceiverInput | FeedbackCreateOrConnectWithoutReceiverInput[]
@@ -7027,6 +10044,62 @@ export namespace Prisma {
     deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
+  export type ReportUncheckedUpdateManyWithoutReporterNestedInput = {
+    create?: XOR<ReportCreateWithoutReporterInput, ReportUncheckedCreateWithoutReporterInput> | ReportCreateWithoutReporterInput[] | ReportUncheckedCreateWithoutReporterInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutReporterInput | ReportCreateOrConnectWithoutReporterInput[]
+    upsert?: ReportUpsertWithWhereUniqueWithoutReporterInput | ReportUpsertWithWhereUniqueWithoutReporterInput[]
+    createMany?: ReportCreateManyReporterInputEnvelope
+    set?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    disconnect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    delete?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    update?: ReportUpdateWithWhereUniqueWithoutReporterInput | ReportUpdateWithWhereUniqueWithoutReporterInput[]
+    updateMany?: ReportUpdateManyWithWhereWithoutReporterInput | ReportUpdateManyWithWhereWithoutReporterInput[]
+    deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
+  }
+
+  export type ReportUncheckedUpdateManyWithoutReportedUserNestedInput = {
+    create?: XOR<ReportCreateWithoutReportedUserInput, ReportUncheckedCreateWithoutReportedUserInput> | ReportCreateWithoutReportedUserInput[] | ReportUncheckedCreateWithoutReportedUserInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutReportedUserInput | ReportCreateOrConnectWithoutReportedUserInput[]
+    upsert?: ReportUpsertWithWhereUniqueWithoutReportedUserInput | ReportUpsertWithWhereUniqueWithoutReportedUserInput[]
+    createMany?: ReportCreateManyReportedUserInputEnvelope
+    set?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    disconnect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    delete?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    update?: ReportUpdateWithWhereUniqueWithoutReportedUserInput | ReportUpdateWithWhereUniqueWithoutReportedUserInput[]
+    updateMany?: ReportUpdateManyWithWhereWithoutReportedUserInput | ReportUpdateManyWithWhereWithoutReportedUserInput[]
+    deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
+  }
+
+  export type BlockUncheckedUpdateManyWithoutBlockerNestedInput = {
+    create?: XOR<BlockCreateWithoutBlockerInput, BlockUncheckedCreateWithoutBlockerInput> | BlockCreateWithoutBlockerInput[] | BlockUncheckedCreateWithoutBlockerInput[]
+    connectOrCreate?: BlockCreateOrConnectWithoutBlockerInput | BlockCreateOrConnectWithoutBlockerInput[]
+    upsert?: BlockUpsertWithWhereUniqueWithoutBlockerInput | BlockUpsertWithWhereUniqueWithoutBlockerInput[]
+    createMany?: BlockCreateManyBlockerInputEnvelope
+    set?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    disconnect?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    delete?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    connect?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    update?: BlockUpdateWithWhereUniqueWithoutBlockerInput | BlockUpdateWithWhereUniqueWithoutBlockerInput[]
+    updateMany?: BlockUpdateManyWithWhereWithoutBlockerInput | BlockUpdateManyWithWhereWithoutBlockerInput[]
+    deleteMany?: BlockScalarWhereInput | BlockScalarWhereInput[]
+  }
+
+  export type BlockUncheckedUpdateManyWithoutBlockedNestedInput = {
+    create?: XOR<BlockCreateWithoutBlockedInput, BlockUncheckedCreateWithoutBlockedInput> | BlockCreateWithoutBlockedInput[] | BlockUncheckedCreateWithoutBlockedInput[]
+    connectOrCreate?: BlockCreateOrConnectWithoutBlockedInput | BlockCreateOrConnectWithoutBlockedInput[]
+    upsert?: BlockUpsertWithWhereUniqueWithoutBlockedInput | BlockUpsertWithWhereUniqueWithoutBlockedInput[]
+    createMany?: BlockCreateManyBlockedInputEnvelope
+    set?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    disconnect?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    delete?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    connect?: BlockWhereUniqueInput | BlockWhereUniqueInput[]
+    update?: BlockUpdateWithWhereUniqueWithoutBlockedInput | BlockUpdateWithWhereUniqueWithoutBlockedInput[]
+    updateMany?: BlockUpdateManyWithWhereWithoutBlockedInput | BlockUpdateManyWithWhereWithoutBlockedInput[]
+    deleteMany?: BlockScalarWhereInput | BlockScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutFeedbackGivenInput = {
     create?: XOR<UserCreateWithoutFeedbackGivenInput, UserUncheckedCreateWithoutFeedbackGivenInput>
     connectOrCreate?: UserCreateOrConnectWithoutFeedbackGivenInput
@@ -7039,6 +10112,20 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type ReportCreateNestedManyWithoutFeedbackInput = {
+    create?: XOR<ReportCreateWithoutFeedbackInput, ReportUncheckedCreateWithoutFeedbackInput> | ReportCreateWithoutFeedbackInput[] | ReportUncheckedCreateWithoutFeedbackInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutFeedbackInput | ReportCreateOrConnectWithoutFeedbackInput[]
+    createMany?: ReportCreateManyFeedbackInputEnvelope
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+  }
+
+  export type ReportUncheckedCreateNestedManyWithoutFeedbackInput = {
+    create?: XOR<ReportCreateWithoutFeedbackInput, ReportUncheckedCreateWithoutFeedbackInput> | ReportCreateWithoutFeedbackInput[] | ReportUncheckedCreateWithoutFeedbackInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutFeedbackInput | ReportCreateOrConnectWithoutFeedbackInput[]
+    createMany?: ReportCreateManyFeedbackInputEnvelope
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+  }
+
   export type EnumFeedbackTypeFieldUpdateOperationsInput = {
     set?: $Enums.FeedbackType
   }
@@ -7049,10 +10136,6 @@ export namespace Prisma {
 
   export type EnumFeedbackStatusFieldUpdateOperationsInput = {
     set?: $Enums.FeedbackStatus
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type UserUpdateOneRequiredWithoutFeedbackGivenNestedInput = {
@@ -7069,6 +10152,34 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutFeedbackReceivedInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFeedbackReceivedInput, UserUpdateWithoutFeedbackReceivedInput>, UserUncheckedUpdateWithoutFeedbackReceivedInput>
+  }
+
+  export type ReportUpdateManyWithoutFeedbackNestedInput = {
+    create?: XOR<ReportCreateWithoutFeedbackInput, ReportUncheckedCreateWithoutFeedbackInput> | ReportCreateWithoutFeedbackInput[] | ReportUncheckedCreateWithoutFeedbackInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutFeedbackInput | ReportCreateOrConnectWithoutFeedbackInput[]
+    upsert?: ReportUpsertWithWhereUniqueWithoutFeedbackInput | ReportUpsertWithWhereUniqueWithoutFeedbackInput[]
+    createMany?: ReportCreateManyFeedbackInputEnvelope
+    set?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    disconnect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    delete?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    update?: ReportUpdateWithWhereUniqueWithoutFeedbackInput | ReportUpdateWithWhereUniqueWithoutFeedbackInput[]
+    updateMany?: ReportUpdateManyWithWhereWithoutFeedbackInput | ReportUpdateManyWithWhereWithoutFeedbackInput[]
+    deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
+  }
+
+  export type ReportUncheckedUpdateManyWithoutFeedbackNestedInput = {
+    create?: XOR<ReportCreateWithoutFeedbackInput, ReportUncheckedCreateWithoutFeedbackInput> | ReportCreateWithoutFeedbackInput[] | ReportUncheckedCreateWithoutFeedbackInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutFeedbackInput | ReportCreateOrConnectWithoutFeedbackInput[]
+    upsert?: ReportUpsertWithWhereUniqueWithoutFeedbackInput | ReportUpsertWithWhereUniqueWithoutFeedbackInput[]
+    createMany?: ReportCreateManyFeedbackInputEnvelope
+    set?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    disconnect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    delete?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    update?: ReportUpdateWithWhereUniqueWithoutFeedbackInput | ReportUpdateWithWhereUniqueWithoutFeedbackInput[]
+    updateMany?: ReportUpdateManyWithWhereWithoutFeedbackInput | ReportUpdateManyWithWhereWithoutFeedbackInput[]
+    deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutFriendsInput = {
@@ -7137,6 +10248,88 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationsSentInput, UserUpdateWithoutNotificationsSentInput>, UserUncheckedUpdateWithoutNotificationsSentInput>
   }
 
+  export type UserCreateNestedOneWithoutBlocksInitiatedInput = {
+    create?: XOR<UserCreateWithoutBlocksInitiatedInput, UserUncheckedCreateWithoutBlocksInitiatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutBlocksInitiatedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutBlocksReceivedInput = {
+    create?: XOR<UserCreateWithoutBlocksReceivedInput, UserUncheckedCreateWithoutBlocksReceivedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutBlocksReceivedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutBlocksInitiatedNestedInput = {
+    create?: XOR<UserCreateWithoutBlocksInitiatedInput, UserUncheckedCreateWithoutBlocksInitiatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutBlocksInitiatedInput
+    upsert?: UserUpsertWithoutBlocksInitiatedInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutBlocksInitiatedInput, UserUpdateWithoutBlocksInitiatedInput>, UserUncheckedUpdateWithoutBlocksInitiatedInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutBlocksReceivedNestedInput = {
+    create?: XOR<UserCreateWithoutBlocksReceivedInput, UserUncheckedCreateWithoutBlocksReceivedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutBlocksReceivedInput
+    upsert?: UserUpsertWithoutBlocksReceivedInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutBlocksReceivedInput, UserUpdateWithoutBlocksReceivedInput>, UserUncheckedUpdateWithoutBlocksReceivedInput>
+  }
+
+  export type UserCreateNestedOneWithoutReportsFiledInput = {
+    create?: XOR<UserCreateWithoutReportsFiledInput, UserUncheckedCreateWithoutReportsFiledInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReportsFiledInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutReportsAgainstInput = {
+    create?: XOR<UserCreateWithoutReportsAgainstInput, UserUncheckedCreateWithoutReportsAgainstInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReportsAgainstInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type FeedbackCreateNestedOneWithoutReportsInput = {
+    create?: XOR<FeedbackCreateWithoutReportsInput, FeedbackUncheckedCreateWithoutReportsInput>
+    connectOrCreate?: FeedbackCreateOrConnectWithoutReportsInput
+    connect?: FeedbackWhereUniqueInput
+  }
+
+  export type EnumReportReasonFieldUpdateOperationsInput = {
+    set?: $Enums.ReportReason
+  }
+
+  export type EnumReportStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ReportStatus
+  }
+
+  export type UserUpdateOneRequiredWithoutReportsFiledNestedInput = {
+    create?: XOR<UserCreateWithoutReportsFiledInput, UserUncheckedCreateWithoutReportsFiledInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReportsFiledInput
+    upsert?: UserUpsertWithoutReportsFiledInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReportsFiledInput, UserUpdateWithoutReportsFiledInput>, UserUncheckedUpdateWithoutReportsFiledInput>
+  }
+
+  export type UserUpdateOneWithoutReportsAgainstNestedInput = {
+    create?: XOR<UserCreateWithoutReportsAgainstInput, UserUncheckedCreateWithoutReportsAgainstInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReportsAgainstInput
+    upsert?: UserUpsertWithoutReportsAgainstInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReportsAgainstInput, UserUpdateWithoutReportsAgainstInput>, UserUncheckedUpdateWithoutReportsAgainstInput>
+  }
+
+  export type FeedbackUpdateOneWithoutReportsNestedInput = {
+    create?: XOR<FeedbackCreateWithoutReportsInput, FeedbackUncheckedCreateWithoutReportsInput>
+    connectOrCreate?: FeedbackCreateOrConnectWithoutReportsInput
+    upsert?: FeedbackUpsertWithoutReportsInput
+    disconnect?: FeedbackWhereInput | boolean
+    delete?: FeedbackWhereInput | boolean
+    connect?: FeedbackWhereUniqueInput
+    update?: XOR<XOR<FeedbackUpdateToOneWithWhereWithoutReportsInput, FeedbackUpdateWithoutReportsInput>, FeedbackUncheckedUpdateWithoutReportsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -7181,6 +10374,17 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -7276,6 +10480,20 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -7309,17 +10527,6 @@ export namespace Prisma {
     not?: NestedEnumFeedbackStatusFilter<$PrismaModel> | $Enums.FeedbackStatus
   }
 
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type NestedEnumFeedbackTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.FeedbackType | EnumFeedbackTypeFieldRefInput<$PrismaModel>
     in?: $Enums.FeedbackType[] | ListEnumFeedbackTypeFieldRefInput<$PrismaModel>
@@ -7346,20 +10553,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFeedbackStatusFilter<$PrismaModel>
     _max?: NestedEnumFeedbackStatusFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumFriendStatusFilter<$PrismaModel = never> = {
@@ -7396,6 +10589,40 @@ export namespace Prisma {
     _max?: NestedEnumNotificationTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumReportReasonFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportReason | EnumReportReasonFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportReason[] | ListEnumReportReasonFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportReason[] | ListEnumReportReasonFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportReasonFilter<$PrismaModel> | $Enums.ReportReason
+  }
+
+  export type NestedEnumReportStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportStatus | EnumReportStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportStatusFilter<$PrismaModel> | $Enums.ReportStatus
+  }
+
+  export type NestedEnumReportReasonWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportReason | EnumReportReasonFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportReason[] | ListEnumReportReasonFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportReason[] | ListEnumReportReasonFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportReasonWithAggregatesFilter<$PrismaModel> | $Enums.ReportReason
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReportReasonFilter<$PrismaModel>
+    _max?: NestedEnumReportReasonFilter<$PrismaModel>
+  }
+
+  export type NestedEnumReportStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportStatus | EnumReportStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportStatusWithAggregatesFilter<$PrismaModel> | $Enums.ReportStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReportStatusFilter<$PrismaModel>
+    _max?: NestedEnumReportStatusFilter<$PrismaModel>
+  }
+
   export type FeedbackCreateWithoutReceiverInput = {
     id?: string
     type: $Enums.FeedbackType
@@ -7407,6 +10634,7 @@ export namespace Prisma {
     reviewedAt?: Date | string | null
     createdAt?: Date | string
     giver: UserCreateNestedOneWithoutFeedbackGivenInput
+    reports?: ReportCreateNestedManyWithoutFeedbackInput
   }
 
   export type FeedbackUncheckedCreateWithoutReceiverInput = {
@@ -7420,6 +10648,7 @@ export namespace Prisma {
     status?: $Enums.FeedbackStatus
     reviewedAt?: Date | string | null
     createdAt?: Date | string
+    reports?: ReportUncheckedCreateNestedManyWithoutFeedbackInput
   }
 
   export type FeedbackCreateOrConnectWithoutReceiverInput = {
@@ -7443,6 +10672,7 @@ export namespace Prisma {
     reviewedAt?: Date | string | null
     createdAt?: Date | string
     receiver: UserCreateNestedOneWithoutFeedbackReceivedInput
+    reports?: ReportCreateNestedManyWithoutFeedbackInput
   }
 
   export type FeedbackUncheckedCreateWithoutGiverInput = {
@@ -7456,6 +10686,7 @@ export namespace Prisma {
     status?: $Enums.FeedbackStatus
     reviewedAt?: Date | string | null
     createdAt?: Date | string
+    reports?: ReportUncheckedCreateNestedManyWithoutFeedbackInput
   }
 
   export type FeedbackCreateOrConnectWithoutGiverInput = {
@@ -7569,6 +10800,118 @@ export namespace Prisma {
 
   export type NotificationCreateManyFromUserInputEnvelope = {
     data: NotificationCreateManyFromUserInput | NotificationCreateManyFromUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReportCreateWithoutReporterInput = {
+    id?: string
+    reason: $Enums.ReportReason
+    details?: string | null
+    status?: $Enums.ReportStatus
+    moderatorNote?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    reportedUser?: UserCreateNestedOneWithoutReportsAgainstInput
+    feedback?: FeedbackCreateNestedOneWithoutReportsInput
+  }
+
+  export type ReportUncheckedCreateWithoutReporterInput = {
+    id?: string
+    reportedUserId?: string | null
+    feedbackId?: string | null
+    reason: $Enums.ReportReason
+    details?: string | null
+    status?: $Enums.ReportStatus
+    moderatorNote?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ReportCreateOrConnectWithoutReporterInput = {
+    where: ReportWhereUniqueInput
+    create: XOR<ReportCreateWithoutReporterInput, ReportUncheckedCreateWithoutReporterInput>
+  }
+
+  export type ReportCreateManyReporterInputEnvelope = {
+    data: ReportCreateManyReporterInput | ReportCreateManyReporterInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReportCreateWithoutReportedUserInput = {
+    id?: string
+    reason: $Enums.ReportReason
+    details?: string | null
+    status?: $Enums.ReportStatus
+    moderatorNote?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    reporter: UserCreateNestedOneWithoutReportsFiledInput
+    feedback?: FeedbackCreateNestedOneWithoutReportsInput
+  }
+
+  export type ReportUncheckedCreateWithoutReportedUserInput = {
+    id?: string
+    reporterId: string
+    feedbackId?: string | null
+    reason: $Enums.ReportReason
+    details?: string | null
+    status?: $Enums.ReportStatus
+    moderatorNote?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ReportCreateOrConnectWithoutReportedUserInput = {
+    where: ReportWhereUniqueInput
+    create: XOR<ReportCreateWithoutReportedUserInput, ReportUncheckedCreateWithoutReportedUserInput>
+  }
+
+  export type ReportCreateManyReportedUserInputEnvelope = {
+    data: ReportCreateManyReportedUserInput | ReportCreateManyReportedUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BlockCreateWithoutBlockerInput = {
+    id?: string
+    createdAt?: Date | string
+    blocked: UserCreateNestedOneWithoutBlocksReceivedInput
+  }
+
+  export type BlockUncheckedCreateWithoutBlockerInput = {
+    id?: string
+    blockedId: string
+    createdAt?: Date | string
+  }
+
+  export type BlockCreateOrConnectWithoutBlockerInput = {
+    where: BlockWhereUniqueInput
+    create: XOR<BlockCreateWithoutBlockerInput, BlockUncheckedCreateWithoutBlockerInput>
+  }
+
+  export type BlockCreateManyBlockerInputEnvelope = {
+    data: BlockCreateManyBlockerInput | BlockCreateManyBlockerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BlockCreateWithoutBlockedInput = {
+    id?: string
+    createdAt?: Date | string
+    blocker: UserCreateNestedOneWithoutBlocksInitiatedInput
+  }
+
+  export type BlockUncheckedCreateWithoutBlockedInput = {
+    id?: string
+    blockerId: string
+    createdAt?: Date | string
+  }
+
+  export type BlockCreateOrConnectWithoutBlockedInput = {
+    where: BlockWhereUniqueInput
+    create: XOR<BlockCreateWithoutBlockedInput, BlockUncheckedCreateWithoutBlockedInput>
+  }
+
+  export type BlockCreateManyBlockedInputEnvelope = {
+    data: BlockCreateManyBlockedInput | BlockCreateManyBlockedInput[]
     skipDuplicates?: boolean
   }
 
@@ -7709,6 +11052,96 @@ export namespace Prisma {
     data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutFromUserInput>
   }
 
+  export type ReportUpsertWithWhereUniqueWithoutReporterInput = {
+    where: ReportWhereUniqueInput
+    update: XOR<ReportUpdateWithoutReporterInput, ReportUncheckedUpdateWithoutReporterInput>
+    create: XOR<ReportCreateWithoutReporterInput, ReportUncheckedCreateWithoutReporterInput>
+  }
+
+  export type ReportUpdateWithWhereUniqueWithoutReporterInput = {
+    where: ReportWhereUniqueInput
+    data: XOR<ReportUpdateWithoutReporterInput, ReportUncheckedUpdateWithoutReporterInput>
+  }
+
+  export type ReportUpdateManyWithWhereWithoutReporterInput = {
+    where: ReportScalarWhereInput
+    data: XOR<ReportUpdateManyMutationInput, ReportUncheckedUpdateManyWithoutReporterInput>
+  }
+
+  export type ReportScalarWhereInput = {
+    AND?: ReportScalarWhereInput | ReportScalarWhereInput[]
+    OR?: ReportScalarWhereInput[]
+    NOT?: ReportScalarWhereInput | ReportScalarWhereInput[]
+    id?: StringFilter<"Report"> | string
+    reporterId?: StringFilter<"Report"> | string
+    reportedUserId?: StringNullableFilter<"Report"> | string | null
+    feedbackId?: StringNullableFilter<"Report"> | string | null
+    reason?: EnumReportReasonFilter<"Report"> | $Enums.ReportReason
+    details?: StringNullableFilter<"Report"> | string | null
+    status?: EnumReportStatusFilter<"Report"> | $Enums.ReportStatus
+    moderatorNote?: StringNullableFilter<"Report"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"Report"> | Date | string | null
+    createdAt?: DateTimeFilter<"Report"> | Date | string
+  }
+
+  export type ReportUpsertWithWhereUniqueWithoutReportedUserInput = {
+    where: ReportWhereUniqueInput
+    update: XOR<ReportUpdateWithoutReportedUserInput, ReportUncheckedUpdateWithoutReportedUserInput>
+    create: XOR<ReportCreateWithoutReportedUserInput, ReportUncheckedCreateWithoutReportedUserInput>
+  }
+
+  export type ReportUpdateWithWhereUniqueWithoutReportedUserInput = {
+    where: ReportWhereUniqueInput
+    data: XOR<ReportUpdateWithoutReportedUserInput, ReportUncheckedUpdateWithoutReportedUserInput>
+  }
+
+  export type ReportUpdateManyWithWhereWithoutReportedUserInput = {
+    where: ReportScalarWhereInput
+    data: XOR<ReportUpdateManyMutationInput, ReportUncheckedUpdateManyWithoutReportedUserInput>
+  }
+
+  export type BlockUpsertWithWhereUniqueWithoutBlockerInput = {
+    where: BlockWhereUniqueInput
+    update: XOR<BlockUpdateWithoutBlockerInput, BlockUncheckedUpdateWithoutBlockerInput>
+    create: XOR<BlockCreateWithoutBlockerInput, BlockUncheckedCreateWithoutBlockerInput>
+  }
+
+  export type BlockUpdateWithWhereUniqueWithoutBlockerInput = {
+    where: BlockWhereUniqueInput
+    data: XOR<BlockUpdateWithoutBlockerInput, BlockUncheckedUpdateWithoutBlockerInput>
+  }
+
+  export type BlockUpdateManyWithWhereWithoutBlockerInput = {
+    where: BlockScalarWhereInput
+    data: XOR<BlockUpdateManyMutationInput, BlockUncheckedUpdateManyWithoutBlockerInput>
+  }
+
+  export type BlockScalarWhereInput = {
+    AND?: BlockScalarWhereInput | BlockScalarWhereInput[]
+    OR?: BlockScalarWhereInput[]
+    NOT?: BlockScalarWhereInput | BlockScalarWhereInput[]
+    id?: StringFilter<"Block"> | string
+    blockerId?: StringFilter<"Block"> | string
+    blockedId?: StringFilter<"Block"> | string
+    createdAt?: DateTimeFilter<"Block"> | Date | string
+  }
+
+  export type BlockUpsertWithWhereUniqueWithoutBlockedInput = {
+    where: BlockWhereUniqueInput
+    update: XOR<BlockUpdateWithoutBlockedInput, BlockUncheckedUpdateWithoutBlockedInput>
+    create: XOR<BlockCreateWithoutBlockedInput, BlockUncheckedCreateWithoutBlockedInput>
+  }
+
+  export type BlockUpdateWithWhereUniqueWithoutBlockedInput = {
+    where: BlockWhereUniqueInput
+    data: XOR<BlockUpdateWithoutBlockedInput, BlockUncheckedUpdateWithoutBlockedInput>
+  }
+
+  export type BlockUpdateManyWithWhereWithoutBlockedInput = {
+    where: BlockScalarWhereInput
+    data: XOR<BlockUpdateManyMutationInput, BlockUncheckedUpdateManyWithoutBlockedInput>
+  }
+
   export type UserCreateWithoutFeedbackGivenInput = {
     id?: string
     email: string
@@ -7721,12 +11154,18 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackReceived?: FeedbackCreateNestedManyWithoutReceiverInput
     friends?: FriendshipCreateNestedManyWithoutUserAInput
     friendOf?: FriendshipCreateNestedManyWithoutUserBInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationsSent?: NotificationCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockCreateNestedManyWithoutBlockedInput
   }
 
   export type UserUncheckedCreateWithoutFeedbackGivenInput = {
@@ -7741,12 +11180,18 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackReceived?: FeedbackUncheckedCreateNestedManyWithoutReceiverInput
     friends?: FriendshipUncheckedCreateNestedManyWithoutUserAInput
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutUserBInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationsSent?: NotificationUncheckedCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportUncheckedCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportUncheckedCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockUncheckedCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockUncheckedCreateNestedManyWithoutBlockedInput
   }
 
   export type UserCreateOrConnectWithoutFeedbackGivenInput = {
@@ -7766,12 +11211,18 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackGiven?: FeedbackCreateNestedManyWithoutGiverInput
     friends?: FriendshipCreateNestedManyWithoutUserAInput
     friendOf?: FriendshipCreateNestedManyWithoutUserBInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationsSent?: NotificationCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockCreateNestedManyWithoutBlockedInput
   }
 
   export type UserUncheckedCreateWithoutFeedbackReceivedInput = {
@@ -7786,17 +11237,57 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackGiven?: FeedbackUncheckedCreateNestedManyWithoutGiverInput
     friends?: FriendshipUncheckedCreateNestedManyWithoutUserAInput
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutUserBInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationsSent?: NotificationUncheckedCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportUncheckedCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportUncheckedCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockUncheckedCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockUncheckedCreateNestedManyWithoutBlockedInput
   }
 
   export type UserCreateOrConnectWithoutFeedbackReceivedInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutFeedbackReceivedInput, UserUncheckedCreateWithoutFeedbackReceivedInput>
+  }
+
+  export type ReportCreateWithoutFeedbackInput = {
+    id?: string
+    reason: $Enums.ReportReason
+    details?: string | null
+    status?: $Enums.ReportStatus
+    moderatorNote?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    reporter: UserCreateNestedOneWithoutReportsFiledInput
+    reportedUser?: UserCreateNestedOneWithoutReportsAgainstInput
+  }
+
+  export type ReportUncheckedCreateWithoutFeedbackInput = {
+    id?: string
+    reporterId: string
+    reportedUserId?: string | null
+    reason: $Enums.ReportReason
+    details?: string | null
+    status?: $Enums.ReportStatus
+    moderatorNote?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ReportCreateOrConnectWithoutFeedbackInput = {
+    where: ReportWhereUniqueInput
+    create: XOR<ReportCreateWithoutFeedbackInput, ReportUncheckedCreateWithoutFeedbackInput>
+  }
+
+  export type ReportCreateManyFeedbackInputEnvelope = {
+    data: ReportCreateManyFeedbackInput | ReportCreateManyFeedbackInput[]
+    skipDuplicates?: boolean
   }
 
   export type UserUpsertWithoutFeedbackGivenInput = {
@@ -7822,12 +11313,18 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackReceived?: FeedbackUpdateManyWithoutReceiverNestedInput
     friends?: FriendshipUpdateManyWithoutUserANestedInput
     friendOf?: FriendshipUpdateManyWithoutUserBNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationsSent?: NotificationUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUpdateManyWithoutBlockedNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFeedbackGivenInput = {
@@ -7842,12 +11339,18 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackReceived?: FeedbackUncheckedUpdateManyWithoutReceiverNestedInput
     friends?: FriendshipUncheckedUpdateManyWithoutUserANestedInput
     friendOf?: FriendshipUncheckedUpdateManyWithoutUserBNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationsSent?: NotificationUncheckedUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUncheckedUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUncheckedUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUncheckedUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUncheckedUpdateManyWithoutBlockedNestedInput
   }
 
   export type UserUpsertWithoutFeedbackReceivedInput = {
@@ -7873,12 +11376,18 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackGiven?: FeedbackUpdateManyWithoutGiverNestedInput
     friends?: FriendshipUpdateManyWithoutUserANestedInput
     friendOf?: FriendshipUpdateManyWithoutUserBNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationsSent?: NotificationUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUpdateManyWithoutBlockedNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFeedbackReceivedInput = {
@@ -7893,12 +11402,34 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackGiven?: FeedbackUncheckedUpdateManyWithoutGiverNestedInput
     friends?: FriendshipUncheckedUpdateManyWithoutUserANestedInput
     friendOf?: FriendshipUncheckedUpdateManyWithoutUserBNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationsSent?: NotificationUncheckedUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUncheckedUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUncheckedUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUncheckedUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUncheckedUpdateManyWithoutBlockedNestedInput
+  }
+
+  export type ReportUpsertWithWhereUniqueWithoutFeedbackInput = {
+    where: ReportWhereUniqueInput
+    update: XOR<ReportUpdateWithoutFeedbackInput, ReportUncheckedUpdateWithoutFeedbackInput>
+    create: XOR<ReportCreateWithoutFeedbackInput, ReportUncheckedCreateWithoutFeedbackInput>
+  }
+
+  export type ReportUpdateWithWhereUniqueWithoutFeedbackInput = {
+    where: ReportWhereUniqueInput
+    data: XOR<ReportUpdateWithoutFeedbackInput, ReportUncheckedUpdateWithoutFeedbackInput>
+  }
+
+  export type ReportUpdateManyWithWhereWithoutFeedbackInput = {
+    where: ReportScalarWhereInput
+    data: XOR<ReportUpdateManyMutationInput, ReportUncheckedUpdateManyWithoutFeedbackInput>
   }
 
   export type UserCreateWithoutFriendsInput = {
@@ -7913,12 +11444,18 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackReceived?: FeedbackCreateNestedManyWithoutReceiverInput
     feedbackGiven?: FeedbackCreateNestedManyWithoutGiverInput
     friendOf?: FriendshipCreateNestedManyWithoutUserBInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationsSent?: NotificationCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockCreateNestedManyWithoutBlockedInput
   }
 
   export type UserUncheckedCreateWithoutFriendsInput = {
@@ -7933,12 +11470,18 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackReceived?: FeedbackUncheckedCreateNestedManyWithoutReceiverInput
     feedbackGiven?: FeedbackUncheckedCreateNestedManyWithoutGiverInput
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutUserBInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationsSent?: NotificationUncheckedCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportUncheckedCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportUncheckedCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockUncheckedCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockUncheckedCreateNestedManyWithoutBlockedInput
   }
 
   export type UserCreateOrConnectWithoutFriendsInput = {
@@ -7958,12 +11501,18 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackReceived?: FeedbackCreateNestedManyWithoutReceiverInput
     feedbackGiven?: FeedbackCreateNestedManyWithoutGiverInput
     friends?: FriendshipCreateNestedManyWithoutUserAInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationsSent?: NotificationCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockCreateNestedManyWithoutBlockedInput
   }
 
   export type UserUncheckedCreateWithoutFriendOfInput = {
@@ -7978,12 +11527,18 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackReceived?: FeedbackUncheckedCreateNestedManyWithoutReceiverInput
     feedbackGiven?: FeedbackUncheckedCreateNestedManyWithoutGiverInput
     friends?: FriendshipUncheckedCreateNestedManyWithoutUserAInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationsSent?: NotificationUncheckedCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportUncheckedCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportUncheckedCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockUncheckedCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockUncheckedCreateNestedManyWithoutBlockedInput
   }
 
   export type UserCreateOrConnectWithoutFriendOfInput = {
@@ -8014,12 +11569,18 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackReceived?: FeedbackUpdateManyWithoutReceiverNestedInput
     feedbackGiven?: FeedbackUpdateManyWithoutGiverNestedInput
     friendOf?: FriendshipUpdateManyWithoutUserBNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationsSent?: NotificationUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUpdateManyWithoutBlockedNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFriendsInput = {
@@ -8034,12 +11595,18 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackReceived?: FeedbackUncheckedUpdateManyWithoutReceiverNestedInput
     feedbackGiven?: FeedbackUncheckedUpdateManyWithoutGiverNestedInput
     friendOf?: FriendshipUncheckedUpdateManyWithoutUserBNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationsSent?: NotificationUncheckedUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUncheckedUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUncheckedUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUncheckedUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUncheckedUpdateManyWithoutBlockedNestedInput
   }
 
   export type UserUpsertWithoutFriendOfInput = {
@@ -8065,12 +11632,18 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackReceived?: FeedbackUpdateManyWithoutReceiverNestedInput
     feedbackGiven?: FeedbackUpdateManyWithoutGiverNestedInput
     friends?: FriendshipUpdateManyWithoutUserANestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationsSent?: NotificationUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUpdateManyWithoutBlockedNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFriendOfInput = {
@@ -8085,12 +11658,18 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackReceived?: FeedbackUncheckedUpdateManyWithoutReceiverNestedInput
     feedbackGiven?: FeedbackUncheckedUpdateManyWithoutGiverNestedInput
     friends?: FriendshipUncheckedUpdateManyWithoutUserANestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationsSent?: NotificationUncheckedUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUncheckedUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUncheckedUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUncheckedUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUncheckedUpdateManyWithoutBlockedNestedInput
   }
 
   export type UserCreateWithoutNotificationsInput = {
@@ -8105,12 +11684,18 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackReceived?: FeedbackCreateNestedManyWithoutReceiverInput
     feedbackGiven?: FeedbackCreateNestedManyWithoutGiverInput
     friends?: FriendshipCreateNestedManyWithoutUserAInput
     friendOf?: FriendshipCreateNestedManyWithoutUserBInput
     notificationsSent?: NotificationCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockCreateNestedManyWithoutBlockedInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -8125,12 +11710,18 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackReceived?: FeedbackUncheckedCreateNestedManyWithoutReceiverInput
     feedbackGiven?: FeedbackUncheckedCreateNestedManyWithoutGiverInput
     friends?: FriendshipUncheckedCreateNestedManyWithoutUserAInput
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutUserBInput
     notificationsSent?: NotificationUncheckedCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportUncheckedCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportUncheckedCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockUncheckedCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockUncheckedCreateNestedManyWithoutBlockedInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -8150,12 +11741,18 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackReceived?: FeedbackCreateNestedManyWithoutReceiverInput
     feedbackGiven?: FeedbackCreateNestedManyWithoutGiverInput
     friends?: FriendshipCreateNestedManyWithoutUserAInput
     friendOf?: FriendshipCreateNestedManyWithoutUserBInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    reportsFiled?: ReportCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockCreateNestedManyWithoutBlockedInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsSentInput = {
@@ -8170,12 +11767,18 @@ export namespace Prisma {
     role?: $Enums.Role
     preferredLanguage?: string
     totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
     createdAt?: Date | string
     feedbackReceived?: FeedbackUncheckedCreateNestedManyWithoutReceiverInput
     feedbackGiven?: FeedbackUncheckedCreateNestedManyWithoutGiverInput
     friends?: FriendshipUncheckedCreateNestedManyWithoutUserAInput
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutUserBInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    reportsFiled?: ReportUncheckedCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportUncheckedCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockUncheckedCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockUncheckedCreateNestedManyWithoutBlockedInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsSentInput = {
@@ -8206,12 +11809,18 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackReceived?: FeedbackUpdateManyWithoutReceiverNestedInput
     feedbackGiven?: FeedbackUpdateManyWithoutGiverNestedInput
     friends?: FriendshipUpdateManyWithoutUserANestedInput
     friendOf?: FriendshipUpdateManyWithoutUserBNestedInput
     notificationsSent?: NotificationUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUpdateManyWithoutBlockedNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -8226,12 +11835,18 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackReceived?: FeedbackUncheckedUpdateManyWithoutReceiverNestedInput
     feedbackGiven?: FeedbackUncheckedUpdateManyWithoutGiverNestedInput
     friends?: FriendshipUncheckedUpdateManyWithoutUserANestedInput
     friendOf?: FriendshipUncheckedUpdateManyWithoutUserBNestedInput
     notificationsSent?: NotificationUncheckedUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUncheckedUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUncheckedUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUncheckedUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUncheckedUpdateManyWithoutBlockedNestedInput
   }
 
   export type UserUpsertWithoutNotificationsSentInput = {
@@ -8257,12 +11872,18 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackReceived?: FeedbackUpdateManyWithoutReceiverNestedInput
     feedbackGiven?: FeedbackUpdateManyWithoutGiverNestedInput
     friends?: FriendshipUpdateManyWithoutUserANestedInput
     friendOf?: FriendshipUpdateManyWithoutUserBNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    reportsFiled?: ReportUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUpdateManyWithoutBlockedNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsSentInput = {
@@ -8277,12 +11898,570 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     preferredLanguage?: StringFieldUpdateOperationsInput | string
     totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedbackReceived?: FeedbackUncheckedUpdateManyWithoutReceiverNestedInput
     feedbackGiven?: FeedbackUncheckedUpdateManyWithoutGiverNestedInput
     friends?: FriendshipUncheckedUpdateManyWithoutUserANestedInput
     friendOf?: FriendshipUncheckedUpdateManyWithoutUserBNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    reportsFiled?: ReportUncheckedUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUncheckedUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUncheckedUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUncheckedUpdateManyWithoutBlockedNestedInput
+  }
+
+  export type UserCreateWithoutBlocksInitiatedInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    displayName?: string | null
+    username: string
+    avatarUrl?: string | null
+    bio?: string | null
+    qrCode?: string
+    role?: $Enums.Role
+    preferredLanguage?: string
+    totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
+    createdAt?: Date | string
+    feedbackReceived?: FeedbackCreateNestedManyWithoutReceiverInput
+    feedbackGiven?: FeedbackCreateNestedManyWithoutGiverInput
+    friends?: FriendshipCreateNestedManyWithoutUserAInput
+    friendOf?: FriendshipCreateNestedManyWithoutUserBInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationsSent?: NotificationCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportCreateNestedManyWithoutReportedUserInput
+    blocksReceived?: BlockCreateNestedManyWithoutBlockedInput
+  }
+
+  export type UserUncheckedCreateWithoutBlocksInitiatedInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    displayName?: string | null
+    username: string
+    avatarUrl?: string | null
+    bio?: string | null
+    qrCode?: string
+    role?: $Enums.Role
+    preferredLanguage?: string
+    totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
+    createdAt?: Date | string
+    feedbackReceived?: FeedbackUncheckedCreateNestedManyWithoutReceiverInput
+    feedbackGiven?: FeedbackUncheckedCreateNestedManyWithoutGiverInput
+    friends?: FriendshipUncheckedCreateNestedManyWithoutUserAInput
+    friendOf?: FriendshipUncheckedCreateNestedManyWithoutUserBInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationsSent?: NotificationUncheckedCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportUncheckedCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportUncheckedCreateNestedManyWithoutReportedUserInput
+    blocksReceived?: BlockUncheckedCreateNestedManyWithoutBlockedInput
+  }
+
+  export type UserCreateOrConnectWithoutBlocksInitiatedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutBlocksInitiatedInput, UserUncheckedCreateWithoutBlocksInitiatedInput>
+  }
+
+  export type UserCreateWithoutBlocksReceivedInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    displayName?: string | null
+    username: string
+    avatarUrl?: string | null
+    bio?: string | null
+    qrCode?: string
+    role?: $Enums.Role
+    preferredLanguage?: string
+    totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
+    createdAt?: Date | string
+    feedbackReceived?: FeedbackCreateNestedManyWithoutReceiverInput
+    feedbackGiven?: FeedbackCreateNestedManyWithoutGiverInput
+    friends?: FriendshipCreateNestedManyWithoutUserAInput
+    friendOf?: FriendshipCreateNestedManyWithoutUserBInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationsSent?: NotificationCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockCreateNestedManyWithoutBlockerInput
+  }
+
+  export type UserUncheckedCreateWithoutBlocksReceivedInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    displayName?: string | null
+    username: string
+    avatarUrl?: string | null
+    bio?: string | null
+    qrCode?: string
+    role?: $Enums.Role
+    preferredLanguage?: string
+    totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
+    createdAt?: Date | string
+    feedbackReceived?: FeedbackUncheckedCreateNestedManyWithoutReceiverInput
+    feedbackGiven?: FeedbackUncheckedCreateNestedManyWithoutGiverInput
+    friends?: FriendshipUncheckedCreateNestedManyWithoutUserAInput
+    friendOf?: FriendshipUncheckedCreateNestedManyWithoutUserBInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationsSent?: NotificationUncheckedCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportUncheckedCreateNestedManyWithoutReporterInput
+    reportsAgainst?: ReportUncheckedCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockUncheckedCreateNestedManyWithoutBlockerInput
+  }
+
+  export type UserCreateOrConnectWithoutBlocksReceivedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutBlocksReceivedInput, UserUncheckedCreateWithoutBlocksReceivedInput>
+  }
+
+  export type UserUpsertWithoutBlocksInitiatedInput = {
+    update: XOR<UserUpdateWithoutBlocksInitiatedInput, UserUncheckedUpdateWithoutBlocksInitiatedInput>
+    create: XOR<UserCreateWithoutBlocksInitiatedInput, UserUncheckedCreateWithoutBlocksInitiatedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutBlocksInitiatedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutBlocksInitiatedInput, UserUncheckedUpdateWithoutBlocksInitiatedInput>
+  }
+
+  export type UserUpdateWithoutBlocksInitiatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    qrCode?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedbackReceived?: FeedbackUpdateManyWithoutReceiverNestedInput
+    feedbackGiven?: FeedbackUpdateManyWithoutGiverNestedInput
+    friends?: FriendshipUpdateManyWithoutUserANestedInput
+    friendOf?: FriendshipUpdateManyWithoutUserBNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationsSent?: NotificationUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUpdateManyWithoutReportedUserNestedInput
+    blocksReceived?: BlockUpdateManyWithoutBlockedNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutBlocksInitiatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    qrCode?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedbackReceived?: FeedbackUncheckedUpdateManyWithoutReceiverNestedInput
+    feedbackGiven?: FeedbackUncheckedUpdateManyWithoutGiverNestedInput
+    friends?: FriendshipUncheckedUpdateManyWithoutUserANestedInput
+    friendOf?: FriendshipUncheckedUpdateManyWithoutUserBNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationsSent?: NotificationUncheckedUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUncheckedUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUncheckedUpdateManyWithoutReportedUserNestedInput
+    blocksReceived?: BlockUncheckedUpdateManyWithoutBlockedNestedInput
+  }
+
+  export type UserUpsertWithoutBlocksReceivedInput = {
+    update: XOR<UserUpdateWithoutBlocksReceivedInput, UserUncheckedUpdateWithoutBlocksReceivedInput>
+    create: XOR<UserCreateWithoutBlocksReceivedInput, UserUncheckedCreateWithoutBlocksReceivedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutBlocksReceivedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutBlocksReceivedInput, UserUncheckedUpdateWithoutBlocksReceivedInput>
+  }
+
+  export type UserUpdateWithoutBlocksReceivedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    qrCode?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedbackReceived?: FeedbackUpdateManyWithoutReceiverNestedInput
+    feedbackGiven?: FeedbackUpdateManyWithoutGiverNestedInput
+    friends?: FriendshipUpdateManyWithoutUserANestedInput
+    friendOf?: FriendshipUpdateManyWithoutUserBNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationsSent?: NotificationUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUpdateManyWithoutBlockerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutBlocksReceivedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    qrCode?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedbackReceived?: FeedbackUncheckedUpdateManyWithoutReceiverNestedInput
+    feedbackGiven?: FeedbackUncheckedUpdateManyWithoutGiverNestedInput
+    friends?: FriendshipUncheckedUpdateManyWithoutUserANestedInput
+    friendOf?: FriendshipUncheckedUpdateManyWithoutUserBNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationsSent?: NotificationUncheckedUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUncheckedUpdateManyWithoutReporterNestedInput
+    reportsAgainst?: ReportUncheckedUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUncheckedUpdateManyWithoutBlockerNestedInput
+  }
+
+  export type UserCreateWithoutReportsFiledInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    displayName?: string | null
+    username: string
+    avatarUrl?: string | null
+    bio?: string | null
+    qrCode?: string
+    role?: $Enums.Role
+    preferredLanguage?: string
+    totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
+    createdAt?: Date | string
+    feedbackReceived?: FeedbackCreateNestedManyWithoutReceiverInput
+    feedbackGiven?: FeedbackCreateNestedManyWithoutGiverInput
+    friends?: FriendshipCreateNestedManyWithoutUserAInput
+    friendOf?: FriendshipCreateNestedManyWithoutUserBInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationsSent?: NotificationCreateNestedManyWithoutFromUserInput
+    reportsAgainst?: ReportCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockCreateNestedManyWithoutBlockedInput
+  }
+
+  export type UserUncheckedCreateWithoutReportsFiledInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    displayName?: string | null
+    username: string
+    avatarUrl?: string | null
+    bio?: string | null
+    qrCode?: string
+    role?: $Enums.Role
+    preferredLanguage?: string
+    totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
+    createdAt?: Date | string
+    feedbackReceived?: FeedbackUncheckedCreateNestedManyWithoutReceiverInput
+    feedbackGiven?: FeedbackUncheckedCreateNestedManyWithoutGiverInput
+    friends?: FriendshipUncheckedCreateNestedManyWithoutUserAInput
+    friendOf?: FriendshipUncheckedCreateNestedManyWithoutUserBInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationsSent?: NotificationUncheckedCreateNestedManyWithoutFromUserInput
+    reportsAgainst?: ReportUncheckedCreateNestedManyWithoutReportedUserInput
+    blocksInitiated?: BlockUncheckedCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockUncheckedCreateNestedManyWithoutBlockedInput
+  }
+
+  export type UserCreateOrConnectWithoutReportsFiledInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReportsFiledInput, UserUncheckedCreateWithoutReportsFiledInput>
+  }
+
+  export type UserCreateWithoutReportsAgainstInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    displayName?: string | null
+    username: string
+    avatarUrl?: string | null
+    bio?: string | null
+    qrCode?: string
+    role?: $Enums.Role
+    preferredLanguage?: string
+    totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
+    createdAt?: Date | string
+    feedbackReceived?: FeedbackCreateNestedManyWithoutReceiverInput
+    feedbackGiven?: FeedbackCreateNestedManyWithoutGiverInput
+    friends?: FriendshipCreateNestedManyWithoutUserAInput
+    friendOf?: FriendshipCreateNestedManyWithoutUserBInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationsSent?: NotificationCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportCreateNestedManyWithoutReporterInput
+    blocksInitiated?: BlockCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockCreateNestedManyWithoutBlockedInput
+  }
+
+  export type UserUncheckedCreateWithoutReportsAgainstInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    displayName?: string | null
+    username: string
+    avatarUrl?: string | null
+    bio?: string | null
+    qrCode?: string
+    role?: $Enums.Role
+    preferredLanguage?: string
+    totalPoints?: number
+    suspendedAt?: Date | string | null
+    lastActiveAt?: Date | string
+    createdAt?: Date | string
+    feedbackReceived?: FeedbackUncheckedCreateNestedManyWithoutReceiverInput
+    feedbackGiven?: FeedbackUncheckedCreateNestedManyWithoutGiverInput
+    friends?: FriendshipUncheckedCreateNestedManyWithoutUserAInput
+    friendOf?: FriendshipUncheckedCreateNestedManyWithoutUserBInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationsSent?: NotificationUncheckedCreateNestedManyWithoutFromUserInput
+    reportsFiled?: ReportUncheckedCreateNestedManyWithoutReporterInput
+    blocksInitiated?: BlockUncheckedCreateNestedManyWithoutBlockerInput
+    blocksReceived?: BlockUncheckedCreateNestedManyWithoutBlockedInput
+  }
+
+  export type UserCreateOrConnectWithoutReportsAgainstInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReportsAgainstInput, UserUncheckedCreateWithoutReportsAgainstInput>
+  }
+
+  export type FeedbackCreateWithoutReportsInput = {
+    id?: string
+    type: $Enums.FeedbackType
+    message: string
+    imageUrl?: string | null
+    points?: number
+    isPublic?: boolean
+    status?: $Enums.FeedbackStatus
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    giver: UserCreateNestedOneWithoutFeedbackGivenInput
+    receiver: UserCreateNestedOneWithoutFeedbackReceivedInput
+  }
+
+  export type FeedbackUncheckedCreateWithoutReportsInput = {
+    id?: string
+    giverId: string
+    receiverId: string
+    type: $Enums.FeedbackType
+    message: string
+    imageUrl?: string | null
+    points?: number
+    isPublic?: boolean
+    status?: $Enums.FeedbackStatus
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type FeedbackCreateOrConnectWithoutReportsInput = {
+    where: FeedbackWhereUniqueInput
+    create: XOR<FeedbackCreateWithoutReportsInput, FeedbackUncheckedCreateWithoutReportsInput>
+  }
+
+  export type UserUpsertWithoutReportsFiledInput = {
+    update: XOR<UserUpdateWithoutReportsFiledInput, UserUncheckedUpdateWithoutReportsFiledInput>
+    create: XOR<UserCreateWithoutReportsFiledInput, UserUncheckedCreateWithoutReportsFiledInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReportsFiledInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReportsFiledInput, UserUncheckedUpdateWithoutReportsFiledInput>
+  }
+
+  export type UserUpdateWithoutReportsFiledInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    qrCode?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedbackReceived?: FeedbackUpdateManyWithoutReceiverNestedInput
+    feedbackGiven?: FeedbackUpdateManyWithoutGiverNestedInput
+    friends?: FriendshipUpdateManyWithoutUserANestedInput
+    friendOf?: FriendshipUpdateManyWithoutUserBNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationsSent?: NotificationUpdateManyWithoutFromUserNestedInput
+    reportsAgainst?: ReportUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUpdateManyWithoutBlockedNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReportsFiledInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    qrCode?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedbackReceived?: FeedbackUncheckedUpdateManyWithoutReceiverNestedInput
+    feedbackGiven?: FeedbackUncheckedUpdateManyWithoutGiverNestedInput
+    friends?: FriendshipUncheckedUpdateManyWithoutUserANestedInput
+    friendOf?: FriendshipUncheckedUpdateManyWithoutUserBNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationsSent?: NotificationUncheckedUpdateManyWithoutFromUserNestedInput
+    reportsAgainst?: ReportUncheckedUpdateManyWithoutReportedUserNestedInput
+    blocksInitiated?: BlockUncheckedUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUncheckedUpdateManyWithoutBlockedNestedInput
+  }
+
+  export type UserUpsertWithoutReportsAgainstInput = {
+    update: XOR<UserUpdateWithoutReportsAgainstInput, UserUncheckedUpdateWithoutReportsAgainstInput>
+    create: XOR<UserCreateWithoutReportsAgainstInput, UserUncheckedCreateWithoutReportsAgainstInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReportsAgainstInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReportsAgainstInput, UserUncheckedUpdateWithoutReportsAgainstInput>
+  }
+
+  export type UserUpdateWithoutReportsAgainstInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    qrCode?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedbackReceived?: FeedbackUpdateManyWithoutReceiverNestedInput
+    feedbackGiven?: FeedbackUpdateManyWithoutGiverNestedInput
+    friends?: FriendshipUpdateManyWithoutUserANestedInput
+    friendOf?: FriendshipUpdateManyWithoutUserBNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationsSent?: NotificationUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUpdateManyWithoutReporterNestedInput
+    blocksInitiated?: BlockUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUpdateManyWithoutBlockedNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReportsAgainstInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    qrCode?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
+    totalPoints?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActiveAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedbackReceived?: FeedbackUncheckedUpdateManyWithoutReceiverNestedInput
+    feedbackGiven?: FeedbackUncheckedUpdateManyWithoutGiverNestedInput
+    friends?: FriendshipUncheckedUpdateManyWithoutUserANestedInput
+    friendOf?: FriendshipUncheckedUpdateManyWithoutUserBNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationsSent?: NotificationUncheckedUpdateManyWithoutFromUserNestedInput
+    reportsFiled?: ReportUncheckedUpdateManyWithoutReporterNestedInput
+    blocksInitiated?: BlockUncheckedUpdateManyWithoutBlockerNestedInput
+    blocksReceived?: BlockUncheckedUpdateManyWithoutBlockedNestedInput
+  }
+
+  export type FeedbackUpsertWithoutReportsInput = {
+    update: XOR<FeedbackUpdateWithoutReportsInput, FeedbackUncheckedUpdateWithoutReportsInput>
+    create: XOR<FeedbackCreateWithoutReportsInput, FeedbackUncheckedCreateWithoutReportsInput>
+    where?: FeedbackWhereInput
+  }
+
+  export type FeedbackUpdateToOneWithWhereWithoutReportsInput = {
+    where?: FeedbackWhereInput
+    data: XOR<FeedbackUpdateWithoutReportsInput, FeedbackUncheckedUpdateWithoutReportsInput>
+  }
+
+  export type FeedbackUpdateWithoutReportsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumFeedbackTypeFieldUpdateOperationsInput | $Enums.FeedbackType
+    message?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    points?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    giver?: UserUpdateOneRequiredWithoutFeedbackGivenNestedInput
+    receiver?: UserUpdateOneRequiredWithoutFeedbackReceivedNestedInput
+  }
+
+  export type FeedbackUncheckedUpdateWithoutReportsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    giverId?: StringFieldUpdateOperationsInput | string
+    receiverId?: StringFieldUpdateOperationsInput | string
+    type?: EnumFeedbackTypeFieldUpdateOperationsInput | $Enums.FeedbackType
+    message?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    points?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FeedbackCreateManyReceiverInput = {
@@ -8343,6 +12522,42 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type ReportCreateManyReporterInput = {
+    id?: string
+    reportedUserId?: string | null
+    feedbackId?: string | null
+    reason: $Enums.ReportReason
+    details?: string | null
+    status?: $Enums.ReportStatus
+    moderatorNote?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ReportCreateManyReportedUserInput = {
+    id?: string
+    reporterId: string
+    feedbackId?: string | null
+    reason: $Enums.ReportReason
+    details?: string | null
+    status?: $Enums.ReportStatus
+    moderatorNote?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type BlockCreateManyBlockerInput = {
+    id?: string
+    blockedId: string
+    createdAt?: Date | string
+  }
+
+  export type BlockCreateManyBlockedInput = {
+    id?: string
+    blockerId: string
+    createdAt?: Date | string
+  }
+
   export type FeedbackUpdateWithoutReceiverInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumFeedbackTypeFieldUpdateOperationsInput | $Enums.FeedbackType
@@ -8354,6 +12569,7 @@ export namespace Prisma {
     reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     giver?: UserUpdateOneRequiredWithoutFeedbackGivenNestedInput
+    reports?: ReportUpdateManyWithoutFeedbackNestedInput
   }
 
   export type FeedbackUncheckedUpdateWithoutReceiverInput = {
@@ -8367,6 +12583,7 @@ export namespace Prisma {
     status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
     reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reports?: ReportUncheckedUpdateManyWithoutFeedbackNestedInput
   }
 
   export type FeedbackUncheckedUpdateManyWithoutReceiverInput = {
@@ -8393,6 +12610,7 @@ export namespace Prisma {
     reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     receiver?: UserUpdateOneRequiredWithoutFeedbackReceivedNestedInput
+    reports?: ReportUpdateManyWithoutFeedbackNestedInput
   }
 
   export type FeedbackUncheckedUpdateWithoutGiverInput = {
@@ -8406,6 +12624,7 @@ export namespace Prisma {
     status?: EnumFeedbackStatusFieldUpdateOperationsInput | $Enums.FeedbackStatus
     reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reports?: ReportUncheckedUpdateManyWithoutFeedbackNestedInput
   }
 
   export type FeedbackUncheckedUpdateManyWithoutGiverInput = {
@@ -8517,6 +12736,162 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ReportUpdateWithoutReporterInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    moderatorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportedUser?: UserUpdateOneWithoutReportsAgainstNestedInput
+    feedback?: FeedbackUpdateOneWithoutReportsNestedInput
+  }
+
+  export type ReportUncheckedUpdateWithoutReporterInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    feedbackId?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    moderatorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportUncheckedUpdateManyWithoutReporterInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    feedbackId?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    moderatorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportUpdateWithoutReportedUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    moderatorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reporter?: UserUpdateOneRequiredWithoutReportsFiledNestedInput
+    feedback?: FeedbackUpdateOneWithoutReportsNestedInput
+  }
+
+  export type ReportUncheckedUpdateWithoutReportedUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reporterId?: StringFieldUpdateOperationsInput | string
+    feedbackId?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    moderatorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportUncheckedUpdateManyWithoutReportedUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reporterId?: StringFieldUpdateOperationsInput | string
+    feedbackId?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    moderatorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BlockUpdateWithoutBlockerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    blocked?: UserUpdateOneRequiredWithoutBlocksReceivedNestedInput
+  }
+
+  export type BlockUncheckedUpdateWithoutBlockerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    blockedId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BlockUncheckedUpdateManyWithoutBlockerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    blockedId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BlockUpdateWithoutBlockedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    blocker?: UserUpdateOneRequiredWithoutBlocksInitiatedNestedInput
+  }
+
+  export type BlockUncheckedUpdateWithoutBlockedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    blockerId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BlockUncheckedUpdateManyWithoutBlockedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    blockerId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportCreateManyFeedbackInput = {
+    id?: string
+    reporterId: string
+    reportedUserId?: string | null
+    reason: $Enums.ReportReason
+    details?: string | null
+    status?: $Enums.ReportStatus
+    moderatorNote?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ReportUpdateWithoutFeedbackInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    moderatorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reporter?: UserUpdateOneRequiredWithoutReportsFiledNestedInput
+    reportedUser?: UserUpdateOneWithoutReportsAgainstNestedInput
+  }
+
+  export type ReportUncheckedUpdateWithoutFeedbackInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reporterId?: StringFieldUpdateOperationsInput | string
+    reportedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    moderatorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportUncheckedUpdateManyWithoutFeedbackInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reporterId?: StringFieldUpdateOperationsInput | string
+    reportedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    moderatorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
 
 
   /**
@@ -8526,6 +12901,10 @@ export namespace Prisma {
      * @deprecated Use UserCountOutputTypeDefaultArgs instead
      */
     export type UserCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = UserCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use FeedbackCountOutputTypeDefaultArgs instead
+     */
+    export type FeedbackCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FeedbackCountOutputTypeDefaultArgs<ExtArgs>
     /**
      * @deprecated Use UserDefaultArgs instead
      */
@@ -8542,6 +12921,14 @@ export namespace Prisma {
      * @deprecated Use NotificationDefaultArgs instead
      */
     export type NotificationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = NotificationDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use BlockDefaultArgs instead
+     */
+    export type BlockArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BlockDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ReportDefaultArgs instead
+     */
+    export type ReportArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ReportDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

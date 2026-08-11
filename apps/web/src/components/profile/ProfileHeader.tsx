@@ -31,23 +31,22 @@ export function ProfileHeader({
       </div>
 
       <div className="flex-1 lg:flex lg:min-h-[132px] lg:flex-col">
-        {children ?? (
+        {children ? children : (
           <>
-            <h2 className="font-display text-[22px] font-bold text-text-primary m-0 mb-0.5">
+            <h2 className="m-0 font-display text-[22px] font-bold text-text-primary">
               {displayName || username}
             </h2>
-            <p className="text-[13px] text-text-muted mt-0 mb-2">@{username}</p>
-            {bio && <p className="text-sm text-text-secondary mb-3">{bio}</p>}
+            {bio && <p className="mb-1 mt-1 text-[13px] leading-5 text-text-secondary">{bio}</p>}
+            <p className="mb-2 mt-0 text-xs text-text-muted">@{username}</p>
           </>
         )}
 
-        <div className="mt-4 flex flex-col items-center gap-2 lg:mt-auto lg:items-start">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-3 lg:mt-auto lg:justify-between">
           <div className="flex items-center gap-2.5">
             <TierBadge points={totalPoints} locale={locale} />
-            <span className="font-bold text-xl text-accent">{totalPoints}</span>
-            <span className="text-lg leading-none text-accent" aria-label="lumens" title="Lumens">✦</span>
+            <span className="text-sm font-semibold text-text-primary"><span className="tabular-nums">{totalPoints}</span> Lumens</span>
           </div>
-          {actions && <div className="flex gap-2 justify-center lg:justify-start">{actions}</div>}
+          {actions && <div className="flex gap-2 justify-center lg:justify-end">{actions}</div>}
         </div>
       </div>
     </div>

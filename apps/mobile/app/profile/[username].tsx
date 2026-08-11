@@ -7,7 +7,7 @@ import { Avatar } from '../../src/components/Avatar';
 import { Badge } from '../../src/components/Badge';
 import { TierBadge } from '../../src/components/TierBadge';
 import { useAuth } from '../../src/context/auth.context';
-import { usersApi, friendsApi } from '../../src/lib/api';
+import { usersApi, friendsApi, safetyApi } from '../../src/lib/api';
 import { formatReflectionDate } from '@merror/shared';
 import type { PublicUser, FeedbackItem } from '@merror/shared';
 
@@ -58,8 +58,8 @@ export default function PublicProfileScreen() {
       <View style={styles.header}>
         <Avatar displayName={profile.displayName} username={profile.username} size={72} />
         <Text style={styles.name}>{profile.displayName || profile.username}</Text>
-        <Text style={styles.uname}>@{profile.username}</Text>
         {profile.bio && <Text style={styles.bio}>{profile.bio}</Text>}
+        <Text style={styles.uname}>@{profile.username}</Text>
         <View style={styles.pointsRow}>
           <Text style={styles.pointsNum}>{profile.totalPoints}</Text>
           <Text style={styles.lumenMark} accessibilityLabel="lumens">✦</Text>
@@ -73,6 +73,13 @@ export default function PublicProfileScreen() {
             </TouchableOpacity>
             <TouchableOpacity style={styles.outlineBtn} onPress={handleAddFriend}>
               <Text style={styles.outlineBtnText}>Add Friend</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.safetyBtn} onPress={() => Alert.alert('Safety options', 'Report or block this account?', [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Report', onPress: () => safetyApi.report({ reportedUserId: profile.id, reason: 'OTHER' }).then(() => Alert.alert('Report submitted')) },
+              { text: 'Block', style: 'destructive', onPress: () => safetyApi.block(profile.id).then(() => router.replace('/(tabs)/feed')).catch((error) => Alert.alert('Could not block', (error as Error).message)) },
+            ])}>
+              <Text style={styles.safetyText}>Safety</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -118,8 +125,8 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   header: { alignItems: 'center', padding: 20, paddingBottom: 8 },
   name: { fontSize: 20, fontWeight: '700', color: '#111827', marginTop: 10 },
-  uname: { fontSize: 13, color: '#6B7280', marginTop: 2 },
-  bio: { fontSize: 14, color: '#374151', textAlign: 'center', marginTop: 6, paddingHorizontal: 24 },
+  uname: { fontSize: 12, color: '#6B7280', marginTop: 4 },
+  bio: { fontSize: 13, color: '#374151', textAlign: 'center', marginTop: 4, paddingHorizontal: 24, lineHeight: 18 },
   pointsRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 },
   pointsNum: { fontSize: 22, fontWeight: '800', color: '#BE5B8E' },
   pointsLabel: { fontSize: 12, color: '#9CA3AF' },
@@ -128,6 +135,8 @@ const styles = StyleSheet.create({
   btnText: { color: '#fff', fontWeight: '700', fontSize: 13 },
   outlineBtn: { borderWidth: 1.5, borderColor: '#BE5B8E', paddingHorizontal: 16, paddingVertical: 9, borderRadius: 12, alignItems: 'center' },
   outlineBtnText: { color: '#BE5B8E', fontWeight: '700', fontSize: 13 },
+  safetyBtn: { borderWidth: 1, borderColor: '#D1D5DB', paddingHorizontal: 12, paddingVertical: 9, borderRadius: 12, alignItems: 'center' },
+  safetyText: { color: '#6B7280', fontWeight: '700', fontSize: 12 },
   tabs: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#E5E7EB', marginTop: 16 },
   tab: { flex: 1, paddingVertical: 13, alignItems: 'center' },
   tabActive: { borderBottomWidth: 2, borderBottomColor: '#BE5B8E' },

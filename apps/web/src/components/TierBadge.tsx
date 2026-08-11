@@ -1,41 +1,31 @@
 'use client';
 
 import Link from 'next/link';
-import { Sparkles, Zap, Sun, Gem, type LucideIcon } from 'lucide-react';
 import { getTier } from '@merror/shared';
 import { useTheme } from '@/context/theme.context';
-import { cn } from '@/lib/utils';
-
-const TIER_ICON: Record<string, LucideIcon> = {
-  'first-light': Sparkles,
-  'bright-spark': Zap,
-  beacon: Sun,
-  luminary: Gem,
-};
 
 export function TierBadge({ points, locale }: { points: number; locale?: string }) {
   const { theme } = useTheme();
   const tier = getTier(points);
   const isDark = theme === 'dark';
-  const isLegend = tier.id === 'luminary';
-  const Icon = TIER_ICON[tier.id];
+  const isSolaria = tier.id === 'luminary';
+  const isLuminary = tier.id === 'beacon';
+  const tierEffect = isSolaria
+    ? 'backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_0_7px_rgba(255,255,255,0.9),0_0_14px_rgba(94,234,212,0.48),0_0_22px_rgba(167,139,250,0.38)] before:absolute before:inset-y-0 before:left-[-45%] before:w-[38%] before:skew-x-[-18deg] before:bg-gradient-to-r before:from-transparent before:via-white/80 before:to-transparent before:content-[""] hover:before:left-[115%] before:transition-[left] before:duration-700'
+    : isLuminary
+      ? 'shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_0_7px_rgba(234,179,8,0.34),0_3px_12px_rgba(161,98,7,0.18)]'
+      : 'shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]';
 
   const inner = (
     <span
-      className={cn(
-        'inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg text-[10px] font-extrabold uppercase leading-none tracking-[0.08em] transition-all duration-200',
-        isLegend ? 'shadow-[0_0_16px_-4px_rgba(251,191,36,0.7)]' : 'shadow-sm'
-      )}
+      className={`relative inline-flex items-center overflow-hidden whitespace-nowrap rounded-full text-xs font-semibold leading-none tracking-[-0.01em] transition-all duration-200 ${tierEffect}`}
       style={{
         background: isDark ? tier.darkBg ?? tier.bg : tier.bg,
         color: isDark ? tier.darkColor ?? tier.color : tier.color,
         border: `1px solid ${isDark ? tier.darkBorder ?? tier.border : tier.border}`,
-        padding: '5px 9px 5px 7px',
+        padding: '7px 12px',
       }}
     >
-      <span className="flex h-4 w-4 items-center justify-center rounded bg-current/10">
-        <Icon className="h-2.5 w-2.5 shrink-0" fill={tier.id === 'beacon' ? 'currentColor' : 'none'} strokeWidth={2.5} />
-      </span>
       {tier.label}
     </span>
   );

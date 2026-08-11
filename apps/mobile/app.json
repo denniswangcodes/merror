@@ -6,25 +6,21 @@
     "orientation": "portrait",
     "scheme": "merror",
     "userInterfaceStyle": "light",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "backgroundColor": "#FAFAF9",
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.merror.app"
+      "bundleIdentifier": "com.merror.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.merror.app"
+      "package": "com.merror.app",
+      "versionCode": 1
     },
     "web": {
       "bundler": "metro"
@@ -42,6 +38,10 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "privacyUrl": "https://merror.vercel.app/en/privacy",
+      "supportUrl": "https://merror.vercel.app/en/support"
     }
   }
 }

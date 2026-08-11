@@ -3,7 +3,7 @@
 
 generator client {
   provider      = "prisma-client-js"
-  output        = "../generated/prisma-next"
+  output        = "../generated/prisma"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
@@ -21,6 +21,9 @@ enum FeedbackType {
   COMPLIMENT
   HELPFUL_ACT
   MEMORY
+  ENCOURAGEMENT
+  COMMUNITY_SERVICE
+  ENVIRONMENTAL_ACT
 }
 
 enum FeedbackStatus {
@@ -42,19 +45,38 @@ enum NotificationType {
   FEEDBACK_REJECTED
 }
 
+enum ReportReason {
+  HARASSMENT
+  HATE_SPEECH
+  SEXUAL_CONTENT
+  VIOLENCE
+  SPAM
+  IMPERSONATION
+  PRIVACY
+  OTHER
+}
+
+enum ReportStatus {
+  OPEN
+  DISMISSED
+  ACTIONED
+}
+
 model User {
-  id                String   @id @default(cuid())
-  email             String   @unique
+  id                String    @id @default(cuid())
+  email             String    @unique
   passwordHash      String
   displayName       String?
-  username          String   @unique
+  username          String    @unique
   avatarUrl         String?
   bio               String?
-  qrCode            String   @unique @default(cuid())
-  role              Role     @default(USER)
-  preferredLanguage String   @default("en")
-  totalPoints       Int      @default(0)
-  createdAt         DateTime @default(now())
+  qrCode            String    @unique @default(cuid())
+  role              Role      @default(USER)
+  preferredLanguage String    @default("en")
+  totalPoints       Int       @default(0)
+  suspendedAt       DateTime?
+  lastActiveAt      DateTime  @default(now())
+  createdAt         DateTime  @default(now())
 
   feedbackReceived  Feedback[]     @relation("Receiver")
   feedbackGiven     Feedback[]     @relation("Giver")
@@ -62,6 +84,12 @@ model User {
   friendOf          Friendship[]   @relation("UserB")
   notifications     Notification[] @relation("NotificationRecipient")
   notificationsSent Notification[] @relation("NotificationSender")
+  reportsFiled      Report[]       @relation("ReportReporter")
+  reportsAgainst    Report[]       @relation("ReportUser")
+  blocksInitiated   Block[]        @relation("Blocker")
+  blocksReceived    Block[]        @relation("Blocked")
+
+  @@index([lastActiveAt])
 }
 
 model Feedback {
@@ -77,8 +105,9 @@ model Feedback {
   reviewedAt DateTime?
   createdAt  DateTime       @default(now())
 
-  giver    User @relation("Giver", fields: [giverId], references: [id], onDelete: Cascade)
-  receiver User @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  giver    User     @relation("Giver", fields: [giverId], references: [id], onDelete: Cascade)
+  receiver User     @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  reports  Report[]
 }
 
 model Friendship {
@@ -105,4 +134,38 @@ model Notification {
 
   user     User  @relation("NotificationRecipient", fields: [userId], references: [id], onDelete: Cascade)
   fromUser User? @relation("NotificationSender", fields: [fromUserId], references: [id], onDelete: SetNull)
+}
+
+model Block {
+  id        String   @id @default(cuid())
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+
+  blocker User @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+  @@index([blockedId])
+}
+
+model Report {
+  id             String       @id @default(cuid())
+  reporterId     String
+  reportedUserId String?
+  feedbackId     String?
+  reason         ReportReason
+  details        String?
+  status         ReportStatus @default(OPEN)
+  moderatorNote  String?
+  reviewedAt     DateTime?
+  createdAt      DateTime     @default(now())
+
+  reporter     User      @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedUser User?     @relation("ReportUser", fields: [reportedUserId], references: [id], onDelete: SetNull)
+  feedback     Feedback? @relation(fields: [feedbackId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([reportedUserId])
+  @@index([feedbackId])
 }

@@ -3,7 +3,7 @@ import { z } from 'zod';
 // ─────────────────────────────
 // Enums
 // ─────────────────────────────
-export const FeedbackTypeEnum = z.enum(['COMPLIMENT', 'HELPFUL_ACT', 'MEMORY']);
+export const FeedbackTypeEnum = z.enum(['COMPLIMENT', 'HELPFUL_ACT', 'MEMORY', 'ENCOURAGEMENT', 'COMMUNITY_SERVICE', 'ENVIRONMENTAL_ACT']);
 export const FriendStatusEnum = z.enum(['PENDING', 'ACCEPTED']);
 export const RoleEnum = z.enum(['USER', 'ADMIN']);
 

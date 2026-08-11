@@ -97,6 +97,7 @@ export const authApi = {
     }),
   me: () => apiFetch('/api/auth/me'),
   logout: () => apiFetch('/api/auth/logout', { method: 'POST' }),
+  deleteAccount: (password: string) => apiFetch('/api/auth/account', { method: 'DELETE', body: JSON.stringify({ password }) }),
 };
 
 // Users
@@ -140,4 +141,11 @@ export const notificationsApi = {
   getUnreadCount: () => apiFetch<{ count: number }>('/api/notifications/unread-count'),
   markRead: (id: string) => apiFetch(`/api/notifications/${id}/read`, { method: 'PATCH' }),
   markAllRead: () => apiFetch('/api/notifications/read-all', { method: 'PATCH' }),
+};
+
+export const safetyApi = {
+  report: (data: { feedbackId?: string; reportedUserId?: string; reason: string; details?: string }) =>
+    apiFetch('/api/safety/reports', { method: 'POST', body: JSON.stringify(data) }),
+  block: (userId: string) => apiFetch(`/api/safety/blocks/${userId}`, { method: 'POST' }),
+  unblock: (userId: string) => apiFetch(`/api/safety/blocks/${userId}`, { method: 'DELETE' }),
 };

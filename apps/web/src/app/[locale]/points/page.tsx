@@ -1,8 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import Link from 'next/link';
-import { ChevronLeft, Sparkles, HandHeart, Infinity as InfinityIcon } from 'lucide-react';
+import { Sparkles, HandHeart, Infinity as InfinityIcon } from 'lucide-react';
 import { TierBadge } from '@/components/TierBadge';
 import { Badge } from '@/components/Badge';
 import { Card } from '@/components/ui/Card';
@@ -26,6 +25,7 @@ const REFLECTION_TYPES: { type: FeedbackType; desc: string }[] = [
   { type: 'COMPLIMENT', desc: 'Recognize the character, energy, or work that makes someone exceptional.' },
   { type: 'HELPFUL_ACT', desc: 'Record a moment when someone showed up, pitched in, or made life easier.' },
   { type: 'MEMORY', desc: 'Save a meaningful moment you shared and remind someone that it mattered.' },
+  { type: 'COMMUNITY_SERVICE', desc: 'Recognize time and care given to strengthen the wider community.' },
 ];
 
 const SECTION_LABEL = 'text-xs font-semibold text-text-muted uppercase tracking-widest mb-3';
@@ -38,10 +38,6 @@ export default function PointsPage(): JSX.Element {
 
   return (
     <div className="pt-6 pb-12">
-      <Link href={`/${locale}/profile`} className="inline-flex items-center gap-1 text-sm text-text-muted hover:text-text-primary transition-colors no-underline mb-6">
-        <ChevronLeft className="h-4 w-4" /> Back to profile
-      </Link>
-
       <h1 className="font-display text-3xl font-extrabold text-text-primary m-0 mb-1.5 tracking-tight">Your impact, recognized.</h1>
       <p className="text-sm text-text-muted mb-8">Every reflection is proof that something you did mattered to someone.</p>
 

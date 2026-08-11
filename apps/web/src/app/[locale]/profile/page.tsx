@@ -8,7 +8,7 @@ import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/context/auth.context';
-import { feedbackApi, usersApi } from '@/lib/api';
+import { authApi, clearTokens, feedbackApi, usersApi } from '@/lib/api';
 import type { FeedbackItem, PaginatedResponse } from '@merror/shared';
 
 export default function OwnProfilePage(): JSX.Element {
@@ -23,6 +23,10 @@ export default function OwnProfilePage(): JSX.Element {
   const [bio, setBio] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [saving, setSaving] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteError, setDeleteError] = useState('');
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -58,7 +62,7 @@ export default function OwnProfilePage(): JSX.Element {
   const items = tab === 'received' ? received : given;
 
   return (
-    <div className="pb-8 pt-7">
+    <div className="pb-8 pt-6">
       <header className="mb-4 px-1">
         <h1 className="font-display text-[22px] font-bold text-text-primary m-0 mb-0.5">Your Profile</h1>
         <p className="m-0 text-sm text-text-muted">Your place to settle in and make Merror yours.</p>
@@ -144,6 +148,39 @@ export default function OwnProfilePage(): JSX.Element {
           items.map((item, index) => <FeedCard key={item.id} item={item} locale={locale} index={index} />)
         )}
       </div>
+
+      <section className="mt-10 border-t border-border pt-6">
+        <h2 className="m-0 text-sm font-bold text-text-primary">Account and safety</h2>
+        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs font-medium">
+          <a href={`/${locale}/community-guidelines`} className="text-text-muted no-underline hover:text-accent">Community Guidelines</a>
+          <a href={`/${locale}/privacy`} className="text-text-muted no-underline hover:text-accent">Privacy</a>
+          <a href={`/${locale}/terms`} className="text-text-muted no-underline hover:text-accent">Terms</a>
+          <a href={`/${locale}/support`} className="text-text-muted no-underline hover:text-accent">Support</a>
+        </div>
+        {!showDelete ? (
+          <Button variant="destructive" size="sm" className="mt-5" onClick={() => setShowDelete(true)}>Delete account</Button>
+        ) : (
+          <div className="mt-5 max-w-md rounded-2xl border border-danger/25 bg-danger/5 p-4">
+            <p className="m-0 text-sm font-bold text-text-primary">Permanently delete your account?</p>
+            <p className="mb-4 mt-1 text-xs leading-5 text-text-muted">Your profile, reflections, friendships, and associated content will be permanently removed. This cannot be undone.</p>
+            <Input label="Confirm your password" type="password" value={deletePassword} onChange={(event) => setDeletePassword(event.target.value)} />
+            {deleteError && <p className="mb-0 mt-2 text-xs text-danger">{deleteError}</p>}
+            <div className="mt-3 flex gap-2">
+              <Button variant="destructive" size="sm" loading={deleting} disabled={!deletePassword} onClick={async () => {
+                setDeleting(true); setDeleteError('');
+                try {
+                  await authApi.deleteAccount(deletePassword);
+                  clearTokens();
+                  router.replace(`/${locale}/signup`);
+                } catch (error) {
+                  setDeleteError((error as Error).message);
+                } finally { setDeleting(false); }
+              }}>Delete permanently</Button>
+              <Button variant="secondary" size="sm" onClick={() => { setShowDelete(false); setDeletePassword(''); setDeleteError(''); }}>Cancel</Button>
+            </div>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

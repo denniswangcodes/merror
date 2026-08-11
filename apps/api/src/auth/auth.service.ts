@@ -65,6 +65,7 @@ export class AuthService {
   async login(dto: LoginDto) {
     const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
     if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (user.suspendedAt) throw new UnauthorizedException('Account suspended. Contact support for help.');
 
     const valid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!valid) throw new UnauthorizedException('Invalid credentials');
@@ -76,6 +77,7 @@ export class AuthService {
   async refresh(userId: string, email: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new UnauthorizedException('User not found');
+    if (user.suspendedAt) throw new UnauthorizedException('Account suspended');
 
     const tokens = this.generateTokens(user.id, user.email);
     return { ...tokens, user: this.sanitize(user) };
@@ -85,5 +87,27 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new UnauthorizedException();
     return this.sanitize(user);
+  }
+
+  async deleteAccount(userId: string, password: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException('User not found');
+    const valid = await bcrypt.compare(password, user.passwordHash);
+    if (!valid) throw new BadRequestException('Password is incorrect');
+
+    const affected = await this.prisma.feedback.findMany({
+      where: { giverId: userId, receiverId: { not: userId }, status: 'APPROVED' },
+      distinct: ['receiverId'],
+      select: { receiverId: true },
+    });
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.user.delete({ where: { id: userId } });
+      for (const { receiverId } of affected) {
+        const aggregate = await tx.feedback.aggregate({ where: { receiverId, status: 'APPROVED' }, _sum: { points: true } });
+        await tx.user.update({ where: { id: receiverId }, data: { totalPoints: aggregate._sum.points ?? 0 } });
+      }
+    });
+    return { message: 'Account and associated content deleted' };
   }
 }

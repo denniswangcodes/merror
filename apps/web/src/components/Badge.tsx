@@ -3,12 +3,15 @@
 import { FEEDBACK_TYPE_META } from '@merror/shared';
 import type { FeedbackType } from '@merror/shared';
 import { useTheme } from '@/context/theme.context';
-import { Heart, HandHeart, Camera, type LucideIcon } from 'lucide-react';
+import { Heart, HandHeart, Camera, MessageCircleHeart, Users, Leaf, type LucideIcon } from 'lucide-react';
 
 const ICONS: Record<FeedbackType, LucideIcon> = {
   COMPLIMENT: Heart,
   HELPFUL_ACT: HandHeart,
   MEMORY: Camera,
+  ENCOURAGEMENT: MessageCircleHeart,
+  COMMUNITY_SERVICE: Users,
+  ENVIRONMENTAL_ACT: Leaf,
 };
 
 export function Badge({ type }: { type: FeedbackType }) {

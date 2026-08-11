@@ -17,7 +17,6 @@ async function main() {
         username: 'maya_chen',
         displayName: 'Maya Chen',
         bio: 'Spreading kindness one day at a time ✨',
-        totalPoints: 134,
       },
     }),
     prisma.user.upsert({
@@ -29,7 +28,6 @@ async function main() {
         username: 'javi_reyes',
         displayName: 'Javier Reyes',
         bio: 'Coffee lover, community builder.',
-        totalPoints: 57,
       },
     }),
     prisma.user.upsert({
@@ -41,7 +39,6 @@ async function main() {
         username: 'priya_s',
         displayName: 'Priya Singh',
         bio: 'Making the world a little warmer.',
-        totalPoints: 89,
       },
     }),
     prisma.user.upsert({
@@ -53,7 +50,6 @@ async function main() {
         username: 'tom_okafor',
         displayName: 'Tom Okafor',
         bio: 'Friend to all, enemy to none.',
-        totalPoints: 22,
       },
     }),
     prisma.user.upsert({
@@ -65,7 +61,6 @@ async function main() {
         username: 'lena_bauer',
         displayName: 'Lena Bauer',
         bio: 'Art, empathy, and a good laugh.',
-        totalPoints: 8,
       },
     }),
     prisma.user.upsert({
@@ -77,7 +72,6 @@ async function main() {
         username: 'alex_rivera',
         displayName: 'Alex Rivera',
         bio: 'Just here to make someone\'s day.',
-        totalPoints: 41,
       },
     }),
   ]);
@@ -100,6 +94,18 @@ async function main() {
     });
     if (!exists) await prisma.feedback.create({ data: item });
   }
+
+  // Lumens are derived exclusively from approved reflections received.
+  // Reconcile after every seed so repeated runs cannot leave fabricated totals behind.
+  await prisma.$executeRaw`
+    UPDATE "User" AS users
+    SET "totalPoints" = COALESCE((
+      SELECT SUM(feedback."points")::integer
+      FROM "Feedback" AS feedback
+      WHERE feedback."receiverId" = users."id"
+        AND feedback."status" = 'APPROVED'
+    ), 0)
+  `;
 
   console.log('✅ Seed complete. Users:', users.map((u: { username: string }) => u.username).join(', '));
 }

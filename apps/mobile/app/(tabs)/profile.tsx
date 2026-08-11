@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator,
-  TextInput, Alert, RefreshControl,
+  TextInput, Alert, RefreshControl, Linking,
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { useRouter, useFocusEffect } from 'expo-router';
@@ -9,7 +9,7 @@ import { Avatar } from '../../src/components/Avatar';
 import { Badge } from '../../src/components/Badge';
 import { TierBadge } from '../../src/components/TierBadge';
 import { useAuth } from '../../src/context/auth.context';
-import { feedbackApi, usersApi, notificationsApi } from '../../src/lib/api';
+import { authApi, feedbackApi, usersApi, notificationsApi } from '../../src/lib/api';
 import { useNotifications } from '../../src/context/notifications.context';
 import { formatReflectionDate } from '@merror/shared';
 import type { FeedbackItem, PaginatedResponse } from '@merror/shared';
@@ -26,6 +26,9 @@ export default function ProfileScreen() {
   const [displayName, setDisplayName] = useState('');
   const [saving, setSaving] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleting, setDeleting] = useState(false);
 
   const loadFeedback = useCallback(async () => {
     if (!user) return;
@@ -122,8 +125,8 @@ export default function ProfileScreen() {
         ) : (
           <>
             <Text style={styles.name}>{user.displayName || user.username}</Text>
-            <Text style={styles.uname}>@{user.username}</Text>
             {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
+            <Text style={styles.uname}>@{user.username}</Text>
           </>
         )}
 
@@ -183,6 +186,27 @@ export default function ProfileScreen() {
           })
         )}
       </View>
+
+      <View style={styles.accountSection}>
+        <Text style={styles.accountTitle}>Account and safety</Text>
+        <View style={styles.legalRow}>
+          <TouchableOpacity onPress={() => Linking.openURL('https://merror.vercel.app/en/community-guidelines')}><Text style={styles.legalLink}>Guidelines</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL('https://merror.vercel.app/en/privacy')}><Text style={styles.legalLink}>Privacy</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL('https://merror.vercel.app/en/terms')}><Text style={styles.legalLink}>Terms</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL('https://merror.vercel.app/en/support')}><Text style={styles.legalLink}>Support</Text></TouchableOpacity>
+        </View>
+        {!showDelete ? <TouchableOpacity style={styles.deleteOutline} onPress={() => setShowDelete(true)}><Text style={styles.deleteText}>Delete account</Text></TouchableOpacity> : <View style={styles.deletePanel}>
+          <Text style={styles.deleteTitle}>Permanently delete your account?</Text>
+          <Text style={styles.deleteCopy}>Your profile, reflections, friendships, and associated content will be removed. This cannot be undone.</Text>
+          <TextInput secureTextEntry autoCapitalize="none" style={styles.input} value={deletePassword} onChangeText={setDeletePassword} placeholder="Confirm your password" placeholderTextColor="#8A8791" />
+          <View style={styles.deleteActions}><TouchableOpacity disabled={!deletePassword || deleting} style={[styles.deleteButton, (!deletePassword || deleting) && { opacity: 0.5 }]} onPress={async () => {
+            setDeleting(true);
+            try { await authApi.deleteAccount(deletePassword); await logout(); router.replace('/auth/signup'); }
+            catch (error) { Alert.alert('Could not delete account', (error as Error).message); }
+            finally { setDeleting(false); }
+          }}><Text style={styles.deleteButtonText}>{deleting ? 'Deleting…' : 'Delete permanently'}</Text></TouchableOpacity><TouchableOpacity style={styles.cancelDelete} onPress={() => { setShowDelete(false); setDeletePassword(''); }}><Text style={styles.outlineBtnText}>Cancel</Text></TouchableOpacity></View>
+        </View>}
+      </View>
     </ScrollView>
   );
 }
@@ -196,8 +220,8 @@ const styles = StyleSheet.create({
   outlineBtnText: { color: '#BE5B8E', fontWeight: '700', fontSize: 13 },
   header: { alignItems: 'center', padding: 20, paddingBottom: 8 },
   name: { fontSize: 20, fontWeight: '700', color: '#111827', marginTop: 10 },
-  uname: { fontSize: 13, color: '#6B7280', marginTop: 2 },
-  bio: { fontSize: 14, color: '#374151', textAlign: 'center', marginTop: 6, paddingHorizontal: 20 },
+  uname: { fontSize: 12, color: '#6B7280', marginTop: 4 },
+  bio: { fontSize: 13, color: '#374151', textAlign: 'center', marginTop: 4, paddingHorizontal: 20, lineHeight: 18 },
   pointsRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 },
   pointsNum: { fontSize: 22, fontWeight: '800', color: '#BE5B8E' },
   pointsLabel: { fontSize: 12, color: '#9CA3AF' },
@@ -217,4 +241,13 @@ const styles = StyleSheet.create({
   cardTime: { fontSize: 11, color: '#9CA3AF', marginLeft: 'auto' },
   cardMsg: { fontSize: 15, color: '#111827', lineHeight: 22 },
   empty: { textAlign: 'center', color: '#9CA3AF', fontSize: 14, marginTop: 40 },
+  accountSection: { margin: 12, marginTop: 28, paddingTop: 20, borderTopWidth: 1, borderTopColor: '#E5E7EB' },
+  accountTitle: { fontSize: 15, fontWeight: '700', color: '#111827' },
+  legalRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 16, marginTop: 12 },
+  legalLink: { color: '#6D5BFF', fontSize: 12, fontWeight: '600' },
+  deleteOutline: { alignSelf: 'flex-start', borderWidth: 1, borderColor: '#DC6B75', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 9, marginTop: 18 },
+  deleteText: { color: '#B4232E', fontSize: 12, fontWeight: '700' },
+  deletePanel: { marginTop: 18, borderWidth: 1, borderColor: '#F0B9BE', backgroundColor: '#FFF7F7', borderRadius: 14, padding: 14 },
+  deleteTitle: { color: '#111827', fontSize: 14, fontWeight: '700' }, deleteCopy: { color: '#6B7280', fontSize: 12, lineHeight: 18, marginTop: 4, marginBottom: 12 },
+  deleteActions: { flexDirection: 'row', gap: 8, marginTop: 10 }, deleteButton: { backgroundColor: '#B4232E', borderRadius: 10, paddingHorizontal: 13, paddingVertical: 10 }, deleteButtonText: { color: '#FFFFFF', fontSize: 12, fontWeight: '700' }, cancelDelete: { borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 10, paddingHorizontal: 13, paddingVertical: 10 },
 });

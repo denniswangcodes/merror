@@ -1,7 +1,7 @@
 // ─────────────────────────────
 // Enum types
 // ─────────────────────────────
-export type FeedbackType = 'COMPLIMENT' | 'HELPFUL_ACT' | 'MEMORY';
+export type FeedbackType = 'COMPLIMENT' | 'HELPFUL_ACT' | 'MEMORY' | 'ENCOURAGEMENT' | 'COMMUNITY_SERVICE' | 'ENVIRONMENTAL_ACT';
 export type FeedbackStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 export type FriendStatus = 'PENDING' | 'ACCEPTED';
 export type Role = 'USER' | 'ADMIN';
@@ -11,7 +11,7 @@ export type Role = 'USER' | 'ADMIN';
 // ─────────────────────────────
 export interface PublicUser {
   id: string;
-  email: string;
+  email?: string;
   displayName: string | null;
   username: string;
   avatarUrl: string | null;

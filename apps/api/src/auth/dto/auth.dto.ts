@@ -35,3 +35,9 @@ export class LoginDto {
   @MinLength(1)
   password: string;
 }
+
+export class DeleteAccountDto {
+  @IsString()
+  @MinLength(1)
+  password: string;
+}

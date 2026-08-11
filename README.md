@@ -39,7 +39,7 @@ pnpm install
 docker compose up -d
 ```
 
-This starts PostgreSQL on `localhost:5432` with:
+This starts PostgreSQL on `localhost:5434` with:
 - User: `merror`
 - Password: `merror_password`
 - Database: `merror_db`
@@ -55,7 +55,7 @@ The `.env.example` default values work with the Docker setup out of the box.
 Edit `apps/api/.env` to change JWT secrets (recommended):
 
 ```env
-DATABASE_URL="postgresql://merror:merror_password@localhost:5432/merror_db"
+DATABASE_URL="postgresql://merror:merror_password@localhost:5434/merror_db"
 JWT_SECRET="change-me-to-a-random-secret"
 JWT_REFRESH_SECRET="change-me-to-another-random-secret"
 PORT=4000

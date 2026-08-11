@@ -12,15 +12,20 @@ type FeedCardProps = {
   };
   onGiverPress?: () => void;
   onReceiverPress?: () => void;
+  onReport?: () => void;
+  onShare?: () => void;
 };
 
 const TYPE_DEFAULT_IMAGE: Record<FeedbackItem['type'], string> = {
   COMPLIMENT: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&auto=format&fit=crop&q=85',
   HELPFUL_ACT: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1200&auto=format&fit=crop&q=85',
   MEMORY: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=1200&auto=format&fit=crop&q=85',
+  ENCOURAGEMENT: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&auto=format&fit=crop&q=85',
+  COMMUNITY_SERVICE: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1200&auto=format&fit=crop&q=85',
+  ENVIRONMENTAL_ACT: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1200&auto=format&fit=crop&q=85',
 };
 
-export function FeedCard({ item, onGiverPress, onReceiverPress }: FeedCardProps) {
+export function FeedCard({ item, onGiverPress, onReceiverPress, onReport, onShare }: FeedCardProps) {
   const theme = useAppTheme();
   const giver = item.giver;
   const receiver = item.receiver;
@@ -51,6 +56,7 @@ export function FeedCard({ item, onGiverPress, onReceiverPress }: FeedCardProps)
         </View>
         <View style={styles.meta}><Text style={[styles.quote, { color: theme.accent }]}>”</Text></View>
         <Text style={[styles.message, { color: theme.text }]}>{item.message}</Text>
+        <View style={styles.actions}>{onShare && <TouchableOpacity onPress={onShare} accessibilityLabel="Share reflection" style={styles.reportButton}><Text style={[styles.report, { color: theme.accent }]}>Share</Text></TouchableOpacity>}{onReport && <TouchableOpacity onPress={onReport} accessibilityLabel="Report reflection" style={styles.reportButton}><Text style={[styles.report, { color: theme.muted }]}>Report</Text></TouchableOpacity>}</View>
       </View>
     </View>
   );
@@ -70,4 +76,7 @@ const styles = StyleSheet.create({
   meta: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 4 },
   quote: { fontSize: 28, fontWeight: '900', opacity: 0.22, lineHeight: 28 },
   message: { fontSize: 15, fontWeight: '500', lineHeight: 23 },
+  reportButton: { alignSelf: 'flex-end', marginTop: 10, paddingVertical: 3 },
+  actions: { flexDirection: 'row', alignSelf: 'flex-end', gap: 16 },
+  report: { fontSize: 11, fontWeight: '600' },
 });

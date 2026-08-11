@@ -3,7 +3,7 @@ import {
   View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Alert,
   ActivityIndicator, Keyboard,
 } from 'react-native';
-import { CameraView, requestCameraPermissionsAsync } from 'expo-camera';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
 import { usersApi } from '../../src/lib/api';
@@ -15,15 +15,9 @@ export default function ScanScreen() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<PublicUser[]>([]);
   const [searching, setSearching] = useState(false);
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    requestCameraPermissionsAsync().then(({ status }) => {
-      setHasPermission(status === 'granted');
-    });
-  }, []);
 
   useEffect(() => {
     if (!query.trim()) { setResults([]); return; }
@@ -108,10 +102,10 @@ export default function ScanScreen() {
         </View>
       ) : (
         <View style={{ flex: 1 }}>
-          {!hasPermission ? (
+          {!permission?.granted ? (
             <View style={styles.permContainer}>
               <Text style={styles.permText}>Camera permission needed to scan QR codes</Text>
-              <TouchableOpacity style={styles.permBtn} onPress={() => requestCameraPermissionsAsync().then(({ status }) => setHasPermission(status === 'granted'))}>
+              <TouchableOpacity style={styles.permBtn} onPress={requestPermission}>
                 <Text style={styles.permBtnText}>Grant Permission</Text>
               </TouchableOpacity>
             </View>

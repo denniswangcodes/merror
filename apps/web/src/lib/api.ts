@@ -144,6 +144,7 @@ export const authApi = {
   logout: () => apiFetch('/api/auth/logout', { method: 'POST' }),
 
   me: () => apiFetch<PublicUser>('/api/auth/me'),
+  deleteAccount: (password: string) => apiFetch('/api/auth/account', { method: 'DELETE', body: JSON.stringify({ password }) }),
 };
 
 // ─── Users API ────────────────────────────────────────────────────────────────
@@ -157,7 +158,8 @@ export const usersApi = {
   updateProfile: (data: Partial<PublicUser>) =>
     apiFetch<PublicUser>('/api/users/me', { method: 'PATCH', body: JSON.stringify(data) }),
   getLeaderboard: () => apiFetch<SlimUser[]>('/api/users/leaderboard'),
-  getMyStats: () => apiFetch<{ given: number; received: number }>('/api/users/me/stats'),
+  getMyStats: () => apiFetch<{ given: number; received: number; givenThisWeek: number; receivedThisWeek: number }>('/api/users/me/stats'),
+  getAdminMetrics: () => apiFetch<Record<string, number>>('/api/users/admin/metrics'),
   getSuggestions: () => apiFetch<SlimUser[]>('/api/users/suggestions'),
 };
 
@@ -170,6 +172,7 @@ export const feedbackApi = {
   getGiven: (page = 1) => apiFetch(`/api/feedback/given?page=${page}&limit=20`),
   approve: (id: string) => apiFetch(`/api/feedback/${id}/approve`, { method: 'PATCH' }),
   reject: (id: string) => apiFetch(`/api/feedback/${id}/reject`, { method: 'PATCH' }),
+  remove: (id: string) => apiFetch(`/api/feedback/${id}`, { method: 'DELETE' }),
 };
 
 export const notificationsApi = {
@@ -194,4 +197,15 @@ export const friendsApi = {
     apiFetch('/api/friends/request', { method: 'POST', body: JSON.stringify({ targetUserId }) }),
   accept: (id: string) => apiFetch(`/api/friends/${id}/accept`, { method: 'PATCH' }),
   remove: (id: string) => apiFetch(`/api/friends/${id}`, { method: 'DELETE' }),
+};
+
+export const safetyApi = {
+  report: (data: { feedbackId?: string; reportedUserId?: string; reason: string; details?: string }) =>
+    apiFetch<{ id: string; status: string }>('/api/safety/reports', { method: 'POST', body: JSON.stringify(data) }),
+  block: (userId: string) => apiFetch(`/api/safety/blocks/${userId}`, { method: 'POST' }),
+  unblock: (userId: string) => apiFetch(`/api/safety/blocks/${userId}`, { method: 'DELETE' }),
+  getBlocked: () => apiFetch('/api/safety/blocks'),
+  getReports: () => apiFetch<Array<Record<string, unknown>>>('/api/safety/reports'),
+  reviewReport: (id: string, data: { status: 'DISMISSED' | 'ACTIONED'; action?: 'REMOVE_CONTENT' | 'SUSPEND_USER'; moderatorNote?: string }) =>
+    apiFetch(`/api/safety/reports/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
 };

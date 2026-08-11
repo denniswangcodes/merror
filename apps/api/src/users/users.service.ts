@@ -1,10 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
 const PUBLIC_USER_SELECT = {
   id: true,
-  email: true,
   displayName: true,
   username: true,
   avatarUrl: true,
@@ -20,10 +19,13 @@ const PUBLIC_USER_SELECT = {
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async search(q: string) {
+  async search(q: string, viewerId: string) {
     if (!q || q.length < 1) return [];
+    const excludedIds = await this.blockedUserIds(viewerId);
     return this.prisma.user.findMany({
       where: {
+        id: { notIn: [viewerId, ...excludedIds] },
+        suspendedAt: null,
         OR: [
           { username: { contains: q, mode: 'insensitive' } },
           { displayName: { contains: q, mode: 'insensitive' } },
@@ -34,7 +36,8 @@ export class UsersService {
     });
   }
 
-  async findById(id: string) {
+  async findById(id: string, viewerId: string) {
+    await this.assertVisible(viewerId, id);
     const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
@@ -53,7 +56,10 @@ export class UsersService {
     return user;
   }
 
-  async findByUsername(username: string) {
+  async findByUsername(username: string, viewerId: string) {
+    const target = await this.prisma.user.findUnique({ where: { username }, select: { id: true } });
+    if (!target) throw new NotFoundException('User not found');
+    await this.assertVisible(viewerId, target.id);
     const user = await this.prisma.user.findUnique({
       where: { username },
       select: {
@@ -80,12 +86,13 @@ export class UsersService {
     return user;
   }
 
-  async findByQrCode(qrCode: string) {
+  async findByQrCode(qrCode: string, viewerId: string) {
     const user = await this.prisma.user.findUnique({
       where: { qrCode },
       select: PUBLIC_USER_SELECT,
     });
     if (!user) throw new NotFoundException('QR code not found');
+    await this.assertVisible(viewerId, user.id);
     return user;
   }
 
@@ -108,11 +115,37 @@ export class UsersService {
 
   async getMyStats(userId: string) {
     const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    const [given, received] = await Promise.all([
+    const [given, received, givenThisWeek, receivedThisWeek] = await Promise.all([
+      this.prisma.feedback.count({ where: { giverId: userId, status: 'APPROVED' } }),
+      this.prisma.feedback.count({ where: { receiverId: userId, status: 'APPROVED' } }),
       this.prisma.feedback.count({ where: { giverId: userId, status: 'APPROVED', createdAt: { gte: since } } }),
       this.prisma.feedback.count({ where: { receiverId: userId, status: 'APPROVED', createdAt: { gte: since } } }),
     ]);
-    return { given, received };
+    return { given, received, givenThisWeek, receivedThisWeek };
+  }
+
+  async getAdminMetrics(userId: string) {
+    const admin = await this.prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+    if (admin?.role !== 'ADMIN') throw new ForbiddenException('Admin access required');
+    const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const [totalUsers, newUsers7d, activeUsers7d, approvedTotal, approved7d, pending, rejected, givers7d, receivers7d] = await Promise.all([
+      this.prisma.user.count(),
+      this.prisma.user.count({ where: { createdAt: { gte: since } } }),
+      this.prisma.user.count({ where: { lastActiveAt: { gte: since } } }),
+      this.prisma.feedback.count({ where: { status: 'APPROVED' } }),
+      this.prisma.feedback.count({ where: { status: 'APPROVED', reviewedAt: { gte: since } } }),
+      this.prisma.feedback.count({ where: { status: 'PENDING' } }),
+      this.prisma.feedback.count({ where: { status: 'REJECTED' } }),
+      this.prisma.feedback.groupBy({ by: ['giverId'], where: { status: 'APPROVED', reviewedAt: { gte: since } } }),
+      this.prisma.feedback.groupBy({ by: ['receiverId'], where: { status: 'APPROVED', reviewedAt: { gte: since } } }),
+    ]);
+    const reviewed = approvedTotal + rejected;
+    return {
+      totalUsers, newUsers7d, activeUsers7d, approvedReflections: approvedTotal, approvedReflections7d: approved7d,
+      pendingReflections: pending, approvalRate: reviewed ? Math.round((approvedTotal / reviewed) * 1000) / 10 : 0,
+      uniqueGivers7d: givers7d.length, uniqueReceivers7d: receivers7d.length,
+      approvedReflectionsPerActiveUser7d: activeUsers7d ? Math.round((approved7d / activeUsers7d) * 100) / 100 : 0,
+    };
   }
 
   async getSuggestions(userId: string) {
@@ -150,5 +183,22 @@ export class UsersService {
       select: { id: true, displayName: true, username: true, avatarUrl: true, totalPoints: true },
       take: 3,
     });
+  }
+
+  private async blockedUserIds(userId: string) {
+    const blocks = await this.prisma.block.findMany({
+      where: { OR: [{ blockerId: userId }, { blockedId: userId }] },
+      select: { blockerId: true, blockedId: true },
+    });
+    return blocks.map((item) => item.blockerId === userId ? item.blockedId : item.blockerId);
+  }
+
+  private async assertVisible(viewerId: string, targetId: string) {
+    if (viewerId === targetId) return;
+    const blocked = await this.prisma.block.findFirst({
+      where: { OR: [{ blockerId: viewerId, blockedId: targetId }, { blockerId: targetId, blockedId: viewerId }] },
+      select: { id: true },
+    });
+    if (blocked) throw new ForbiddenException('This profile is unavailable');
   }
 }

@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import { View, FlatList, Text, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, FlatList, Text, StyleSheet, ActivityIndicator, RefreshControl, Alert, Share } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { FeedCard } from '../../src/components/FeedCard';
-import { feedbackApi } from '../../src/lib/api';
+import { feedbackApi, safetyApi } from '../../src/lib/api';
 import type { FeedbackItem, PaginatedResponse } from '@merror/shared';
 import { useAppTheme } from '../../src/lib/theme';
 
@@ -40,6 +40,8 @@ export default function FeedScreen() {
             item={item}
             onGiverPress={item.giver ? () => router.push(`/profile/${item.giver!.username}`) : undefined}
             onReceiverPress={item.receiver ? () => router.push(`/profile/${item.receiver!.username}`) : undefined}
+            onReport={() => Alert.alert('Report reflection', 'Send this reflection to Merror for safety review?', [{ text: 'Cancel', style: 'cancel' }, { text: 'Report', style: 'destructive', onPress: () => safetyApi.report({ feedbackId: item.id, reportedUserId: item.giver?.id, reason: 'OTHER' }).then(() => Alert.alert('Report submitted', 'Thank you for helping keep Merror safe.')).catch((error) => Alert.alert('Could not report', (error as Error).message)) }])}
+            onShare={() => Share.share({ message: `${item.giver?.displayName || item.giver?.username || 'Someone'} recognized ${item.receiver?.displayName || item.receiver?.username || 'someone'} on Merror: “${item.message}”` })}
           />
         )}
         contentContainerStyle={{ paddingVertical: 16 }}

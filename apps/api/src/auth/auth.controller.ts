@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Delete,
   Get,
   Body,
   Res,
@@ -10,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
-import { SignupDto, LoginDto } from './dto/auth.dto';
+import { SignupDto, LoginDto, DeleteAccountDto } from './dto/auth.dto';
 import { JwtGuard } from './guards/jwt.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { GetUser } from '../common/decorators/get-user.decorator';
@@ -65,5 +66,17 @@ export class AuthController {
   @UseGuards(JwtGuard)
   getMe(@GetUser('id') userId: string) {
     return this.authService.getMe(userId);
+  }
+
+  @Delete('account')
+  @UseGuards(JwtGuard)
+  async deleteAccount(
+    @GetUser('id') userId: string,
+    @Body() dto: DeleteAccountDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.deleteAccount(userId, dto.password);
+    res.clearCookie('refresh_token', { path: '/api/auth' });
+    return result;
   }
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Check, HandHeart, Sparkles, UserRoundPlus, Users, X } from 'lucide-react';
+import { Check, Sparkles, UserRoundPlus, Users, X } from 'lucide-react';
 import { getTierProgress } from '@merror/shared';
 import type { FriendshipItem, PublicUser } from '@merror/shared';
 import { useAuth } from '@/context/auth.context';
@@ -27,8 +27,9 @@ export function RightSidebar({ locale }: { locale: string }) {
 
   useEffect(() => {
     if (!user) return;
-    setLoading(true);
-    Promise.all([friendsApi.getFriends(), friendsApi.getPending()])
+    const refreshFriends = () => {
+      setLoading(true);
+      Promise.all([friendsApi.getFriends(), friendsApi.getPending()])
       .then(([friends, requests]) => {
         setFriendships(friends as FriendshipWithUsers[]);
         setPending(requests as FriendshipWithUsers[]);
@@ -38,6 +39,10 @@ export function RightSidebar({ locale }: { locale: string }) {
         setPending([]);
       })
       .finally(() => setLoading(false));
+    };
+    refreshFriends();
+    window.addEventListener('merror:friends-changed', refreshFriends);
+    return () => window.removeEventListener('merror:friends-changed', refreshFriends);
   }, [user]);
 
   const friends = useMemo(() => [...friendships]
@@ -49,8 +54,6 @@ export function RightSidebar({ locale }: { locale: string }) {
     .map((friendship) => ({ friendship, person: personFor(friendship, user?.id) }))
     .filter((item): item is { friendship: FriendshipWithUsers; person: FriendUser } => Boolean(item.person)), [pending, user]);
 
-  const progress = getTierProgress(user?.totalPoints ?? 0);
-
   const handleRequest = async (friendship: FriendshipWithUsers, accept: boolean) => {
     setBusyId(friendship.id);
     try {
@@ -61,6 +64,7 @@ export function RightSidebar({ locale }: { locale: string }) {
         await friendsApi.remove(friendship.id);
       }
       setPending((current) => current.filter((item) => item.id !== friendship.id));
+      window.dispatchEvent(new Event('merror:friends-changed'));
     } finally {
       setBusyId(null);
     }
@@ -69,7 +73,8 @@ export function RightSidebar({ locale }: { locale: string }) {
   if (loading) {
     return (
       <section className="h-full pb-5">
-        <SidebarHeading locale={locale} />
+        {user && <ImpactCard locale={locale} points={user.totalPoints} />}
+        <SidebarHeading />
         <div className="space-y-2">
           {[1, 2, 3, 4, 5, 6].map((item) => (
             <div key={item} className="flex items-center gap-3 rounded-xl px-2 py-2">
@@ -84,7 +89,8 @@ export function RightSidebar({ locale }: { locale: string }) {
 
   return (
     <section className="h-full pb-5">
-      <SidebarHeading locale={locale} />
+      {user && <ImpactCard locale={locale} points={user.totalPoints} />}
+      <SidebarHeading />
 
       {requests.length > 0 && (
         <div className="mb-5">
@@ -118,68 +124,49 @@ export function RightSidebar({ locale }: { locale: string }) {
           <Link href={`/${locale}/friends`} className="mt-2 inline-block text-xs font-semibold text-accent no-underline">Find people</Link>
         </div>
       ) : (
-        <>
-          <div className="mb-5">
-            <p className="mb-2 flex items-center gap-1.5 px-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-              <HandHeart className="h-3.5 w-3.5" /> Brighten someone&apos;s day
-            </p>
-            <div className="space-y-0.5">
-              {friends.slice(0, 3).map((friend) => (
-                <div key={friend.id} className="flex items-center gap-2 rounded-xl px-2 py-2 transition-colors hover:bg-surface">
-                  <Avatar displayName={friend.displayName} username={friend.username} avatarUrl={friend.avatarUrl} size={34} />
-                  <Link href={`/${locale}/profile/${friend.username}`} className="min-w-0 flex-1 truncate text-xs font-semibold text-text-primary no-underline hover:text-accent">
-                    {friend.displayName || friend.username}
-                  </Link>
-                  <Link href={`/${locale}/give/${friend.id}`} className="rounded-lg border border-border bg-surface-raised px-2.5 py-1 text-[11px] font-semibold text-accent no-underline transition-colors hover:border-border-strong hover:bg-background">
-                    Give
-                  </Link>
-                </div>
-              ))}
+        <div className="mb-5 space-y-0.5">
+          {friends.slice(0, 6).map((friend) => (
+            <div key={friend.id} className="flex items-center gap-2 rounded-xl px-2 py-2 transition-colors hover:bg-surface">
+              <Avatar displayName={friend.displayName} username={friend.username} avatarUrl={friend.avatarUrl} size={34} />
+              <Link href={`/${locale}/profile/${friend.username}`} className="min-w-0 flex-1 no-underline">
+                <p className="m-0 truncate text-xs font-semibold text-text-primary">{friend.displayName || friend.username}</p>
+                <p className="m-0 truncate text-[10px] text-text-muted">{friend.totalPoints} lumens</p>
+              </Link>
+              <Link href={`/${locale}/give/${friend.id}`} className="rounded-lg border border-border bg-surface-raised px-2.5 py-1 text-[11px] font-semibold text-accent no-underline transition-colors hover:border-border-strong hover:bg-background">
+                Reflect
+              </Link>
             </div>
-          </div>
-
-          <div className="mb-5">
-            <p className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Recent friends</p>
-            <div className="space-y-0.5">
-              {friends.slice(0, 5).map((friend) => (
-                <Link key={friend.id} href={`/${locale}/profile/${friend.username}`} className="flex items-center gap-3 rounded-xl px-2 py-2 no-underline transition-colors hover:bg-surface">
-                  <Avatar displayName={friend.displayName} username={friend.username} avatarUrl={friend.avatarUrl} size={34} />
-                  <div className="min-w-0 flex-1">
-                    <p className="m-0 truncate text-xs font-semibold text-text-primary">{friend.displayName || friend.username}</p>
-                    <p className="m-0 truncate text-[10px] text-text-muted">{friend.totalPoints} lumens</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-
-      {user && (
-        <Link href={`/${locale}/points`} className="block rounded-2xl border border-border bg-surface p-3 no-underline transition-colors hover:border-border-strong">
-          <div className="mb-2 flex items-center justify-between gap-2">
-            <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-text-muted"><Sparkles className="h-3.5 w-3.5" /> Your impact</span>
-            <span className="text-[11px] font-bold text-text-primary">{progress.tier.label}</span>
-          </div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-background">
-            <div className="brand-gradient-bg h-full rounded-full transition-all" style={{ width: `${progress.progress}%` }} />
-          </div>
-          <p className="m-0 mt-2 text-[11px] text-text-muted">
-            {progress.pointsToNext > 0 ? `${progress.pointsToNext} lumens to the next level` : 'Top status achieved'}
-          </p>
-        </Link>
+          ))}
+        </div>
       )}
     </section>
   );
 }
 
-function SidebarHeading({ locale }: { locale: string }) {
+function ImpactCard({ locale, points }: { locale: string; points: number }) {
+  const progress = getTierProgress(points);
   return (
-    <div className="mb-3 flex items-center justify-between gap-3 px-1">
+    <Link href={`/${locale}/points`} className="mb-5 block rounded-2xl border border-border bg-surface p-3 no-underline transition-colors hover:border-border-strong">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-text-muted"><Sparkles className="h-3.5 w-3.5" /> Your impact</span>
+        <span className="text-[11px] font-bold text-text-primary">{progress.tier.label}</span>
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-background">
+        <div className="brand-gradient-bg h-full rounded-full transition-all" style={{ width: `${progress.progress}%` }} />
+      </div>
+      <p className="m-0 mt-2 text-[11px] text-text-muted">
+        {progress.pointsToNext > 0 ? `${progress.pointsToNext} lumens to the next level` : 'Top status achieved'}
+      </p>
+    </Link>
+  );
+}
+
+function SidebarHeading() {
+  return (
+    <div className="mb-3 px-1">
       <h2 className="m-0 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
         <Users className="h-3.5 w-3.5" /> Your Circle
       </h2>
-      <Link href={`/${locale}/friends`} className="text-[11px] font-semibold text-text-muted no-underline transition-colors hover:text-text-primary">View all</Link>
     </div>
   );
 }

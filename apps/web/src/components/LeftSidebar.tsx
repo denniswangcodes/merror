@@ -44,7 +44,7 @@ export function LeftSidebar({ locale: _locale }: { locale: string }) {
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 flex flex-col py-4 no-underline group"
+                className={`flex-1 flex flex-col pb-4 no-underline group ${i === 0 ? 'pt-0' : 'pt-4'}`}
               >
                 <p className="text-[13px] font-medium text-text-primary leading-snug group-hover:text-accent transition-colors m-0 mb-1.5">
                   {item.title}

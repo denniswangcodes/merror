@@ -37,6 +37,13 @@ export class FriendsService {
 
     const target = await this.prisma.user.findUnique({ where: { id: dto.targetUserId } });
     if (!target) throw new NotFoundException('User not found');
+    if (target.suspendedAt) throw new NotFoundException('User not found');
+
+    const blocked = await this.prisma.block.findFirst({
+      where: { OR: [{ blockerId: userAId, blockedId: dto.targetUserId }, { blockerId: dto.targetUserId, blockedId: userAId }] },
+      select: { id: true },
+    });
+    if (blocked) throw new ForbiddenException('You cannot interact with this user');
 
     // Check if relationship already exists in either direction
     const existing = await this.prisma.friendship.findFirst({

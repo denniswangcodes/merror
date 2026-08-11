@@ -7,7 +7,15 @@ import { useAppTheme } from '../lib/theme';
 export function Badge({ type }: { type: FeedbackType }) {
   const meta = FEEDBACK_TYPE_META[type];
   const theme = useAppTheme();
-  const mark = type === 'COMPLIMENT' ? '♥' : type === 'HELPFUL_ACT' ? '✦' : '●';
+  const marks: Record<FeedbackType, string> = {
+    COMPLIMENT: '\u2665',
+    HELPFUL_ACT: '\u2726',
+    MEMORY: '\u25CF',
+    ENCOURAGEMENT: '\u2191',
+    COMMUNITY_SERVICE: '\u25C6',
+    ENVIRONMENTAL_ACT: '\u25B2',
+  };
+  const mark = marks[type];
   return (
     <View style={[styles.badge, { backgroundColor: theme.dark ? meta.darkBg : meta.bg, borderColor: `${theme.dark ? meta.darkColor : meta.color}35` }]}>
       <Text style={[styles.mark, { color: theme.dark ? meta.darkColor : meta.color }]}>{mark}</Text>

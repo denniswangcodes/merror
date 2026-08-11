@@ -5,8 +5,8 @@ export class CreateFeedbackDto {
   @MinLength(1)
   receiverId: string;
 
-  @IsEnum(['COMPLIMENT', 'HELPFUL_ACT', 'MEMORY'])
-  type: 'COMPLIMENT' | 'HELPFUL_ACT' | 'MEMORY';
+  @IsEnum(['COMPLIMENT', 'HELPFUL_ACT', 'MEMORY', 'ENCOURAGEMENT', 'COMMUNITY_SERVICE', 'ENVIRONMENTAL_ACT'])
+  type: 'COMPLIMENT' | 'HELPFUL_ACT' | 'MEMORY' | 'ENCOURAGEMENT' | 'COMMUNITY_SERVICE' | 'ENVIRONMENTAL_ACT';
 
   @IsString()
   @MinLength(1)

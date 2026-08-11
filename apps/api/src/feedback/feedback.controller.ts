@@ -10,6 +10,7 @@ import {
   Optional,
   Param,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
@@ -27,11 +28,13 @@ export class FeedbackController {
   }
 
   @Get('feed')
+  @UseGuards(JwtGuard)
   getFeed(
+    @GetUser('id') userId: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
   ) {
-    return this.feedbackService.getFeed(page, Math.min(limit, 50));
+    return this.feedbackService.getFeed(userId, page, Math.min(limit, 50));
   }
 
   @Get('received')
@@ -64,5 +67,11 @@ export class FeedbackController {
   @UseGuards(JwtGuard)
   reject(@GetUser('id') userId: string, @Param('id') id: string) {
     return this.feedbackService.review(userId, id, false);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtGuard)
+  remove(@GetUser('id') userId: string, @Param('id') id: string) {
+    return this.feedbackService.remove(userId, id);
   }
 }

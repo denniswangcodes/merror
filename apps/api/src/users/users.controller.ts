@@ -10,18 +10,20 @@ export class UsersController {
 
   @Get('search')
   @UseGuards(JwtGuard)
-  search(@Query('q') q: string) {
-    return this.usersService.search(q ?? '');
+  search(@GetUser('id') userId: string, @Query('q') q: string) {
+    return this.usersService.search(q ?? '', userId);
   }
 
   @Get('qr/:qrCode')
-  findByQrCode(@Param('qrCode') qrCode: string) {
-    return this.usersService.findByQrCode(qrCode);
+  @UseGuards(JwtGuard)
+  findByQrCode(@GetUser('id') userId: string, @Param('qrCode') qrCode: string) {
+    return this.usersService.findByQrCode(qrCode, userId);
   }
 
   @Get('by-username/:username')
-  findByUsername(@Param('username') username: string) {
-    return this.usersService.findByUsername(username);
+  @UseGuards(JwtGuard)
+  findByUsername(@GetUser('id') userId: string, @Param('username') username: string) {
+    return this.usersService.findByUsername(username, userId);
   }
 
   @Patch('me')
@@ -51,7 +53,14 @@ export class UsersController {
   }
 
   @Get(':id')
-  findById(@Param('id') id: string) {
-    return this.usersService.findById(id);
+  @UseGuards(JwtGuard)
+  findById(@GetUser('id') userId: string, @Param('id') id: string) {
+    return this.usersService.findById(id, userId);
+  }
+
+  @Get('admin/metrics')
+  @UseGuards(JwtGuard)
+  getAdminMetrics(@GetUser('id') userId: string) {
+    return this.usersService.getAdminMetrics(userId);
   }
 }

@@ -73,6 +73,7 @@ export default function FriendsPage(): JSX.Element {
         setPending((prev) => prev.filter((f) => f.id !== friendshipId));
       }
       setToast('Friend request accepted!');
+      window.dispatchEvent(new Event('merror:friends-changed'));
     } catch (e) {
       setToast((e as Error).message);
     }
@@ -83,6 +84,7 @@ export default function FriendsPage(): JSX.Element {
       await friendsApi.remove(friendshipId);
       setPending((prev) => prev.filter((f) => f.id !== friendshipId));
       setToast('Request declined');
+      window.dispatchEvent(new Event('merror:friends-changed'));
     } catch (e) {
       setToast((e as Error).message);
     }

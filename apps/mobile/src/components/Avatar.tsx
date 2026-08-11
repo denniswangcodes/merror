@@ -18,7 +18,7 @@ function hashColor(username: string): string {
 }
 
 export function Avatar({ displayName, username, avatarUrl, size = 40 }: AvatarProps) {
-  const initials = getAvatarInitials(displayName, username);
+  const initials = getAvatarInitials(displayName ?? null, username);
   const bg = hashColor(username);
 
   return (

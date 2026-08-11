@@ -134,6 +134,8 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   preferredLanguage: 'preferredLanguage',
   totalPoints: 'totalPoints',
+  suspendedAt: 'suspendedAt',
+  lastActiveAt: 'lastActiveAt',
   createdAt: 'createdAt'
 };
 
@@ -169,6 +171,26 @@ exports.Prisma.NotificationScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.BlockScalarFieldEnum = {
+  id: 'id',
+  blockerId: 'blockerId',
+  blockedId: 'blockedId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ReportScalarFieldEnum = {
+  id: 'id',
+  reporterId: 'reporterId',
+  reportedUserId: 'reportedUserId',
+  feedbackId: 'feedbackId',
+  reason: 'reason',
+  details: 'details',
+  status: 'status',
+  moderatorNote: 'moderatorNote',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -191,7 +213,10 @@ exports.Role = exports.$Enums.Role = {
 exports.FeedbackType = exports.$Enums.FeedbackType = {
   COMPLIMENT: 'COMPLIMENT',
   HELPFUL_ACT: 'HELPFUL_ACT',
-  MEMORY: 'MEMORY'
+  MEMORY: 'MEMORY',
+  ENCOURAGEMENT: 'ENCOURAGEMENT',
+  COMMUNITY_SERVICE: 'COMMUNITY_SERVICE',
+  ENVIRONMENTAL_ACT: 'ENVIRONMENTAL_ACT'
 };
 
 exports.FeedbackStatus = exports.$Enums.FeedbackStatus = {
@@ -213,11 +238,30 @@ exports.NotificationType = exports.$Enums.NotificationType = {
   FEEDBACK_REJECTED: 'FEEDBACK_REJECTED'
 };
 
+exports.ReportReason = exports.$Enums.ReportReason = {
+  HARASSMENT: 'HARASSMENT',
+  HATE_SPEECH: 'HATE_SPEECH',
+  SEXUAL_CONTENT: 'SEXUAL_CONTENT',
+  VIOLENCE: 'VIOLENCE',
+  SPAM: 'SPAM',
+  IMPERSONATION: 'IMPERSONATION',
+  PRIVACY: 'PRIVACY',
+  OTHER: 'OTHER'
+};
+
+exports.ReportStatus = exports.$Enums.ReportStatus = {
+  OPEN: 'OPEN',
+  DISMISSED: 'DISMISSED',
+  ACTIONED: 'ACTIONED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Feedback: 'Feedback',
   Friendship: 'Friendship',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  Block: 'Block',
+  Report: 'Report'
 };
 
 /**

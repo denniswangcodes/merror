@@ -18,23 +18,23 @@ export interface TierInfo {
 export const TIERS: readonly TierInfo[] = [
   {
     id: 'first-light', label: 'Spark', tagline: 'Every impact starts somewhere', minPoints: 0, nextTierAt: 10,
-    color: '#92400E', bg: 'linear-gradient(135deg, #FFF7ED 0%, #FED7AA 100%)', mobileBg: '#FFF1E3', border: '#D6A06A',
-    darkColor: '#FED7AA', darkBg: 'linear-gradient(135deg, #78350F 0%, #451A03 100%)', darkBorder: '#C26A2E',
+    color: '#6F3B12', bg: '#F3E5D3', mobileBg: '#F3E5D3', border: '#D2AF84',
+    darkColor: '#F3D7B3', darkBg: '#3B2A1D', darkBorder: '#725136',
   },
   {
     id: 'bright-spark', label: 'Beacon', tagline: 'Kindness people notice', minPoints: 10, nextTierAt: 50,
-    color: '#475569', bg: 'linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 100%)', mobileBg: '#F1F5F9', border: '#A8B2C1',
-    darkColor: '#F1F5F9', darkBg: 'linear-gradient(135deg, #64748B 0%, #334155 100%)', darkBorder: '#94A3B8',
+    color: '#344054', bg: '#E7EAEE', mobileBg: '#E7EAEE', border: '#B6BEC9',
+    darkColor: '#EEF1F4', darkBg: '#303741', darkBorder: '#626C79',
   },
   {
     id: 'beacon', label: 'Luminary', tagline: 'A light in your community', minPoints: 50, nextTierAt: 100,
-    color: '#A16207', bg: 'linear-gradient(135deg, #FFFBEB 0%, #FDE68A 100%)', mobileBg: '#FFF7D6', border: '#EAB308',
-    darkColor: '#FEF3C7', darkBg: 'linear-gradient(135deg, #A16207 0%, #713F12 100%)', darkBorder: '#EAB308',
+    color: '#694D08', bg: '#F1E6BF', mobileBg: '#F1E6BF', border: '#CDB565',
+    darkColor: '#F3E7B9', darkBg: '#403717', darkBorder: '#80703A',
   },
   {
     id: 'luminary', label: 'Solaria', tagline: 'A legacy that keeps shining', minPoints: 100, nextTierAt: null,
-    color: '#5B21B6', bg: 'linear-gradient(135deg, #ECFEFF 0%, #C4B5FD 48%, #99F6E4 100%)', mobileBg: '#DDFBF7', border: 'rgba(109, 40, 217, 0.48)',
-    darkColor: '#ECFEFF', darkBg: 'linear-gradient(135deg, #5B21B6 0%, #0F766E 100%)', darkBorder: '#67E8F9',
+    color: '#43346B', bg: 'linear-gradient(118deg, rgba(255,255,255,0.98) 0%, rgba(236,255,253,0.92) 24%, rgba(221,214,254,0.88) 48%, rgba(255,255,255,0.98) 67%, rgba(191,245,238,0.88) 100%)', mobileBg: '#F1F7F8', border: '#A89BE2',
+    darkColor: '#FFFFFF', darkBg: 'linear-gradient(118deg, rgba(255,255,255,0.26) 0%, rgba(94,234,212,0.30) 28%, rgba(167,139,250,0.38) 53%, rgba(255,255,255,0.24) 72%, rgba(45,212,191,0.28) 100%)', darkBorder: '#B9AEF2',
   },
 ] as const;
 
@@ -92,6 +92,18 @@ export const FEEDBACK_TYPE_META: Record<FeedbackType, {
   MEMORY: {
     label: 'Shared Moment', color: '#7E22CE', bg: '#F3E8FF', textColor: '#6B21A8',
     darkColor: '#D8B4FE', darkBg: '#581C87', darkTextColor: '#F3E8FF',
+  },
+  ENCOURAGEMENT: {
+    label: 'Encouragement', color: '#C2410C', bg: '#FFEDD5', textColor: '#9A3412',
+    darkColor: '#FDBA74', darkBg: '#7C2D12', darkTextColor: '#FFEDD5',
+  },
+  COMMUNITY_SERVICE: {
+    label: 'Community Care', color: '#0F766E', bg: '#CCFBF1', textColor: '#115E59',
+    darkColor: '#5EEAD4', darkBg: '#134E4A', darkTextColor: '#CCFBF1',
+  },
+  ENVIRONMENTAL_ACT: {
+    label: 'Earth Care', color: '#4D7C0F', bg: '#ECFCCB', textColor: '#3F6212',
+    darkColor: '#BEF264', darkBg: '#365314', darkTextColor: '#ECFCCB',
   },
 };
 

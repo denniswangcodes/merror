@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ImagePlus, X, Sparkles } from 'lucide-react';
+import { ImagePlus, X, Sparkles } from 'lucide-react';
 import { Avatar } from '@/components/Avatar';
 import { TierBadge } from '@/components/TierBadge';
 import { Button } from '@/components/ui/Button';
@@ -14,7 +14,7 @@ import { FEEDBACK_TYPE_META } from '@merror/shared';
 import type { PublicUser, FeedbackType } from '@merror/shared';
 import { cn } from '@/lib/utils';
 
-const FEEDBACK_TYPES: FeedbackType[] = ['COMPLIMENT', 'HELPFUL_ACT', 'MEMORY'];
+const FEEDBACK_TYPES: FeedbackType[] = ['COMPLIMENT', 'HELPFUL_ACT', 'MEMORY', 'COMMUNITY_SERVICE'];
 
 /** Compress an image file to a base64 JPEG ≤ given dimension and quality */
 function compressImage(file: File, maxPx = 1080, quality = 0.75): Promise<string> {
@@ -136,13 +136,6 @@ export default function GiveFeedbackPage(): JSX.Element {
 
   return (
     <div className="py-8 max-w-lg">
-      <button
-        onClick={() => router.push(`/${locale}/scan`)}
-        className="text-accent text-[13px] mb-5 flex items-center gap-1 bg-none border-none cursor-pointer p-0 font-medium"
-      >
-        <ChevronLeft className="h-3.5 w-3.5" /> Back
-      </button>
-
       {/* Receiver card */}
       <div className="flex items-center gap-3 mb-5 p-3.5 bg-background rounded-2xl border border-border">
         <Avatar displayName={receiver.displayName} username={receiver.username} avatarUrl={receiver.avatarUrl} size={48} />
@@ -157,7 +150,7 @@ export default function GiveFeedbackPage(): JSX.Element {
       <p className="text-xs font-semibold text-text-muted tracking-wider uppercase mb-2.5">
         What kind of moment is this?
       </p>
-      <div className="flex gap-2 mb-5">
+      <div className="grid grid-cols-2 gap-2 mb-5">
         {FEEDBACK_TYPES.map((t) => {
           const meta = FEEDBACK_TYPE_META[t];
           const active = type === t;
@@ -165,7 +158,7 @@ export default function GiveFeedbackPage(): JSX.Element {
             <button
               key={t}
               onClick={() => setType(t)}
-              className="flex-1 py-2.5 rounded-xl text-[11px] font-semibold cursor-pointer transition-all border-2"
+              className="min-h-11 px-2 py-2.5 rounded-xl text-[11px] font-semibold cursor-pointer transition-all border-2"
               style={{
                 borderColor: active ? (isDark ? meta.darkColor ?? meta.color : meta.color) : 'rgb(var(--color-border))',
                 background: active ? (isDark ? meta.darkBg ?? meta.bg : meta.bg) : 'transparent',
