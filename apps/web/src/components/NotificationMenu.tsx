@@ -24,6 +24,7 @@ export function NotificationMenu({ locale }: { locale: string }) {
   const [items, setItems] = useState<NotificationItem[]>([]);
   const [count, setCount] = useState(0);
   const [reviewing, setReviewing] = useState<string | null>(null);
+  const [removing, setRemoving] = useState<string | null>(null);
   const wrapper = useRef<HTMLDivElement>(null);
 
   const refresh = useCallback(async () => {
@@ -64,6 +65,23 @@ export function NotificationMenu({ locale }: { locale: string }) {
     }
   };
 
+  const removeOne = async (event: React.MouseEvent, id: string) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setRemoving(id);
+    try {
+      await notificationsApi.remove(id);
+      await refresh();
+    } finally {
+      setRemoving(null);
+    }
+  };
+
+  const clearAll = async () => {
+    await notificationsApi.clearAll();
+    await refresh();
+  };
+
   return (
     <div ref={wrapper} className="relative">
       <button onClick={toggle} className="relative flex h-9 w-9 items-center justify-center rounded-xl text-text-secondary transition-colors hover:bg-background hover:text-text-primary" aria-label={`Notifications${count ? `, ${count} unread` : ''}`} aria-expanded={open}>
@@ -75,7 +93,10 @@ export function NotificationMenu({ locale }: { locale: string }) {
         <div className="absolute right-0 top-full z-[200] mt-2 w-[360px] overflow-hidden rounded-2xl border border-border bg-surface-raised shadow-card-hover dark:shadow-card-hover-dark">
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
             <h2 className="m-0 font-display text-base font-bold text-text-primary">Notifications</h2>
-            {count > 0 && <button onClick={async () => { await notificationsApi.markAllRead(); await refresh(); }} className="text-[11px] font-semibold text-accent">Mark all read</button>}
+            <div className="flex items-center gap-3">
+              {count > 0 && <button onClick={async () => { await notificationsApi.markAllRead(); await refresh(); }} className="text-[11px] font-semibold text-accent">Mark all read</button>}
+              {items.length > 0 && <button onClick={clearAll} className="text-[11px] font-semibold text-text-muted hover:text-danger">Clear all</button>}
+            </div>
           </div>
           <div className="max-h-[440px] overflow-y-auto p-2">
             {items.length === 0 ? <p className="m-0 px-4 py-10 text-center text-sm text-text-muted">You’re all caught up.</p> : items.map((item) => {
@@ -93,7 +114,17 @@ export function NotificationMenu({ locale }: { locale: string }) {
                       )}
                       <p className="m-0 mt-0.5 text-[10px] font-medium tabular-nums text-text-muted">{formatReflectionDate(item.createdAt)}</p>
                     </div>
-                    {!item.read && <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />}
+                    <div className="flex shrink-0 flex-col items-end gap-1.5">
+                      {!item.read && <span className="h-2 w-2 rounded-full bg-accent" />}
+                      <button
+                        onClick={(event) => removeOne(event, item.id)}
+                        disabled={removing === item.id}
+                        aria-label="Delete notification"
+                        className="rounded-md p-0.5 text-text-muted transition-colors hover:bg-danger/10 hover:text-danger disabled:opacity-40"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
                   </div>
                   {isReview && (
                     <div className="ml-[50px] mt-2 flex gap-2">

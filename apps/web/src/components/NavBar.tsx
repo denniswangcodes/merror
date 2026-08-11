@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Sparkles, Users, Search, Sun, Moon, type LucideIcon } from 'lucide-react';
+import { Home, Sparkles, Users, Search, ShieldCheck, Sun, Moon, type LucideIcon } from 'lucide-react';
 import { useAuth } from '@/context/auth.context';
 import { useTheme } from '@/context/theme.context';
 import { usersApi } from '@/lib/api';
@@ -65,6 +65,7 @@ export function NavBar({ locale }: { locale: string }) {
     { href: `/${locale}/feed`, label: 'Feed', icon: Home },
     { href: `/${locale}/scan`, label: 'Reflect', icon: Sparkles },
     { href: `/${locale}/friends`, label: 'Friends', icon: Users },
+    ...(user?.role === 'ADMIN' ? [{ href: `/${locale}/admin`, label: 'Admin', icon: ShieldCheck }] : []),
   ];
 
   return (

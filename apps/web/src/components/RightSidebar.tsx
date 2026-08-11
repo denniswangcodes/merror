@@ -3,12 +3,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Check, Sparkles, UserRoundPlus, Users, X } from 'lucide-react';
-import { getTierProgress } from '@merror/shared';
+import { getTierProgress, TIERS } from '@merror/shared';
 import type { FriendshipItem, PublicUser } from '@merror/shared';
 import { useAuth } from '@/context/auth.context';
 import { friendsApi } from '@/lib/api';
 import { Avatar } from '@/components/Avatar';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { TierBadge } from '@/components/TierBadge';
 
 type FriendUser = Pick<PublicUser, 'id' | 'displayName' | 'username' | 'avatarUrl' | 'totalPoints'>;
 type FriendshipWithUsers = FriendshipItem & { userA?: FriendUser; userB?: FriendUser };
@@ -145,17 +146,19 @@ export function RightSidebar({ locale }: { locale: string }) {
 
 function ImpactCard({ locale, points }: { locale: string; points: number }) {
   const progress = getTierProgress(points);
+  const tierIndex = TIERS.findIndex((t) => t.id === progress.tier.id);
+  const nextTier = tierIndex >= 0 ? TIERS[tierIndex + 1] : undefined;
   return (
-    <Link href={`/${locale}/points`} className="mb-5 block rounded-2xl border border-border bg-surface p-3 no-underline transition-colors hover:border-border-strong">
+    <Link href={`/${locale}/points`} className="mb-5 block px-1 no-underline">
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-text-muted"><Sparkles className="h-3.5 w-3.5" /> Your impact</span>
-        <span className="text-[11px] font-bold text-text-primary">{progress.tier.label}</span>
+        <TierBadge points={points} />
       </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-background">
+      <div className="h-1.5 overflow-hidden rounded-full bg-border-strong">
         <div className="brand-gradient-bg h-full rounded-full transition-all" style={{ width: `${progress.progress}%` }} />
       </div>
       <p className="m-0 mt-2 text-[11px] text-text-muted">
-        {progress.pointsToNext > 0 ? `${progress.pointsToNext} lumens to the next level` : 'Top status achieved'}
+        {nextTier ? `${progress.pointsToNext} lumens to ${nextTier.label}` : progress.tier.tagline}
       </p>
     </Link>
   );

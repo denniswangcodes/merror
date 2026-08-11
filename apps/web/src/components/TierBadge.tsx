@@ -11,9 +11,9 @@ export function TierBadge({ points, locale }: { points: number; locale?: string 
   const isSolaria = tier.id === 'luminary';
   const isLuminary = tier.id === 'beacon';
   const tierEffect = isSolaria
-    ? 'backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_0_7px_rgba(255,255,255,0.9),0_0_14px_rgba(94,234,212,0.48),0_0_22px_rgba(167,139,250,0.38)] before:absolute before:inset-y-0 before:left-[-45%] before:w-[38%] before:skew-x-[-18deg] before:bg-gradient-to-r before:from-transparent before:via-white/80 before:to-transparent before:content-[""] hover:before:left-[115%] before:transition-[left] before:duration-700'
+    ? 'backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_0_7px_rgba(94,234,212,0.4),0_0_14px_rgba(167,139,250,0.32),0_0_26px_rgba(255,255,255,0.85)] before:absolute before:inset-y-0 before:left-[-45%] before:w-[38%] before:skew-x-[-18deg] before:bg-gradient-to-r before:from-transparent before:via-white/80 before:to-transparent before:content-[""] hover:before:left-[115%] before:transition-[left] before:duration-700'
     : isLuminary
-      ? 'shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_0_7px_rgba(234,179,8,0.34),0_3px_12px_rgba(161,98,7,0.18)]'
+      ? 'shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_0_8px_rgba(255,241,196,0.95),0_0_16px_rgba(250,204,21,0.55),0_0_26px_rgba(202,138,4,0.4)]'
       : 'shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]';
 
   const inner = (

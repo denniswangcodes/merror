@@ -33,8 +33,8 @@ export const TIERS: readonly TierInfo[] = [
   },
   {
     id: 'luminary', label: 'Solaria', tagline: 'A legacy that keeps shining', minPoints: 100, nextTierAt: null,
-    color: '#43346B', bg: 'linear-gradient(118deg, rgba(255,255,255,0.98) 0%, rgba(236,255,253,0.92) 24%, rgba(221,214,254,0.88) 48%, rgba(255,255,255,0.98) 67%, rgba(191,245,238,0.88) 100%)', mobileBg: '#F1F7F8', border: '#A89BE2',
-    darkColor: '#FFFFFF', darkBg: 'linear-gradient(118deg, rgba(255,255,255,0.26) 0%, rgba(94,234,212,0.30) 28%, rgba(167,139,250,0.38) 53%, rgba(255,255,255,0.24) 72%, rgba(45,212,191,0.28) 100%)', darkBorder: '#B9AEF2',
+    color: '#43346B', bg: 'linear-gradient(118deg, rgba(255,255,255,0.99) 0%, rgba(240,255,253,0.95) 22%, rgba(255,255,255,0.97) 42%, rgba(230,224,254,0.9) 60%, rgba(255,255,255,0.99) 79%, rgba(206,248,242,0.9) 100%)', mobileBg: '#F1F7F8', border: '#A89BE2',
+    darkColor: '#FFFFFF', darkBg: 'linear-gradient(118deg, rgba(255,255,255,0.44) 0%, rgba(94,234,212,0.22) 24%, rgba(255,255,255,0.4) 48%, rgba(167,139,250,0.26) 72%, rgba(255,255,255,0.44) 100%)', darkBorder: '#D6D2EC',
   },
 ] as const;
 

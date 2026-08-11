@@ -188,6 +188,8 @@ export const notificationsApi = {
   getUnreadCount: () => apiFetch<{ count: number }>('/api/notifications/unread-count'),
   markRead: (id: string) => apiFetch(`/api/notifications/${id}/read`, { method: 'PATCH' }),
   markAllRead: () => apiFetch('/api/notifications/read-all', { method: 'PATCH' }),
+  remove: (id: string) => apiFetch(`/api/notifications/${id}`, { method: 'DELETE' }),
+  clearAll: () => apiFetch('/api/notifications', { method: 'DELETE' }),
 };
 
 // ─── News API ─────────────────────────────────────────────────────────────────

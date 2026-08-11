@@ -153,9 +153,9 @@ export function FeedCard({ item, locale, index = 0 }: FeedCardProps) {
           <button
             onClick={shareReflection}
             aria-label="Share reflection"
-            className="flex h-9 w-9 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-background"
+            className="-ml-1 flex h-9 w-9 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-background"
           >
-            <Send className="h-[20px] w-[20px]" />
+            <Send className="h-[22px] w-[22px]" />
           </button>
           {isJournalEntry && (
             <span className="ml-auto mr-1 flex items-center gap-1 rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-semibold text-accent">
