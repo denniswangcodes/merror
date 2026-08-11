@@ -14,7 +14,7 @@ export class NotificationsService {
 
   async create(data: {
     userId: string;
-    type: 'FRIEND_REQUEST' | 'FRIEND_ACCEPTED' | 'FEEDBACK_RECEIVED' | 'FEEDBACK_APPROVED' | 'FEEDBACK_REJECTED';
+    type: 'FRIEND_REQUEST' | 'FRIEND_ACCEPTED' | 'FEEDBACK_RECEIVED' | 'FEEDBACK_APPROVED' | 'FEEDBACK_REJECTED' | 'FEEDBACK_LIKED' | 'FEEDBACK_COMMENTED';
     fromUserId?: string;
     referenceId?: string;
   }) {

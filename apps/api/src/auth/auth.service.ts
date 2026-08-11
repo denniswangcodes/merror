@@ -104,6 +104,7 @@ export class AuthService {
     await this.prisma.$transaction(async (tx) => {
       await tx.user.delete({ where: { id: userId } });
       for (const { receiverId } of affected) {
+        if (!receiverId) continue;
         const aggregate = await tx.feedback.aggregate({ where: { receiverId, status: 'APPROVED' }, _sum: { points: true } });
         await tx.user.update({ where: { id: receiverId }, data: { totalPoints: aggregate._sum.points ?? 0 } });
       }

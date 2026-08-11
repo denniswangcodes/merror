@@ -14,6 +14,8 @@ function copyFor(notification: NotificationItem) {
   if (notification.type === 'FRIEND_ACCEPTED') return `${name} accepted your friend request`;
   if (notification.type === 'FEEDBACK_APPROVED') return `${name} approved your reflection`;
   if (notification.type === 'FEEDBACK_REJECTED') return `${name} declined your reflection`;
+  if (notification.type === 'FEEDBACK_LIKED') return `${name} liked your reflection`;
+  if (notification.type === 'FEEDBACK_COMMENTED') return `${name} commented on your reflection`;
   return `${name} sent you a reflection to review`;
 }
 
@@ -101,7 +103,13 @@ export function NotificationMenu({ locale }: { locale: string }) {
                   )}
                 </div>
               );
-              return item.type === 'FRIEND_REQUEST' ? <Link key={item.id} href={`/${locale}/friends`} onClick={() => notificationsApi.markRead(item.id).then(refresh)} className="block no-underline">{content}</Link> : <div key={item.id}>{content}</div>;
+              if (item.type === 'FRIEND_REQUEST') {
+                return <Link key={item.id} href={`/${locale}/friends`} onClick={() => notificationsApi.markRead(item.id).then(refresh)} className="block no-underline">{content}</Link>;
+              }
+              if ((item.type === 'FEEDBACK_LIKED' || item.type === 'FEEDBACK_COMMENTED') && item.referenceId) {
+                return <Link key={item.id} href={`/${locale}/reflection/${item.referenceId}`} onClick={() => notificationsApi.markRead(item.id).then(refresh)} className="block no-underline">{content}</Link>;
+              }
+              return <div key={item.id}>{content}</div>;
             })}
           </div>
         </div>

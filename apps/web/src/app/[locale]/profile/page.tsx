@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FeedCard } from '@/components/FeedCard';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
+import { ShareProfileButton } from '@/components/profile/ShareProfileButton';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/context/auth.context';
@@ -77,6 +78,7 @@ export default function OwnProfilePage(): JSX.Element {
         actions={
           !editing && (
             <>
+              <ShareProfileButton username={user.username} displayName={user.displayName} locale={locale} />
               <Button variant="secondary" size="sm" onClick={() => setEditing(true)}>
                 Edit Profile
               </Button>

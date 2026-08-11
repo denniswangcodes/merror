@@ -1,18 +1,21 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/context/auth.context';
 import { AuthBrandPanel } from '@/components/auth/AuthBrandPanel';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { usersApi, friendsApi } from '@/lib/api';
 
 export default function SignupPage(): JSX.Element {
   const params = useParams<{ locale: string }>();
   const locale = params.locale || 'en';
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const ref = searchParams.get('ref');
   const { signup } = useAuth();
   const [form, setForm] = useState({ email: '', password: '', confirmPassword: '', username: '', displayName: '' });
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +37,15 @@ export default function SignupPage(): JSX.Element {
     setError(null);
     try {
       await signup({ email: form.email, password: form.password, username: form.username, displayName: form.displayName || undefined });
-      router.push(`/${locale}/feed`);
+      if (ref) {
+        try {
+          const refUser = await usersApi.getByUsername(ref);
+          await friendsApi.sendRequest(refUser.id).catch(() => {});
+        } catch { /* noop */ }
+        router.push(`/${locale}/profile/${ref}`);
+      } else {
+        router.push(`/${locale}/feed`);
+      }
     } catch (err) {
       setError((err as Error).message || 'Signup failed');
     } finally {
@@ -54,6 +65,12 @@ export default function SignupPage(): JSX.Element {
         >
           <h1 className="font-display text-2xl font-bold text-text-primary mb-1.5">Join Merror</h1>
           <p className="text-sm text-text-muted mb-7">Start spreading good vibes 🌟</p>
+
+          {ref && (
+            <div className="bg-accent/10 border border-accent/25 text-accent rounded-xl px-3.5 py-2.5 text-sm mb-4">
+              You&apos;re joining via @{ref}&apos;s invite — you&apos;ll automatically connect after signing up.
+            </div>
+          )}
 
           {error && (
             <div className="bg-danger/10 border border-danger/25 text-danger rounded-xl px-3.5 py-2.5 text-sm mb-4">
@@ -130,7 +147,7 @@ export default function SignupPage(): JSX.Element {
 
           <p className="text-center text-sm text-text-muted mt-6">
             Already have an account?{' '}
-            <Link href={`/${locale}/login`} className="text-accent font-semibold no-underline hover:underline">
+            <Link href={ref ? `/${locale}/login?ref=${encodeURIComponent(ref)}` : `/${locale}/login`} className="text-accent font-semibold no-underline hover:underline">
               Sign in
             </Link>
           </p>

@@ -1,18 +1,21 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/context/auth.context';
 import { AuthBrandPanel } from '@/components/auth/AuthBrandPanel';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { usersApi, friendsApi } from '@/lib/api';
 
 export default function LoginPage(): JSX.Element {
   const params = useParams<{ locale: string }>();
   const locale = params.locale || 'en';
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const ref = searchParams.get('ref');
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,7 +28,15 @@ export default function LoginPage(): JSX.Element {
     setError(null);
     try {
       await login(email, password);
-      router.push(`/${locale}/feed`);
+      if (ref) {
+        try {
+          const refUser = await usersApi.getByUsername(ref);
+          await friendsApi.sendRequest(refUser.id).catch(() => {});
+        } catch { /* noop */ }
+        router.push(`/${locale}/profile/${ref}`);
+      } else {
+        router.push(`/${locale}/feed`);
+      }
     } catch (err) {
       setError((err as Error).message || 'Login failed');
     } finally {
@@ -79,7 +90,7 @@ export default function LoginPage(): JSX.Element {
 
           <p className="text-center text-sm text-text-muted mt-6">
             Don&apos;t have an account?{' '}
-            <Link href={`/${locale}/signup`} className="text-accent font-semibold no-underline hover:underline">
+            <Link href={ref ? `/${locale}/signup?ref=${encodeURIComponent(ref)}` : `/${locale}/signup`} className="text-accent font-semibold no-underline hover:underline">
               Sign up
             </Link>
           </p>

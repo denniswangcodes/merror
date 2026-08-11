@@ -38,7 +38,7 @@ export default function PointsPage(): JSX.Element {
 
   return (
     <div className="pt-6 pb-12">
-      <h1 className="font-display text-3xl font-extrabold text-text-primary m-0 mb-1.5 tracking-tight">Your impact, recognized.</h1>
+      <h1 className="font-display text-[22px] font-bold text-text-primary m-0 mb-0.5">Your impact, recognized.</h1>
       <p className="text-sm text-text-muted mb-8">Every reflection is proof that something you did mattered to someone.</p>
 
       {user && progress && (

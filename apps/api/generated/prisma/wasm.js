@@ -143,6 +143,7 @@ exports.Prisma.FeedbackScalarFieldEnum = {
   id: 'id',
   giverId: 'giverId',
   receiverId: 'receiverId',
+  recipientName: 'recipientName',
   type: 'type',
   message: 'message',
   imageUrl: 'imageUrl',
@@ -150,6 +151,21 @@ exports.Prisma.FeedbackScalarFieldEnum = {
   isPublic: 'isPublic',
   status: 'status',
   reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.LikeScalarFieldEnum = {
+  id: 'id',
+  feedbackId: 'feedbackId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CommentScalarFieldEnum = {
+  id: 'id',
+  feedbackId: 'feedbackId',
+  userId: 'userId',
+  message: 'message',
   createdAt: 'createdAt'
 };
 
@@ -235,7 +251,9 @@ exports.NotificationType = exports.$Enums.NotificationType = {
   FRIEND_ACCEPTED: 'FRIEND_ACCEPTED',
   FEEDBACK_RECEIVED: 'FEEDBACK_RECEIVED',
   FEEDBACK_APPROVED: 'FEEDBACK_APPROVED',
-  FEEDBACK_REJECTED: 'FEEDBACK_REJECTED'
+  FEEDBACK_REJECTED: 'FEEDBACK_REJECTED',
+  FEEDBACK_LIKED: 'FEEDBACK_LIKED',
+  FEEDBACK_COMMENTED: 'FEEDBACK_COMMENTED'
 };
 
 exports.ReportReason = exports.$Enums.ReportReason = {
@@ -258,6 +276,8 @@ exports.ReportStatus = exports.$Enums.ReportStatus = {
 exports.Prisma.ModelName = {
   User: 'User',
   Feedback: 'Feedback',
+  Like: 'Like',
+  Comment: 'Comment',
   Friendship: 'Friendship',
   Notification: 'Notification',
   Block: 'Block',

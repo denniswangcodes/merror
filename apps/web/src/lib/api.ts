@@ -1,4 +1,4 @@
-import type { AuthTokens, PublicUser } from '@merror/shared';
+import type { AuthTokens, CommentItem, FeedbackItem, PublicUser } from '@merror/shared';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -166,13 +166,21 @@ export const usersApi = {
 // ─── Feedback API ─────────────────────────────────────────────────────────────
 export const feedbackApi = {
   getFeed: (page = 1) => apiFetch(`/api/feedback/feed?page=${page}&limit=20`),
-  create: (data: { receiverId: string; type: string; message: string; isPublic: boolean; imageUrl?: string }) =>
-    apiFetch('/api/feedback', { method: 'POST', body: JSON.stringify(data) }),
+  create: (data: { receiverId?: string; recipientName?: string; type: string; message: string; isPublic: boolean; imageUrl?: string }) =>
+    apiFetch<FeedbackItem>('/api/feedback', { method: 'POST', body: JSON.stringify(data) }),
   getReceived: (page = 1) => apiFetch(`/api/feedback/received?page=${page}&limit=20`),
   getGiven: (page = 1) => apiFetch(`/api/feedback/given?page=${page}&limit=20`),
   approve: (id: string) => apiFetch(`/api/feedback/${id}/approve`, { method: 'PATCH' }),
   reject: (id: string) => apiFetch(`/api/feedback/${id}/reject`, { method: 'PATCH' }),
   remove: (id: string) => apiFetch(`/api/feedback/${id}`, { method: 'DELETE' }),
+  /** Public lookup for a shareable reflection link — works whether or not the caller is logged in. */
+  getPublic: (id: string) => apiFetch<FeedbackItem>(`/api/feedback/${id}`),
+  getLikeStatus: (id: string) => apiFetch<{ liked: boolean }>(`/api/feedback/${id}/like`),
+  toggleLike: (id: string) => apiFetch<{ liked: boolean; likeCount: number }>(`/api/feedback/${id}/like`, { method: 'POST' }),
+  getComments: (id: string) => apiFetch<CommentItem[]>(`/api/feedback/${id}/comments`),
+  addComment: (id: string, message: string) =>
+    apiFetch<CommentItem>(`/api/feedback/${id}/comments`, { method: 'POST', body: JSON.stringify({ message }) }),
+  removeComment: (commentId: string) => apiFetch(`/api/feedback/comments/${commentId}`, { method: 'DELETE' }),
 };
 
 export const notificationsApi = {

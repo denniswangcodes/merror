@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
+import { CreateCommentDto } from './dto/create-comment.dto';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { GetUser } from '../common/decorators/get-user.decorator';
 
@@ -55,6 +56,42 @@ export class FeedbackController {
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
   ) {
     return this.feedbackService.getGiven(userId, page, Math.min(limit, 50));
+  }
+
+  // Public single-reflection lookup, for shareable links — only returns public + approved reflections.
+  @Get(':id')
+  getById(@Param('id') id: string) {
+    return this.feedbackService.getById(id);
+  }
+
+  @Get(':id/like')
+  @UseGuards(JwtGuard)
+  getLikeStatus(@GetUser('id') userId: string, @Param('id') id: string) {
+    return this.feedbackService.getLikeStatus(userId, id);
+  }
+
+  @Post(':id/like')
+  @UseGuards(JwtGuard)
+  toggleLike(@GetUser('id') userId: string, @Param('id') id: string) {
+    return this.feedbackService.toggleLike(userId, id);
+  }
+
+  // Comments are publicly readable (same content-first model as the reflection itself); posting requires auth.
+  @Get(':id/comments')
+  getComments(@Param('id') id: string) {
+    return this.feedbackService.getComments(id);
+  }
+
+  @Post(':id/comments')
+  @UseGuards(JwtGuard)
+  addComment(@GetUser('id') userId: string, @Param('id') id: string, @Body() dto: CreateCommentDto) {
+    return this.feedbackService.addComment(userId, id, dto.message);
+  }
+
+  @Delete('comments/:commentId')
+  @UseGuards(JwtGuard)
+  removeComment(@GetUser('id') userId: string, @Param('commentId') commentId: string) {
+    return this.feedbackService.removeComment(userId, commentId);
   }
 
   @Patch(':id/approve')

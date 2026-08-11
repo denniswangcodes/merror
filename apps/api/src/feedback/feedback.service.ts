@@ -13,6 +13,7 @@ const FEEDBACK_WITH_USERS = {
   id: true,
   giverId: true,
   receiverId: true,
+  recipientName: true,
   type: true,
   message: true,
   imageUrl: true,
@@ -27,7 +28,15 @@ const FEEDBACK_WITH_USERS = {
   receiver: {
     select: { id: true, displayName: true, username: true, avatarUrl: true },
   },
+  _count: { select: { likes: true, comments: true } },
 };
+
+type RawFeedback = { _count: { likes: number; comments: number } } & Record<string, unknown>;
+
+function withCounts<T extends RawFeedback>(item: T) {
+  const { _count, ...rest } = item;
+  return { ...rest, likeCount: _count.likes, commentCount: _count.comments };
+}
 
 @Injectable()
 export class FeedbackService {
@@ -37,10 +46,32 @@ export class FeedbackService {
   ) {}
 
   async create(giverId: string, dto: CreateFeedbackDto) {
+    this.assertSafeText(dto.message);
+    if (dto.recipientName) this.assertSafeText(dto.recipientName);
+
+    if (!dto.receiverId) {
+      // Journal entry: a good deed for someone who isn't on Merror yet. The giver chooses whether it stays
+      // private to their own wall or is published on their public profile.
+      const journalEntry = await this.prisma.feedback.create({
+        data: {
+          giverId,
+          receiverId: null,
+          recipientName: dto.recipientName?.trim() || null,
+          type: dto.type,
+          message: dto.message,
+          imageUrl: dto.imageUrl,
+          isPublic: dto.isPublic ?? false,
+          points: 0,
+          status: 'APPROVED',
+        },
+        select: FEEDBACK_WITH_USERS,
+      });
+      return { ...withCounts(journalEntry), likedByMe: false };
+    }
+
     if (giverId === dto.receiverId) {
       throw new BadRequestException('You cannot give feedback to yourself');
     }
-    this.assertSafeText(dto.message);
 
     const receiver = await this.prisma.user.findUnique({ where: { id: dto.receiverId } });
     if (!receiver) throw new NotFoundException('Receiver not found');
@@ -83,7 +114,20 @@ export class FeedbackService {
       referenceId: feedback.id,
     });
 
-    return feedback;
+    return { ...withCounts(feedback), likedByMe: false };
+  }
+
+  /** Merges the viewer's like state into a page of feedback, and normalizes _count into like/comment counts. */
+  private async withViewerContext<T extends RawFeedback & { id: string }>(items: T[], viewerId: string) {
+    const ids = items.map((item) => item.id);
+    const likedIds = ids.length
+      ? new Set(
+          (await this.prisma.like.findMany({ where: { userId: viewerId, feedbackId: { in: ids } }, select: { feedbackId: true } })).map(
+            (like) => like.feedbackId,
+          ),
+        )
+      : new Set<string>();
+    return items.map((item) => ({ ...withCounts(item), likedByMe: likedIds.has(item.id) }));
   }
 
   async getFeed(userId: string, page = 1, limit = 20) {
@@ -99,7 +143,7 @@ export class FeedbackService {
       giverId: { notIn: excludedIds },
       receiverId: { notIn: excludedIds },
     };
-    const [data, total] = await this.prisma.$transaction([
+    const [rows, total] = await this.prisma.$transaction([
       this.prisma.feedback.findMany({
         where,
         orderBy: { createdAt: 'desc' },
@@ -109,6 +153,7 @@ export class FeedbackService {
       }),
       this.prisma.feedback.count({ where }),
     ]);
+    const data = await this.withViewerContext(rows, userId);
 
     return {
       data,
@@ -121,7 +166,7 @@ export class FeedbackService {
 
   async getReceived(userId: string, page = 1, limit = 20) {
     const skip = (page - 1) * limit;
-    const [data, total] = await this.prisma.$transaction([
+    const [rows, total] = await this.prisma.$transaction([
       this.prisma.feedback.findMany({
         where: { receiverId: userId, status: 'APPROVED' },
         orderBy: { createdAt: 'desc' },
@@ -131,12 +176,13 @@ export class FeedbackService {
       }),
       this.prisma.feedback.count({ where: { receiverId: userId, status: 'APPROVED' } }),
     ]);
+    const data = await this.withViewerContext(rows, userId);
     return { data, total, page, limit, hasMore: skip + data.length < total };
   }
 
   async getGiven(userId: string, page = 1, limit = 20) {
     const skip = (page - 1) * limit;
-    const [data, total] = await this.prisma.$transaction([
+    const [rows, total] = await this.prisma.$transaction([
       this.prisma.feedback.findMany({
         where: { giverId: userId, status: 'APPROVED' },
         orderBy: { createdAt: 'desc' },
@@ -146,7 +192,78 @@ export class FeedbackService {
       }),
       this.prisma.feedback.count({ where: { giverId: userId, status: 'APPROVED' } }),
     ]);
+    const data = await this.withViewerContext(rows, userId);
     return { data, total, page, limit, hasMore: skip + data.length < total };
+  }
+
+  /** Public lookup for a single reflection, used by shareable links. No auth required. */
+  async getById(feedbackId: string) {
+    const feedback = await this.prisma.feedback.findUnique({ where: { id: feedbackId }, select: FEEDBACK_WITH_USERS });
+    if (!feedback || !feedback.isPublic || feedback.status !== 'APPROVED') {
+      throw new NotFoundException('Reflection not found');
+    }
+    return withCounts(feedback);
+  }
+
+  async getLikeStatus(userId: string, feedbackId: string) {
+    const like = await this.prisma.like.findUnique({ where: { feedbackId_userId: { feedbackId, userId } }, select: { id: true } });
+    return { liked: !!like };
+  }
+
+  async toggleLike(userId: string, feedbackId: string) {
+    const feedback = await this.prisma.feedback.findUnique({ where: { id: feedbackId }, select: { id: true, giverId: true } });
+    if (!feedback) throw new NotFoundException('Reflection not found');
+
+    const existing = await this.prisma.like.findUnique({ where: { feedbackId_userId: { feedbackId, userId } }, select: { id: true } });
+    if (existing) {
+      await this.prisma.like.delete({ where: { id: existing.id } });
+    } else {
+      await this.prisma.like.create({ data: { feedbackId, userId } });
+      if (feedback.giverId !== userId) {
+        await this.notifications.create({ userId: feedback.giverId, type: 'FEEDBACK_LIKED', fromUserId: userId, referenceId: feedbackId }).catch(() => {});
+      }
+    }
+    const likeCount = await this.prisma.like.count({ where: { feedbackId } });
+    return { liked: !existing, likeCount };
+  }
+
+  async getComments(feedbackId: string) {
+    const feedback = await this.prisma.feedback.findUnique({ where: { id: feedbackId }, select: { id: true } });
+    if (!feedback) throw new NotFoundException('Reflection not found');
+    return this.prisma.comment.findMany({
+      where: { feedbackId },
+      orderBy: { createdAt: 'asc' },
+      take: 200,
+      include: { user: { select: { id: true, displayName: true, username: true, avatarUrl: true } } },
+    });
+  }
+
+  async addComment(userId: string, feedbackId: string, message: string) {
+    this.assertSafeText(message);
+    const feedback = await this.prisma.feedback.findUnique({ where: { id: feedbackId }, select: { id: true, giverId: true } });
+    if (!feedback) throw new NotFoundException('Reflection not found');
+
+    const comment = await this.prisma.comment.create({
+      data: { feedbackId, userId, message: message.trim() },
+      include: { user: { select: { id: true, displayName: true, username: true, avatarUrl: true } } },
+    });
+    if (feedback.giverId !== userId) {
+      await this.notifications.create({ userId: feedback.giverId, type: 'FEEDBACK_COMMENTED', fromUserId: userId, referenceId: feedbackId }).catch(() => {});
+    }
+    return comment;
+  }
+
+  async removeComment(userId: string, commentId: string) {
+    const comment = await this.prisma.comment.findUnique({
+      where: { id: commentId },
+      include: { feedback: { select: { giverId: true, receiverId: true } } },
+    });
+    if (!comment) throw new NotFoundException('Comment not found');
+    if (comment.userId !== userId && comment.feedback.giverId !== userId && comment.feedback.receiverId !== userId) {
+      throw new ForbiddenException('You cannot delete this comment');
+    }
+    await this.prisma.comment.delete({ where: { id: commentId } });
+    return { deleted: true };
   }
 
   async review(receiverId: string, feedbackId: string, approve: boolean) {
@@ -187,7 +304,7 @@ export class FeedbackService {
       fromUserId: receiverId,
       referenceId: feedbackId,
     });
-    return updated;
+    return { ...withCounts(updated), likedByMe: false };
   }
 
   async remove(userId: string, feedbackId: string) {
@@ -200,7 +317,7 @@ export class FeedbackService {
     await this.prisma.$transaction(async (tx) => {
       await tx.notification.deleteMany({ where: { referenceId: feedbackId } });
       await tx.feedback.delete({ where: { id: feedbackId } });
-      if (feedback.status === 'APPROVED' && feedback.points > 0) {
+      if (feedback.status === 'APPROVED' && feedback.points > 0 && feedback.receiverId) {
         const receiver = await tx.user.findUnique({ where: { id: feedback.receiverId }, select: { totalPoints: true } });
         if (receiver) {
           await tx.user.update({

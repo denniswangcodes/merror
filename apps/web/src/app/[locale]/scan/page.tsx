@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Search } from 'lucide-react';
+import { Search, NotebookPen } from 'lucide-react';
 import { Avatar } from '@/components/Avatar';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/context/auth.context';
@@ -65,6 +65,19 @@ export default function ScanPage(): JSX.Element {
           <p className="text-sm text-text-muted">No one found with that name</p>
         </div>
       )}
+
+      <button
+        onClick={() => router.push(`/${locale}/give/journal`)}
+        className="mt-4 flex w-full items-center gap-3 rounded-xl border border-dashed border-border px-4 py-3.5 text-left transition-colors hover:border-accent hover:bg-accent/5"
+      >
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent/10">
+          <NotebookPen className="h-4 w-4 text-accent" />
+        </div>
+        <div>
+          <div className="text-sm font-semibold text-text-primary">Not on Merror yet?</div>
+          <div className="text-xs text-text-muted">Journal the good deed anyway — it's just for you</div>
+        </div>
+      </button>
     </div>
   );
 }

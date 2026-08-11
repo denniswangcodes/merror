@@ -26,7 +26,9 @@ export interface PublicUser {
 export interface FeedbackItem {
   id: string;
   giverId: string;
-  receiverId: string;
+  receiverId: string | null;
+  /** Free-text name for a journal entry about someone who isn't on Merror yet (receiverId is null). */
+  recipientName?: string | null;
   type: FeedbackType;
   message: string;
   imageUrl?: string | null;
@@ -36,7 +38,19 @@ export interface FeedbackItem {
   reviewedAt?: string | Date | null;
   createdAt: string | Date;
   giver?: Pick<PublicUser, 'id' | 'displayName' | 'username' | 'avatarUrl'>;
-  receiver?: Pick<PublicUser, 'id' | 'displayName' | 'username' | 'avatarUrl'>;
+  receiver?: Pick<PublicUser, 'id' | 'displayName' | 'username' | 'avatarUrl'> | null;
+  likeCount?: number;
+  commentCount?: number;
+  likedByMe?: boolean;
+}
+
+export interface CommentItem {
+  id: string;
+  feedbackId: string;
+  userId: string;
+  message: string;
+  createdAt: string | Date;
+  user?: Pick<PublicUser, 'id' | 'displayName' | 'username' | 'avatarUrl'>;
 }
 
 export interface FriendshipItem {
@@ -63,7 +77,7 @@ export interface AuthTokens {
   user: PublicUser;
 }
 
-export type NotificationType = 'FRIEND_REQUEST' | 'FRIEND_ACCEPTED' | 'FEEDBACK_RECEIVED' | 'FEEDBACK_APPROVED' | 'FEEDBACK_REJECTED';
+export type NotificationType = 'FRIEND_REQUEST' | 'FRIEND_ACCEPTED' | 'FEEDBACK_RECEIVED' | 'FEEDBACK_APPROVED' | 'FEEDBACK_REJECTED' | 'FEEDBACK_LIKED' | 'FEEDBACK_COMMENTED';
 
 export interface NotificationItem {
   id: string;

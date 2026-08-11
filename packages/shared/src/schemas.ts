@@ -31,10 +31,17 @@ export const LoginSchema = z.object({
 // Feedback DTOs
 // ─────────────────────────────
 export const CreateFeedbackSchema = z.object({
-  receiverId: z.string().min(1),
+  /** Omit to log a private journal entry about someone who isn't on Merror yet. */
+  receiverId: z.string().min(1).optional(),
+  /** Optional free-text name of the recipient, used only when receiverId is omitted. */
+  recipientName: z.string().max(60).optional(),
   type: FeedbackTypeEnum,
   message: z.string().min(1).max(280),
   isPublic: z.boolean().default(true),
+});
+
+export const CreateCommentSchema = z.object({
+  message: z.string().min(1).max(280),
 });
 
 // ─────────────────────────────
@@ -60,5 +67,6 @@ export const UpdateProfileSchema = z.object({
 export type SignupDto = z.infer<typeof SignupSchema>;
 export type LoginDto = z.infer<typeof LoginSchema>;
 export type CreateFeedbackDto = z.infer<typeof CreateFeedbackSchema>;
+export type CreateCommentDto = z.infer<typeof CreateCommentSchema>;
 export type FriendRequestDto = z.infer<typeof FriendRequestSchema>;
 export type UpdateProfileDto = z.infer<typeof UpdateProfileSchema>;

@@ -48,12 +48,14 @@ export class UsersService {
           take: 20,
           include: {
             giver: { select: { id: true, displayName: true, username: true, avatarUrl: true } },
+            _count: { select: { likes: true, comments: true } },
           },
         },
       },
     });
     if (!user) throw new NotFoundException('User not found');
-    return user;
+    const feedbackReceived = await this.withLikedByMe(user.feedbackReceived, viewerId);
+    return { ...user, feedbackReceived };
   }
 
   async findByUsername(username: string, viewerId: string) {
@@ -70,6 +72,7 @@ export class UsersService {
           take: 20,
           include: {
             giver: { select: { id: true, displayName: true, username: true, avatarUrl: true } },
+            _count: { select: { likes: true, comments: true } },
           },
         },
         feedbackGiven: {
@@ -78,12 +81,33 @@ export class UsersService {
           take: 20,
           include: {
             receiver: { select: { id: true, displayName: true, username: true, avatarUrl: true } },
+            _count: { select: { likes: true, comments: true } },
           },
         },
       },
     });
     if (!user) throw new NotFoundException('User not found');
-    return user;
+    const [feedbackReceived, feedbackGiven] = await Promise.all([
+      this.withLikedByMe(user.feedbackReceived, viewerId),
+      this.withLikedByMe(user.feedbackGiven, viewerId),
+    ]);
+    return { ...user, feedbackReceived, feedbackGiven };
+  }
+
+  /** Normalizes _count into like/comment counts and merges in whether the viewer has liked each item. */
+  private async withLikedByMe<T extends { id: string; _count: { likes: number; comments: number } }>(
+    items: T[],
+    viewerId: string,
+  ) {
+    const ids = items.map((item) => item.id);
+    const likedIds = ids.length
+      ? new Set(
+          (await this.prisma.like.findMany({ where: { userId: viewerId, feedbackId: { in: ids } }, select: { feedbackId: true } })).map(
+            (like) => like.feedbackId,
+          ),
+        )
+      : new Set<string>();
+    return items.map(({ _count, ...rest }) => ({ ...rest, likeCount: _count.likes, commentCount: _count.comments, likedByMe: likedIds.has(rest.id) }));
   }
 
   async findByQrCode(qrCode: string, viewerId: string) {

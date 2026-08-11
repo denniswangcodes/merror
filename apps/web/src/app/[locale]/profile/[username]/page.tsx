@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { UserRound } from 'lucide-react';
 import { FeedCard } from '@/components/FeedCard';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { Button } from '@/components/ui/Button';
@@ -18,7 +19,7 @@ export default function PublicProfilePage(): JSX.Element {
   const params = useParams<{ locale: string; username: string }>();
   const { locale, username } = params;
   const router = useRouter();
-  const { user: me } = useAuth();
+  const { user: me, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<PublicUser & {
     feedbackReceived?: FeedbackItem[];
     feedbackGiven?: FeedbackItem[];
@@ -29,8 +30,9 @@ export default function PublicProfilePage(): JSX.Element {
   const [friendshipId, setFriendshipId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (authLoading || !me) return;
     usersApi.getByUsername(username).then(setProfile).catch(() => router.push(`/${locale}/feed`));
-  }, [username, locale, router]);
+  }, [username, locale, router, authLoading, !!me]);
 
   useEffect(() => {
     if (!me || !profile) return;
@@ -69,6 +71,28 @@ export default function PublicProfilePage(): JSX.Element {
     }
   };
 
+  if (!authLoading && !me) {
+    return (
+      <div className="flex flex-col items-center px-4 py-16 text-center">
+        <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-accent/10">
+          <UserRound className="h-9 w-9 text-accent" />
+        </div>
+        <h1 className="m-0 font-display text-xl font-bold text-text-primary">@{username} is on Merror</h1>
+        <p className="mt-2 max-w-xs text-sm text-text-muted">
+          Join Merror to see their profile — you&apos;ll automatically connect with each other.
+        </p>
+        <div className="mt-6 flex gap-2">
+          <Button size="md" onClick={() => router.push(`/${locale}/signup?ref=${encodeURIComponent(username)}`)}>
+            Sign up &amp; connect
+          </Button>
+          <Button variant="secondary" size="md" onClick={() => router.push(`/${locale}/login?ref=${encodeURIComponent(username)}`)}>
+            Log in
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (!profile) {
     return <div className="px-4 py-8 text-center text-text-muted text-sm">Loading profile...</div>;
   }
@@ -78,7 +102,7 @@ export default function PublicProfilePage(): JSX.Element {
   const items = tab === 'received' ? received : given;
 
   const friendBtnVariant = friendStatus === 'friends' ? 'destructive' : friendStatus === 'pending' ? 'secondary' : 'secondary';
-  const friendBtnLabel = friendStatus === 'friends' ? 'Remove Friend' : friendStatus === 'pending' ? 'Request Sent' : 'Add Friend';
+  const friendBtnLabel = friendStatus === 'friends' ? 'Unfriend' : friendStatus === 'pending' ? 'Request Sent' : 'Add Friend';
 
   return (
     <div className="pb-8 pt-6">

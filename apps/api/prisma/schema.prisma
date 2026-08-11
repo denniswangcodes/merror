@@ -43,6 +43,8 @@ enum NotificationType {
   FEEDBACK_RECEIVED
   FEEDBACK_APPROVED
   FEEDBACK_REJECTED
+  FEEDBACK_LIKED
+  FEEDBACK_COMMENTED
 }
 
 enum ReportReason {
@@ -88,26 +90,57 @@ model User {
   reportsAgainst        Report[]       @relation("ReportUser")
   blocksInitiated       Block[]        @relation("Blocker")
   blocksReceived        Block[]        @relation("Blocked")
+  likes                 Like[]
+  comments              Comment[]
 
   @@index([lastActiveAt])
 }
 
 model Feedback {
-  id         String       @id @default(cuid())
-  giverId    String
-  receiverId String
-  type       FeedbackType
-  message    String
-  imageUrl   String?
-  points     Int          @default(1)
-  isPublic   Boolean      @default(true)
-  status     FeedbackStatus @default(APPROVED)
-  reviewedAt DateTime?
-  createdAt  DateTime     @default(now())
+  id            String       @id @default(cuid())
+  giverId       String
+  receiverId    String?
+  recipientName String?
+  type          FeedbackType
+  message       String
+  imageUrl      String?
+  points        Int          @default(1)
+  isPublic      Boolean      @default(true)
+  status        FeedbackStatus @default(APPROVED)
+  reviewedAt    DateTime?
+  createdAt     DateTime     @default(now())
 
-  giver    User @relation("Giver", fields: [giverId], references: [id], onDelete: Cascade)
-  receiver User @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  giver    User  @relation("Giver", fields: [giverId], references: [id], onDelete: Cascade)
+  receiver User? @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
   reports  Report[]
+  likes    Like[]
+  comments Comment[]
+}
+
+model Like {
+  id         String   @id @default(cuid())
+  feedbackId String
+  userId     String
+  createdAt  DateTime @default(now())
+
+  feedback Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([feedbackId, userId])
+  @@index([feedbackId])
+}
+
+model Comment {
+  id         String   @id @default(cuid())
+  feedbackId String
+  userId     String
+  message    String
+  createdAt  DateTime @default(now())
+
+  feedback Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([feedbackId, createdAt])
 }
 
 model Friendship {
