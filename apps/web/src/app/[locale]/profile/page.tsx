@@ -1,16 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { X } from 'lucide-react';
 import { FeedCard } from '@/components/FeedCard';
+import { ImageCropperModal } from '@/components/ImageCropperModal';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { ShareProfileButton } from '@/components/profile/ShareProfileButton';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/context/auth.context';
 import { authApi, clearTokens, feedbackApi, usersApi } from '@/lib/api';
-import type { FeedbackItem, PaginatedResponse } from '@merror/shared';
+import { readFileAsDataUrl } from '@/lib/image';
+import { MAX_AVATAR_IMAGE_CHARS, type FeedbackItem, type PaginatedResponse } from '@merror/shared';
 
 export default function OwnProfilePage(): JSX.Element {
   const params = useParams<{ locale: string }>();
@@ -28,6 +31,11 @@ export default function OwnProfilePage(): JSX.Element {
   const [deletePassword, setDeletePassword] = useState('');
   const [deleteError, setDeleteError] = useState('');
   const [deleting, setDeleting] = useState(false);
+  // undefined = no pending change, null = pending removal, string = pending new avatar
+  const [avatarDataUrl, setAvatarDataUrl] = useState<string | null | undefined>(undefined);
+  const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
+  const [avatarCropSrc, setAvatarCropSrc] = useState<string | null>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -53,11 +61,31 @@ export default function OwnProfilePage(): JSX.Element {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await usersApi.updateProfile({ displayName, bio });
+      await usersApi.updateProfile({ displayName, bio, ...(avatarDataUrl !== undefined ? { avatarUrl: avatarDataUrl } : {}) });
       await refreshUser();
       setEditing(false);
+      setAvatarDataUrl(undefined);
     } catch { /* noop */ }
     setSaving(false);
+  };
+
+  const cancelEditing = () => {
+    setEditing(false);
+    setAvatarDataUrl(undefined);
+  };
+
+  const previewAvatarUrl = avatarDataUrl !== undefined ? avatarDataUrl : user.avatarUrl;
+
+  const handleEditAvatar = () => {
+    if (previewAvatarUrl) setAvatarMenuOpen(true);
+    else avatarInputRef.current?.click();
+  };
+
+  const handleAvatarFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarMenuOpen(false);
+    setAvatarCropSrc(await readFileAsDataUrl(file));
   };
 
   const items = tab === 'received' ? received : given;
@@ -71,10 +99,11 @@ export default function OwnProfilePage(): JSX.Element {
       <ProfileHeader
         displayName={user.displayName}
         username={user.username}
-        avatarUrl={user.avatarUrl}
+        avatarUrl={editing ? previewAvatarUrl : user.avatarUrl}
         bio={editing ? undefined : user.bio}
         totalPoints={user.totalPoints}
         locale={locale}
+        onEditAvatar={editing ? handleEditAvatar : undefined}
         actions={
           !editing && (
             <>
@@ -114,13 +143,42 @@ export default function OwnProfilePage(): JSX.Element {
               <Button onClick={handleSave} loading={saving} className="flex-1">
                 {saving ? 'Saving…' : 'Save'}
               </Button>
-              <Button variant="secondary" onClick={() => setEditing(false)} className="flex-1">
+              <Button variant="secondary" onClick={cancelEditing} className="flex-1">
                 Cancel
               </Button>
             </div>
           </div>
         )}
       </ProfileHeader>
+
+      <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarFileChange} />
+
+      {avatarMenuOpen && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/45 p-4" role="dialog" aria-modal="true" aria-label="Edit profile photo">
+          <div className="w-full max-w-xs rounded-2xl border border-border bg-surface p-4 shadow-2xl">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="m-0 font-display text-base font-bold text-text-primary">Profile photo</h2>
+              <button onClick={() => setAvatarMenuOpen(false)} aria-label="Close"><X className="h-4 w-4 text-text-muted" /></button>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Button variant="secondary" size="sm" onClick={() => avatarInputRef.current?.click()}>Replace photo</Button>
+              <Button variant="destructive" size="sm" onClick={() => { setAvatarDataUrl(null); setAvatarMenuOpen(false); }}>Remove photo</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {avatarCropSrc && (
+        <ImageCropperModal
+          imageSrc={avatarCropSrc}
+          aspect={1}
+          cropShape="round"
+          maxPx={512}
+          maxChars={MAX_AVATAR_IMAGE_CHARS}
+          onCancel={() => { setAvatarCropSrc(null); if (avatarInputRef.current) avatarInputRef.current.value = ''; }}
+          onSave={(dataUrl) => { setAvatarDataUrl(dataUrl); setAvatarCropSrc(null); }}
+        />
+      )}
 
       <div className="flex border-b border-border mt-8 mb-3.5">
         {(['received', 'given'] as const).map((itemTab) => (

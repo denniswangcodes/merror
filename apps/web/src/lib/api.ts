@@ -172,6 +172,8 @@ export const feedbackApi = {
   getGiven: (page = 1) => apiFetch(`/api/feedback/given?page=${page}&limit=20`),
   approve: (id: string) => apiFetch(`/api/feedback/${id}/approve`, { method: 'PATCH' }),
   reject: (id: string) => apiFetch(`/api/feedback/${id}/reject`, { method: 'PATCH' }),
+  update: (id: string, data: { imageUrl: string | null }) =>
+    apiFetch<FeedbackItem>(`/api/feedback/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
   remove: (id: string) => apiFetch(`/api/feedback/${id}`, { method: 'DELETE' }),
   /** Public lookup for a shareable reflection link — works whether or not the caller is logged in. */
   getPublic: (id: string) => apiFetch<FeedbackItem>(`/api/feedback/${id}`),

@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
+import { json, urlencoded } from 'express';
 import type { NextFunction, Request, Response } from 'express';
 import { AppModule } from './app.module';
 
@@ -13,8 +14,13 @@ async function bootstrap() {
       throw new Error('Production JWT secrets must be at least 32 characters');
     }
   }
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bodyParser: false });
   app.enableShutdownHooks();
+
+  // Raised from Express's 100kb default so base64-encoded avatar/reflection photos fit; DTO-level
+  // MaxLength checks on the image fields keep this from being an easy oversized-payload vector.
+  app.use(json({ limit: '5mb' }));
+  app.use(urlencoded({ extended: true, limit: '5mb' }));
 
   app.setGlobalPrefix('api');
   app.use(cookieParser());

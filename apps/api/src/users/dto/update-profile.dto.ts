@@ -1,4 +1,5 @@
-import { IsOptional, IsString, IsUrl, MaxLength } from 'class-validator';
+import { IsOptional, IsString, Matches, MaxLength, ValidateIf } from 'class-validator';
+import { IMAGE_VALUE_PATTERN, MAX_AVATAR_IMAGE_CHARS } from '../../common/image-validation';
 
 export class UpdateProfileDto {
   @IsOptional()
@@ -11,9 +12,13 @@ export class UpdateProfileDto {
   @MaxLength(200)
   bio?: string;
 
+  /** A data URI, an external URL, or null to remove the avatar. */
   @IsOptional()
-  @IsUrl()
-  avatarUrl?: string;
+  @ValidateIf((o) => o.avatarUrl !== null)
+  @IsString()
+  @Matches(IMAGE_VALUE_PATTERN)
+  @MaxLength(MAX_AVATAR_IMAGE_CHARS)
+  avatarUrl?: string | null;
 
   @IsOptional()
   @IsString()

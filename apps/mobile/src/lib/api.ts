@@ -107,7 +107,7 @@ export const usersApi = {
   getById: (id: string) => apiFetch(`/api/users/${id}`),
   getByUsername: (username: string) => apiFetch(`/api/users/by-username/${username}`),
   getByQr: (qrCode: string) => apiFetch(`/api/users/qr/${encodeURIComponent(qrCode)}`),
-  updateProfile: (data: { displayName?: string; bio?: string }) =>
+  updateProfile: (data: { displayName?: string; bio?: string; avatarUrl?: string | null }) =>
     apiFetch('/api/users/me', { method: 'PATCH', body: JSON.stringify(data) }),
 };
 
@@ -118,14 +118,14 @@ export const feedbackApi = {
   getGiven: () => apiFetch('/api/feedback/given'),
   approve: (id: string) => apiFetch(`/api/feedback/${id}/approve`, { method: 'PATCH' }),
   reject: (id: string) => apiFetch(`/api/feedback/${id}/reject`, { method: 'PATCH' }),
+  update: (id: string, data: { imageUrl: string | null }) =>
+    apiFetch(`/api/feedback/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  remove: (id: string) => apiFetch(`/api/feedback/${id}`, { method: 'DELETE' }),
   toggleLike: (id: string) => apiFetch<{ liked: boolean; likeCount: number }>(`/api/feedback/${id}/like`, { method: 'POST' }),
   getComments: (id: string) => apiFetch<CommentItem[]>(`/api/feedback/${id}/comments`),
   addComment: (id: string, message: string) => apiFetch<CommentItem>(`/api/feedback/${id}/comments`, { method: 'POST', body: JSON.stringify({ message }) }),
-  create: (receiverId: string, type: string, message: string, isPublic: boolean, imageUrl?: string) =>
-    apiFetch('/api/feedback', {
-      method: 'POST',
-      body: JSON.stringify({ receiverId, type, message, isPublic, ...(imageUrl ? { imageUrl } : {}) }),
-    }),
+  create: (data: { receiverId?: string; recipientName?: string; type: string; message: string; isPublic: boolean; imageUrl?: string }) =>
+    apiFetch('/api/feedback', { method: 'POST', body: JSON.stringify(data) }),
 };
 
 // Friends

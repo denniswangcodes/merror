@@ -5,41 +5,18 @@ import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ImagePlus, X, Sparkles } from 'lucide-react';
 import { Avatar } from '@/components/Avatar';
+import { ImageCropperModal } from '@/components/ImageCropperModal';
 import { TierBadge } from '@/components/TierBadge';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/context/auth.context';
 import { useTheme } from '@/context/theme.context';
 import { usersApi, feedbackApi } from '@/lib/api';
-import { FEEDBACK_TYPE_META } from '@merror/shared';
+import { readFileAsDataUrl } from '@/lib/image';
+import { FEEDBACK_TYPE_META, MAX_REFLECTION_IMAGE_CHARS } from '@merror/shared';
 import type { PublicUser, FeedbackType } from '@merror/shared';
 import { cn } from '@/lib/utils';
 
 const FEEDBACK_TYPES: FeedbackType[] = ['COMPLIMENT', 'HELPFUL_ACT', 'MEMORY', 'COMMUNITY_SERVICE'];
-
-/** Compress an image file to a base64 JPEG ≤ given dimension and quality */
-function compressImage(file: File, maxPx = 1080, quality = 0.75): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        const scale = Math.min(1, maxPx / Math.max(img.width, img.height));
-        const w = Math.round(img.width * scale);
-        const h = Math.round(img.height * scale);
-        const canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext('2d')!;
-        ctx.drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/jpeg', quality));
-      };
-      img.onerror = reject;
-      img.src = e.target!.result as string;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
 
 export default function GiveFeedbackPage(): JSX.Element {
   const params = useParams<{ locale: string; userId: string }>();
@@ -54,6 +31,7 @@ export default function GiveFeedbackPage(): JSX.Element {
   const [type, setType] = useState<FeedbackType>('COMPLIMENT');
   const [message, setMessage] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
   const [isPublic, setIsPublic] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -71,8 +49,7 @@ export default function GiveFeedbackPage(): JSX.Element {
       return;
     }
     setError('');
-    const compressed = await compressImage(file);
-    setImagePreview(compressed);
+    setCropSrc(await readFileAsDataUrl(file));
   };
 
   const handleSubmit = async () => {
@@ -202,13 +179,22 @@ export default function GiveFeedbackPage(): JSX.Element {
       {imagePreview ? (
         <div className="relative mb-5 rounded-xl overflow-hidden border border-border">
           <img src={imagePreview} alt="preview" className="w-full object-cover max-h-56" />
-          <button
-            onClick={() => { setImagePreview(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
-            className="absolute top-2 right-2 bg-black/60 text-white rounded-full w-7 h-7 flex items-center justify-center border-none cursor-pointer hover:bg-black/80 transition-colors"
-            title="Remove image"
-          >
-            <X className="h-4 w-4" />
-          </button>
+          <div className="absolute top-2 right-2 flex gap-1.5">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="bg-black/60 text-white rounded-full w-7 h-7 flex items-center justify-center border-none cursor-pointer hover:bg-black/80 transition-colors"
+              title="Change photo"
+            >
+              <ImagePlus className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={() => { setImagePreview(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
+              className="bg-black/60 text-white rounded-full w-7 h-7 flex items-center justify-center border-none cursor-pointer hover:bg-black/80 transition-colors"
+              title="Remove image"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       ) : (
         <button
@@ -254,6 +240,16 @@ export default function GiveFeedbackPage(): JSX.Element {
           </span>
         )}
       </Button>
+
+      {cropSrc && (
+        <ImageCropperModal
+          imageSrc={cropSrc}
+          aspect={1}
+          maxChars={MAX_REFLECTION_IMAGE_CHARS}
+          onCancel={() => { setCropSrc(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
+          onSave={(dataUrl) => { setImagePreview(dataUrl); setCropSrc(null); }}
+        />
+      )}
     </div>
   );
 }

@@ -48,6 +48,13 @@
           "cameraPermission": "Allow Merror to access your camera to scan QR codes."
         }
       ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Merror to access your photos so you can add one to your profile or a reflection.",
+          "cameraPermission": "Allow Merror to use your camera to take a photo for your profile or a reflection."
+        }
+      ],
       "expo-secure-store",
       "expo-font"
     ],

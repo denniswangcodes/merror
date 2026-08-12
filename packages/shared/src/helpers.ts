@@ -107,6 +107,12 @@ export const FEEDBACK_TYPE_META: Record<FeedbackType, {
   },
 };
 
+// Client-side compression targets and the server-side validation cap share these values so a
+// photo that passes compression on web/mobile is guaranteed to pass the API's MaxLength check.
+export const MAX_AVATAR_IMAGE_CHARS = 700_000; // ~500KB binary after base64 overhead
+export const MAX_REFLECTION_IMAGE_CHARS = 1_800_000; // ~1.3MB binary after base64 overhead
+export const IMAGE_VALUE_PATTERN = /^(https?:\/\/\S+|data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/]+=*)$/;
+
 export function getAvatarInitials(displayName: string | null, username: string): string {
   const name = displayName || username;
   const parts = name.split(/\s+/);

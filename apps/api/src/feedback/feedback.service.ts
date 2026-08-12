@@ -307,6 +307,20 @@ export class FeedbackService {
     return { ...withCounts(updated), likedByMe: false };
   }
 
+  async updateImage(userId: string, feedbackId: string, imageUrl: string | null) {
+    const feedback = await this.prisma.feedback.findUnique({ where: { id: feedbackId }, select: { giverId: true } });
+    if (!feedback) throw new NotFoundException('Reflection not found');
+    if (feedback.giverId !== userId) {
+      throw new ForbiddenException('Only the person who posted this reflection can change its photo');
+    }
+    const updated = await this.prisma.feedback.update({
+      where: { id: feedbackId },
+      data: { imageUrl },
+      select: FEEDBACK_WITH_USERS,
+    });
+    return { ...withCounts(updated), likedByMe: false };
+  }
+
   async remove(userId: string, feedbackId: string) {
     const feedback = await this.prisma.feedback.findUnique({ where: { id: feedbackId } });
     if (!feedback) throw new NotFoundException('Reflection not found');

@@ -3,12 +3,14 @@ import { View, FlatList, Text, StyleSheet, ActivityIndicator, RefreshControl, Al
 import { useRouter, useFocusEffect } from 'expo-router';
 import { FeedCard } from '../../src/components/FeedCard';
 import { feedbackApi, safetyApi } from '../../src/lib/api';
+import { useAuth } from '../../src/context/auth.context';
 import type { FeedbackItem, PaginatedResponse } from '@merror/shared';
 import { useAppTheme } from '../../src/lib/theme';
 
 export default function FeedScreen() {
   const router = useRouter();
   const theme = useAppTheme();
+  const { user } = useAuth();
   const [items, setItems] = useState<FeedbackItem[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
@@ -42,6 +44,9 @@ export default function FeedScreen() {
             onReceiverPress={item.receiver ? () => router.push(`/profile/${item.receiver!.username}`) : undefined}
             onReport={() => Alert.alert('Report reflection', 'Send this reflection to Merror for safety review?', [{ text: 'Cancel', style: 'cancel' }, { text: 'Report', style: 'destructive', onPress: () => safetyApi.report({ feedbackId: item.id, reportedUserId: item.giver?.id, reason: 'OTHER' }).then(() => Alert.alert('Report submitted', 'Thank you for helping keep Merror safe.')).catch((error) => Alert.alert('Could not report', (error as Error).message)) }])}
             onShare={() => Share.share({ message: `${item.giver?.displayName || item.giver?.username || 'Someone'} recognized ${item.receiver?.displayName || item.receiver?.username || 'someone'} on Merror: “${item.message}”` })}
+            canDelete={!!user && (user.id === item.giverId || user.id === item.receiverId)}
+            canEditPhoto={!!user && user.id === item.giverId}
+            onDelete={() => setItems((prev) => prev.filter((i) => i.id !== item.id))}
           />
         )}
         contentContainerStyle={{ paddingTop: 0, paddingBottom: 16 }}

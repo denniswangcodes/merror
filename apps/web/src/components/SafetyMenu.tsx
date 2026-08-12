@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Flag, MoreHorizontal, ShieldBan, Trash2, X } from 'lucide-react';
+import { Flag, ImagePlus, MoreHorizontal, ShieldBan, Trash2, X } from 'lucide-react';
 import { feedbackApi, safetyApi } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/context/auth.context';
@@ -17,7 +17,7 @@ const REASONS = [
   ['OTHER', 'Something else'],
 ] as const;
 
-export function SafetyMenu({ feedbackId, userId, canDelete = false, onDeleted, onBlocked }: { feedbackId?: string; userId?: string; canDelete?: boolean; onDeleted?: () => void; onBlocked?: () => void }) {
+export function SafetyMenu({ feedbackId, userId, canDelete = false, canEditPhoto = false, onDeleted, onBlocked, onEditPhoto }: { feedbackId?: string; userId?: string; canDelete?: boolean; canEditPhoto?: boolean; onDeleted?: () => void; onBlocked?: () => void; onEditPhoto?: () => void }) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [reporting, setReporting] = useState(false);
@@ -75,6 +75,7 @@ export function SafetyMenu({ feedbackId, userId, canDelete = false, onDeleted, o
       {open && (
         <div className="absolute top-full right-0 z-30 mt-1 w-44 overflow-hidden rounded-xl border border-border bg-surface-raised p-1 shadow-card-hover">
           <button onClick={() => { setReporting(true); setOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-text-secondary hover:bg-background"><Flag className="h-3.5 w-3.5" /> Report</button>
+          {canEditPhoto && <button onClick={() => { setOpen(false); onEditPhoto?.(); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-text-secondary hover:bg-background"><ImagePlus className="h-3.5 w-3.5" /> Edit photo</button>}
           {userId && userId !== user?.id && <button disabled={busy} onClick={block} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-danger hover:bg-danger/10"><ShieldBan className="h-3.5 w-3.5" /> Block</button>}
           {canDelete && <button disabled={busy} onClick={removeReflection} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-danger hover:bg-danger/10"><Trash2 className="h-3.5 w-3.5" /> Delete</button>}
         </div>

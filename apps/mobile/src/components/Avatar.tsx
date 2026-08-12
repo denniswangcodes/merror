@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Image, View, Text, StyleSheet } from 'react-native';
 import { getAvatarInitials } from '@merror/shared';
 
 interface AvatarProps {
@@ -20,6 +20,15 @@ function hashColor(username: string): string {
 export function Avatar({ displayName, username, avatarUrl, size = 40 }: AvatarProps) {
   const initials = getAvatarInitials(displayName ?? null, username);
   const bg = hashColor(username);
+
+  if (avatarUrl) {
+    return (
+      <Image
+        source={{ uri: avatarUrl }}
+        style={{ width: size, height: size, borderRadius: size / 2 }}
+      />
+    );
+  }
 
   return (
     <View

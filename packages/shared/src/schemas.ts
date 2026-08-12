@@ -57,7 +57,7 @@ export const FriendRequestSchema = z.object({
 export const UpdateProfileSchema = z.object({
   displayName: z.string().min(1).max(60).optional(),
   bio: z.string().max(200).optional(),
-  avatarUrl: z.string().url().optional(),
+  avatarUrl: z.string().nullable().optional(),
   preferredLanguage: z.string().optional(),
 });
 

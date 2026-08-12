@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
+import { UpdateFeedbackDto } from './dto/update-feedback.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { GetUser } from '../common/decorators/get-user.decorator';
@@ -92,6 +93,13 @@ export class FeedbackController {
   @UseGuards(JwtGuard)
   removeComment(@GetUser('id') userId: string, @Param('commentId') commentId: string) {
     return this.feedbackService.removeComment(userId, commentId);
+  }
+
+  // Photo-only edit — only the giver who posted the reflection can replace or remove its image.
+  @Patch(':id')
+  @UseGuards(JwtGuard)
+  update(@GetUser('id') userId: string, @Param('id') id: string, @Body() dto: UpdateFeedbackDto) {
+    return this.feedbackService.updateImage(userId, id, dto.imageUrl);
   }
 
   @Patch(':id/approve')

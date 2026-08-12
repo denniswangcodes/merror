@@ -1,17 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, NotebookPen, Send } from 'lucide-react';
+import { Heart, MessageCircle, NotebookPen, Send, X } from 'lucide-react';
 import { Avatar } from './Avatar';
 import { Badge } from './Badge';
 import { Card } from './ui/Card';
 import { SafetyMenu } from './SafetyMenu';
+import { ImageCropperModal } from './ImageCropperModal';
+import { Button } from './ui/Button';
 import { useAuth } from '@/context/auth.context';
 import { feedbackApi } from '@/lib/api';
-import { formatReflectionDate, type CommentItem, type FeedbackItem } from '@merror/shared';
+import { readFileAsDataUrl } from '@/lib/image';
+import { formatReflectionDate, MAX_REFLECTION_IMAGE_CHARS, type CommentItem, type FeedbackItem } from '@merror/shared';
 
 interface FeedCardProps { item: FeedbackItem; locale: string; index?: number }
 
@@ -36,12 +39,40 @@ export function FeedCard({ item, locale, index = 0 }: FeedCardProps) {
   const [commentCount, setCommentCount] = useState(item.commentCount ?? 0);
   const [commentDraft, setCommentDraft] = useState('');
   const [postingComment, setPostingComment] = useState(false);
+  const [currentImageUrl, setCurrentImageUrl] = useState(item.imageUrl ?? null);
+  const [photoMenuOpen, setPhotoMenuOpen] = useState(false);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [removingPhoto, setRemovingPhoto] = useState(false);
+  const photoInputRef = useRef<HTMLInputElement>(null);
 
   const giver = item.giver;
   const receiver = item.receiver;
   const isJournalEntry = !item.receiverId;
-  const imageUrl = item.imageUrl || TYPE_DEFAULT_IMAGE[item.type];
+  const imageUrl = currentImageUrl || TYPE_DEFAULT_IMAGE[item.type];
   const detailUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/${locale}/reflection/${item.id}`;
+
+  const handleEditPhoto = () => {
+    if (currentImageUrl) setPhotoMenuOpen(true);
+    else photoInputRef.current?.click();
+  };
+
+  const handlePhotoFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoMenuOpen(false);
+    setCropSrc(await readFileAsDataUrl(file));
+  };
+
+  const handleRemovePhoto = async () => {
+    setRemovingPhoto(true);
+    try {
+      await feedbackApi.update(item.id, { imageUrl: null });
+      setCurrentImageUrl(null);
+      setPhotoMenuOpen(false);
+    } catch { /* noop */ } finally {
+      setRemovingPhoto(false);
+    }
+  };
 
   const requireAuth = () => {
     const ref = giver?.username;
@@ -125,7 +156,14 @@ export function FeedCard({ item, locale, index = 0 }: FeedCardProps) {
           ) : null}
           <span className="ml-auto flex shrink-0 items-center gap-1">
             <span className="text-[11px] font-medium tabular-nums text-text-muted">{formatReflectionDate(item.createdAt)}</span>
-            <SafetyMenu feedbackId={item.id} userId={giver?.id} canDelete={user?.id === item.giverId || user?.id === item.receiverId} onDeleted={() => { setDeleted(true); if (user?.id === item.receiverId) void refreshUser(); }} />
+            <SafetyMenu
+              feedbackId={item.id}
+              userId={giver?.id}
+              canDelete={user?.id === item.giverId || user?.id === item.receiverId}
+              canEditPhoto={user?.id === item.giverId}
+              onEditPhoto={handleEditPhoto}
+              onDeleted={() => { setDeleted(true); if (user?.id === item.receiverId) void refreshUser(); }}
+            />
           </span>
         </div>
 
@@ -227,6 +265,39 @@ export function FeedCard({ item, locale, index = 0 }: FeedCardProps) {
           )}
         </div>
       </Card>
+
+      <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoFileChange} />
+
+      {photoMenuOpen && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/45 p-4" role="dialog" aria-modal="true" aria-label="Edit photo">
+          <div className="w-full max-w-xs rounded-2xl border border-border bg-surface p-4 shadow-2xl">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="m-0 font-display text-base font-bold text-text-primary">Edit photo</h2>
+              <button onClick={() => setPhotoMenuOpen(false)} aria-label="Close"><X className="h-4 w-4 text-text-muted" /></button>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Button variant="secondary" size="sm" onClick={() => photoInputRef.current?.click()}>Replace photo</Button>
+              <Button variant="destructive" size="sm" loading={removingPhoto} onClick={handleRemovePhoto}>Remove photo</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {cropSrc && (
+        <ImageCropperModal
+          imageSrc={cropSrc}
+          aspect={1}
+          maxChars={MAX_REFLECTION_IMAGE_CHARS}
+          onCancel={() => { setCropSrc(null); if (photoInputRef.current) photoInputRef.current.value = ''; }}
+          onSave={async (dataUrl) => {
+            setCropSrc(null);
+            try {
+              await feedbackApi.update(item.id, { imageUrl: dataUrl });
+              setCurrentImageUrl(dataUrl);
+            } catch { /* noop */ }
+          }}
+        />
+      )}
     </motion.div>
   );
 }

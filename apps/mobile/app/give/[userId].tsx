@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import type { FeedbackType, PublicUser } from '@merror/shared';
+import { MAX_REFLECTION_IMAGE_CHARS } from '@merror/shared';
 import { Avatar } from '../../src/components/Avatar';
 import { useAuth } from '../../src/context/auth.context';
 import { feedbackApi, usersApi } from '../../src/lib/api';
+import { compressToDataUrl, pickImage, showImageSourceSheet } from '../../src/lib/image';
 
 const TYPES: { value: FeedbackType; label: string }[] = [
   { value: 'COMPLIMENT', label: 'Kind Word' },
@@ -20,8 +23,21 @@ export default function GiveScreen() {
   const [receiver, setReceiver] = useState<PublicUser | null>(null);
   const [type, setType] = useState<FeedbackType>('COMPLIMENT');
   const [message, setMessage] = useState('');
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [processingImage, setProcessingImage] = useState(false);
   const [isPublic, setIsPublic] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+
+  const addPhoto = () => showImageSourceSheet(async (source) => {
+    const uri = await pickImage(source, [4, 5]);
+    if (!uri) return;
+    setProcessingImage(true);
+    try {
+      setImagePreview(await compressToDataUrl(uri, { maxChars: MAX_REFLECTION_IMAGE_CHARS }));
+    } finally {
+      setProcessingImage(false);
+    }
+  });
 
   useEffect(() => {
     if (userId) usersApi.getById(userId).then((item) => setReceiver(item as PublicUser)).catch(() => router.back());
@@ -31,7 +47,7 @@ export default function GiveScreen() {
     if (!receiver || !message.trim()) return Alert.alert('Message required', 'Write something kind and specific.');
     setSubmitting(true);
     try {
-      await feedbackApi.create(receiver.id, type, message.trim(), isPublic);
+      await feedbackApi.create({ receiverId: receiver.id, type, message: message.trim(), isPublic, ...(imagePreview ? { imageUrl: imagePreview } : {}) });
       Alert.alert('Reflection sent', `${receiver.displayName || receiver.username} can now review it.`, [{ text: 'Done', onPress: () => router.replace('/(tabs)/feed') }]);
     } catch (error) {
       Alert.alert('Could not send', (error as Error).message);
@@ -56,6 +72,19 @@ export default function GiveScreen() {
     <TextInput style={styles.input} multiline maxLength={280} textAlignVertical="top" value={message} onChangeText={setMessage} placeholder="Write something genuine and specific…" placeholderTextColor="#8A8791" />
     <Text style={styles.count}>{message.length}/280</Text>
 
+    <Text style={styles.label}>Add a photo <Text style={styles.optional}>(optional)</Text></Text>
+    {imagePreview ? (
+      <View style={styles.photoPreviewWrap}>
+        <Image source={{ uri: imagePreview }} style={styles.photoPreview} resizeMode="cover" />
+        <TouchableOpacity style={styles.photoChangeBtn} onPress={addPhoto} accessibilityLabel="Change photo"><Ionicons name="image-outline" size={16} color="#fff" /></TouchableOpacity>
+        <TouchableOpacity style={styles.photoRemoveBtn} onPress={() => setImagePreview(null)} accessibilityLabel="Remove photo"><Ionicons name="close" size={16} color="#fff" /></TouchableOpacity>
+      </View>
+    ) : (
+      <TouchableOpacity style={styles.photoAdd} onPress={addPhoto} disabled={processingImage}>
+        {processingImage ? <ActivityIndicator color="#6D5BFF" /> : <><Ionicons name="image-outline" size={18} color="#77727D" /><Text style={styles.photoAddText}>Tap to add a photo</Text></>}
+      </TouchableOpacity>
+    )}
+
     <View style={styles.visibility}><View><Text style={styles.visibilityTitle}>Public reflection</Text><Text style={styles.visibilityCopy}>Show this in the community feed</Text></View><Switch value={isPublic} onValueChange={setIsPublic} trackColor={{ false: '#D7D5DB', true: '#A99FFF' }} thumbColor={isPublic ? '#6D5BFF' : '#FFFFFF'} /></View>
     <TouchableOpacity disabled={submitting || !message.trim()} style={[styles.primary, (!message.trim() || submitting) && styles.disabled]} onPress={submit}><Text style={styles.primaryText}>{submitting ? 'Sending…' : 'Send reflection'}</Text></TouchableOpacity>
   </ScrollView>;
@@ -67,6 +96,11 @@ const styles = StyleSheet.create({
   receiver: { flexDirection: 'row', alignItems: 'center', padding: 14, borderWidth: 1, borderColor: '#E5E2E8', backgroundColor: '#FFFFFF', borderRadius: 16, marginBottom: 22 }, receiverText: { marginLeft: 12 }, name: { color: '#19171C', fontWeight: '700', fontSize: 16 }, username: { color: '#77727D', fontSize: 12, marginTop: 2 },
   label: { color: '#403C45', fontSize: 13, fontWeight: '700', marginBottom: 8 }, typeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginBottom: 20 }, typeButton: { width: '48.5%', minHeight: 48, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#E5E2E8', borderRadius: 12, paddingHorizontal: 5, backgroundColor: '#FFFFFF' }, typeActive: { borderColor: '#6D5BFF', backgroundColor: '#F1EFFF' }, typeText: { color: '#77727D', fontSize: 11, fontWeight: '600', textAlign: 'center' }, typeTextActive: { color: '#5D4EE8' },
   input: { height: 132, borderWidth: 1, borderColor: '#D7D5DB', backgroundColor: '#FFFFFF', borderRadius: 14, padding: 14, color: '#19171C', fontSize: 15 }, count: { textAlign: 'right', color: '#8A8791', fontSize: 11, marginTop: 5, marginBottom: 16 },
+  optional: { textTransform: 'none', fontWeight: '400', color: '#8A8791' },
+  photoAdd: { minHeight: 52, borderWidth: 2, borderStyle: 'dashed', borderColor: '#D7D5DB', borderRadius: 14, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 8, marginBottom: 20 }, photoAddText: { color: '#77727D', fontSize: 13, fontWeight: '600' },
+  photoPreviewWrap: { position: 'relative', marginBottom: 20, borderRadius: 14, overflow: 'hidden' }, photoPreview: { width: '100%', aspectRatio: 4 / 5, backgroundColor: '#E5E2E8' },
+  photoChangeBtn: { position: 'absolute', top: 8, right: 42, width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(0,0,0,0.6)', alignItems: 'center', justifyContent: 'center' },
+  photoRemoveBtn: { position: 'absolute', top: 8, right: 8, width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(0,0,0,0.6)', alignItems: 'center', justifyContent: 'center' },
   visibility: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: '#E5E2E8', borderRadius: 14, backgroundColor: '#FFFFFF', padding: 14, marginBottom: 20 }, visibilityTitle: { color: '#19171C', fontSize: 14, fontWeight: '600' }, visibilityCopy: { color: '#8A8791', fontSize: 11, marginTop: 2 },
   primary: { minHeight: 48, borderRadius: 14, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20, backgroundColor: '#6D5BFF' }, primaryText: { color: '#FFFFFF', fontSize: 15, fontWeight: '700' }, disabled: { opacity: 0.5 },
 });

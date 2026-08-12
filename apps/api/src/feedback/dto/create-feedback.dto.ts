@@ -1,4 +1,5 @@
-import { IsBoolean, IsEnum, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsBoolean, IsEnum, IsOptional, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { IMAGE_VALUE_PATTERN, MAX_REFLECTION_IMAGE_CHARS } from '../../common/image-validation';
 
 export class CreateFeedbackDto {
   /** Omit to log a private journal entry about someone who isn't on Merror yet. */
@@ -23,6 +24,8 @@ export class CreateFeedbackDto {
 
   @IsOptional()
   @IsString()
+  @Matches(IMAGE_VALUE_PATTERN)
+  @MaxLength(MAX_REFLECTION_IMAGE_CHARS)
   imageUrl?: string;
 
   @IsOptional()
