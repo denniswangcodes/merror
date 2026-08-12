@@ -12,15 +12,23 @@ import { useAppTheme, useThemeMode } from '../../src/lib/theme';
 import type { FeedbackItem, PaginatedResponse } from '@merror/shared';
 
 export default function ProfileScreen() {
-  const router = useRouter(); const theme = useAppTheme(); const { mode, toggle } = useThemeMode(); const { user, loading, logout, refreshUser } = useAuth();
+  const router = useRouter(); const theme = useAppTheme(); const { mode, toggle } = useThemeMode(); const { user, loading, logout, refreshUser, deleteAccount } = useAuth();
   const [received, setReceived] = useState<FeedbackItem[]>([]); const [given, setGiven] = useState<FeedbackItem[]>([]); const [tab, setTab] = useState<'received' | 'given'>('received');
   const [refreshing, setRefreshing] = useState(false); const [menu, setMenu] = useState(false); const [edit, setEdit] = useState(false); const [qr, setQr] = useState(false); const [saving, setSaving] = useState(false);
   const [displayName, setDisplayName] = useState(''); const [bio, setBio] = useState('');
+  const [del, setDel] = useState(false); const [delPassword, setDelPassword] = useState(''); const [deleting, setDeleting] = useState(false);
   const loadFeedback = useCallback(async () => { if (!user) return; await Promise.all([feedbackApi.getReceived().then((r) => setReceived((r as PaginatedResponse<FeedbackItem>).data)), feedbackApi.getGiven().then((r) => setGiven((r as PaginatedResponse<FeedbackItem>).data))]); }, [user]);
   useFocusEffect(useCallback(() => { void loadFeedback(); }, [loadFeedback]));
   useEffect(() => { if (user) { setDisplayName(user.displayName || ''); setBio(user.bio || ''); } }, [user]);
   const refresh = async () => { setRefreshing(true); await Promise.all([refreshUser(), loadFeedback()]); setRefreshing(false); };
   const save = async () => { setSaving(true); try { await usersApi.updateProfile({ displayName, bio }); await refreshUser(); setEdit(false); } catch (error) { Alert.alert('Could not save profile', (error as Error).message); } finally { setSaving(false); } };
+  const confirmDelete = async () => {
+    if (!delPassword) { Alert.alert('Password required', 'Enter your password to confirm.'); return; }
+    setDeleting(true);
+    try { await deleteAccount(delPassword); setDel(false); router.replace('/auth/login'); }
+    catch (error) { Alert.alert('Could not delete account', (error as Error).message); }
+    finally { setDeleting(false); setDelPassword(''); }
+  };
   if (loading) return <View style={[styles.center, { backgroundColor: theme.background }]}><ActivityIndicator color={theme.accent} /></View>;
   if (!user) return <View style={[styles.center, { backgroundColor: theme.background }]}><Text style={{ color: theme.muted }}>Sign in to see your profile</Text><TouchableOpacity style={[styles.signIn, { backgroundColor: theme.accent }]} onPress={() => router.push('/auth/login')}><Text style={styles.white}>Sign In</Text></TouchableOpacity></View>;
   const items = tab === 'received' ? received : given;
@@ -43,7 +51,16 @@ export default function ProfileScreen() {
       <TouchableOpacity style={styles.menuItem} onPress={() => { setMenu(false); setQr(true); }}><Ionicons name="qr-code-outline" size={21} color={theme.text} /><Text style={[styles.menuText, { color: theme.text }]}>Your Merror code</Text></TouchableOpacity>
       <View style={styles.menuItem}><Ionicons name={mode === 'dark' ? 'moon' : 'sunny-outline'} size={21} color={theme.text} /><Text style={[styles.menuText, { color: theme.text }]}>Dark mode</Text><Switch value={mode === 'dark'} onValueChange={toggle} trackColor={{ false: theme.borderStrong, true: theme.accent }} thumbColor="#fff" /></View>
       <TouchableOpacity style={styles.menuItem} onPress={() => { setMenu(false); Alert.alert('Log out', 'Are you sure?', [{ text: 'Cancel', style: 'cancel' }, { text: 'Log out', style: 'destructive', onPress: logout }]); }}><Ionicons name="log-out-outline" size={21} color="#D95B68" /><Text style={[styles.menuText, { color: '#D95B68' }]}>Log out</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.menuItem} onPress={() => { setMenu(false); setDel(true); }}><Ionicons name="trash-outline" size={21} color="#D95B68" /><Text style={[styles.menuText, { color: '#D95B68' }]}>Delete account</Text></TouchableOpacity>
     </View></TouchableOpacity></Modal>
+
+    <Modal visible={del} transparent animationType="slide" onRequestClose={() => setDel(false)}><View style={styles.backdrop}><View style={[styles.dialog, { backgroundColor: theme.raised, borderColor: theme.border }]}>
+      <View style={styles.dialogHead}><Text style={[styles.dialogTitle, { color: theme.text }]}>Delete account</Text><TouchableOpacity onPress={() => setDel(false)}><Ionicons name="close" size={24} color={theme.text} /></TouchableOpacity></View>
+      <Text style={{ fontSize: 13, color: theme.textSecondary, lineHeight: 18 }}>This permanently deletes your account and all associated content. This can&apos;t be undone.</Text>
+      <Text style={[styles.label, { color: theme.muted }]}>Confirm password</Text>
+      <TextInput value={delPassword} onChangeText={setDelPassword} secureTextEntry placeholder="Password" placeholderTextColor={theme.muted} style={[styles.input, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surface }]} />
+      <TouchableOpacity disabled={deleting} style={[styles.save, { backgroundColor: '#D95B68' }]} onPress={() => Alert.alert('Delete account', 'Are you sure? This cannot be undone.', [{ text: 'Cancel', style: 'cancel' }, { text: 'Delete', style: 'destructive', onPress: confirmDelete }])}><Text style={styles.white}>{deleting ? 'Deleting…' : 'Delete my account'}</Text></TouchableOpacity>
+    </View></View></Modal>
 
     <Modal visible={edit} transparent animationType="slide" onRequestClose={() => setEdit(false)}><View style={styles.backdrop}><View style={[styles.dialog, { backgroundColor: theme.raised, borderColor: theme.border }]}><View style={styles.dialogHead}><Text style={[styles.dialogTitle, { color: theme.text }]}>Edit profile</Text><TouchableOpacity onPress={() => setEdit(false)}><Ionicons name="close" size={24} color={theme.text} /></TouchableOpacity></View><Text style={[styles.label, { color: theme.muted }]}>Display name</Text><TextInput value={displayName} onChangeText={setDisplayName} maxLength={60} style={[styles.input, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surface }]} /><Text style={[styles.label, { color: theme.muted }]}>Bio</Text><TextInput value={bio} onChangeText={setBio} maxLength={200} multiline style={[styles.input, styles.bioInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surface }]} /><TouchableOpacity disabled={saving} style={[styles.save, { backgroundColor: theme.accent }]} onPress={save}><Text style={styles.white}>{saving ? 'Saving…' : 'Save profile'}</Text></TouchableOpacity></View></View></Modal>
 
