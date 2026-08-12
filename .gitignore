@@ -8,5 +8,6 @@ dist/
 !*.env.local.example
 .DS_Store
 *.log
+*.tsbuildinfo
 coverage/
 prisma/migrations/*.sql

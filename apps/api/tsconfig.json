@@ -8,7 +8,7 @@
     "experimentalDecorators": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "incremental": true,
+    "incremental": false,
     "strictPropertyInitialization": false,
     "paths": {
       "@merror/shared": ["../../packages/shared/src/index.ts"],
