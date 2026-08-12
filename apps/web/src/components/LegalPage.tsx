@@ -15,6 +15,7 @@ export function LegalPage({ title, intro, locale, children }: { title: string; i
         <Link href={`/${locale}/terms`} className="text-text-muted no-underline hover:text-accent">Terms</Link>
         <Link href={`/${locale}/support`} className="text-text-muted no-underline hover:text-accent">Support</Link>
       </div>
+      <p className="mt-4 text-xs text-text-muted">&copy; {new Date().getFullYear()} Fayde LLC</p>
     </article>
   );
 }

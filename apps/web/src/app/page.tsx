@@ -11,8 +11,8 @@ const reflections = [
 export default function LandingPage(): JSX.Element {
   return (
     <main className="min-h-screen overflow-hidden bg-[#fffdfb] text-[#1d1b20]">
-      <nav className="relative z-40 mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8">
-        <Link href="/" className="no-underline"><Logo size={34} /></Link>
+      <nav className="relative z-40 flex h-[76px] w-full items-center justify-between px-5 sm:px-8">
+        <Link href="/" className="no-underline"><Logo size={34} wordmarkClassName="brand-gradient-text" /></Link>
         <div className="flex items-center gap-2 sm:gap-3">
           <Link href="/en/login" className="rounded-full px-4 py-2.5 text-sm font-bold text-[#49454f] no-underline transition hover:bg-black/[0.04]">Sign in</Link>
           <Link href="/en/signup" className="brand-gradient-bg rounded-full px-5 py-2.5 text-sm font-bold text-white no-underline shadow-[0_8px_24px_rgba(190,91,142,0.24)] transition hover:-translate-y-0.5">Sign up</Link>
@@ -66,7 +66,7 @@ export default function LandingPage(): JSX.Element {
 
       <section className="px-5 py-24 sm:px-8 lg:py-32"><div className="brand-gradient-bg relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] px-6 py-16 text-center text-white shadow-[0_30px_80px_rgba(109,91,255,.22)] sm:px-12 sm:py-20"><div className="absolute -left-20 -top-24 h-64 w-64 rounded-full bg-white/15 blur-3xl" /><Sparkles className="relative mx-auto h-7 w-7" /><h2 className="relative m-0 mt-5 font-display text-4xl font-black tracking-[-.04em] sm:text-6xl">What good will<br />you start?</h2><p className="relative mx-auto mb-0 mt-5 max-w-xl text-base leading-7 text-white/80">One genuine reflection can change someone’s day. A community of them can change what everyone values.</p><Link href="/en/signup" className="relative mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-4 text-sm font-black text-[#714a82] no-underline shadow-xl transition hover:-translate-y-1">Create your free account <ArrowRight className="h-4 w-4" /></Link></div></section>
 
-      <footer className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 border-t border-[#eee8ed] px-5 py-8 sm:flex-row sm:px-8"><Logo size={28} /><p className="m-0 text-xs font-semibold text-[#8b848d]">A reflection of the good in people.</p><div className="flex gap-5 text-xs font-bold"><Link href="/en/privacy" className="text-[#716b73] no-underline hover:text-accent">Privacy</Link><Link href="/en/terms" className="text-[#716b73] no-underline hover:text-accent">Terms</Link><Link href="/en/support" className="text-[#716b73] no-underline hover:text-accent">Support</Link></div></footer>
+      <footer className="flex w-full flex-col items-center justify-between gap-5 border-t border-[#eee8ed] px-5 py-8 sm:flex-row sm:px-8"><Logo size={28} wordmarkClassName="brand-gradient-text" /><p className="m-0 text-xs font-semibold text-[#8b848d]">A reflection of the good in people.</p><div className="flex gap-5 text-xs font-bold"><Link href="/en/privacy" className="text-[#716b73] no-underline hover:text-accent">Privacy</Link><Link href="/en/terms" className="text-[#716b73] no-underline hover:text-accent">Terms</Link><Link href="/en/support" className="text-[#716b73] no-underline hover:text-accent">Support</Link></div></footer>
     </main>
   );
 }

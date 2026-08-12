@@ -7,6 +7,9 @@ import { useAuth } from '@/context/auth.context';
 import { AppShell } from '@/components/AppShell';
 
 const PUBLIC_PATHS = ['/login', '/signup'];
+// Static info pages: always publicly viewable regardless of auth state, standalone layout,
+// never redirected away from — industry-standard behavior for legal/support pages.
+const STATIC_PATHS = ['/privacy', '/terms', '/support', '/community-guidelines'];
 // Content-first pages: viewable while logged out (no redirect to /login), but still get the
 // full app shell once signed in. Each page owns its own signed-out experience/CTA.
 const SEMI_PUBLIC_PREFIXES = ['/profile/', '/reflection/'];
@@ -17,17 +20,23 @@ export function AuthGuard({ children, locale }: { children: ReactNode; locale: s
   const router = useRouter();
 
   const isPublic = PUBLIC_PATHS.some((p) => pathname.endsWith(p));
+  const isStatic = STATIC_PATHS.some((p) => pathname.endsWith(p));
   const isSemiPublic = SEMI_PUBLIC_PREFIXES.some((p) => pathname.includes(p));
 
   useEffect(() => {
     if (loading) return;
-    if (!user && !isPublic && !isSemiPublic) {
+    if (!user && !isPublic && !isStatic && !isSemiPublic) {
       router.replace(`/${locale}/login`);
     }
     if (user && isPublic) {
       router.replace(`/${locale}/feed`);
     }
-  }, [loading, user, isPublic, isSemiPublic, locale, router]);
+  }, [loading, user, isPublic, isStatic, isSemiPublic, locale, router]);
+
+  // Static info pages render standalone, for anyone, regardless of auth state.
+  if (isStatic) {
+    return <div className="min-h-screen bg-background">{children}</div>;
+  }
 
   // Public pages own their full layout (e.g. split-screen auth panels)
   if (isPublic) {

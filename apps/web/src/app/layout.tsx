@@ -8,7 +8,8 @@ export const metadata: Metadata = {
   title: 'Merror — Make good impossible to overlook',
   description: 'Turn real acts of kindness into lasting reflections, verified lumens, and visible community impact.',
   icons: {
-    icon: '/icon.svg',
+    icon: '/favicon.png',
+    apple: '/logo.png',
   },
 };
 
