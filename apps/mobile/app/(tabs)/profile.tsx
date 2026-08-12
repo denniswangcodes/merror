@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Modal, RefreshControl, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Modal, RefreshControl, ScrollView, Share, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import QRCode from 'react-native-qrcode-svg';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -27,13 +27,26 @@ export default function ProfileScreen() {
   const refresh = async () => { setRefreshing(true); await Promise.all([refreshUser(), loadFeedback()]); setRefreshing(false); };
   const save = async () => { setSaving(true); try { await usersApi.updateProfile({ displayName, bio, ...(avatarUri !== undefined ? { avatarUrl: avatarUri } : {}) }); await refreshUser(); setEdit(false); setAvatarUri(undefined); } catch (error) { Alert.alert('Could not save profile', (error as Error).message); } finally { setSaving(false); } };
   const closeEdit = () => { setEdit(false); setAvatarUri(undefined); };
-  const changeAvatar = () => showImageSourceSheet(async (source) => {
+  const pickAndApplyAvatar = () => showImageSourceSheet(async (source) => {
     const uri = await pickImage(source, [1, 1]);
     if (!uri) return;
     setProcessingAvatar(true);
     try { setAvatarUri(await compressToDataUrl(uri, { maxPx: 512, maxChars: MAX_AVATAR_IMAGE_CHARS })); } finally { setProcessingAvatar(false); }
   });
   const previewAvatarUrl = avatarUri !== undefined ? avatarUri : (user?.avatarUrl ?? null);
+  const editAvatar = () => {
+    if (previewAvatarUrl) {
+      Alert.alert('Profile photo', undefined, [
+        { text: 'Replace photo', onPress: pickAndApplyAvatar },
+        { text: 'Remove photo', style: 'destructive', onPress: () => setAvatarUri(null) },
+        { text: 'Cancel', style: 'cancel' },
+      ]);
+    } else {
+      pickAndApplyAvatar();
+    }
+  };
+  const profileLink = user ? `https://merror.vercel.app/en/profile/${user.username}` : '';
+  const shareProfile = () => Share.share({ message: `Add me on Merror and let's exchange some good vibes — I'm @${user?.username}. ${profileLink}` });
   const confirmDelete = async () => {
     if (!delPassword) { Alert.alert('Password required', 'Enter your password to confirm.'); return; }
     setDeleting(true);
@@ -70,9 +83,9 @@ export default function ProfileScreen() {
 
     <Modal visible={menu} transparent animationType="fade" onRequestClose={() => setMenu(false)}><TouchableOpacity activeOpacity={1} style={styles.backdrop} onPress={() => setMenu(false)}><View style={[styles.sheet, { backgroundColor: theme.raised, borderColor: theme.border }]}>
       <TouchableOpacity style={styles.menuItem} onPress={() => { setMenu(false); setEdit(true); }}><Ionicons name="create-outline" size={21} color={theme.text} /><Text style={[styles.menuText, { color: theme.text }]}>Edit profile</Text></TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem} onPress={() => { setMenu(false); setQr(true); }}><Ionicons name="qr-code-outline" size={21} color={theme.text} /><Text style={[styles.menuText, { color: theme.text }]}>Your Merror code</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.menuItem} onPress={() => { setMenu(false); setQr(true); }}><Ionicons name="qr-code-outline" size={21} color={theme.text} /><Text style={[styles.menuText, { color: theme.text }]}>Share profile</Text></TouchableOpacity>
       <View style={styles.menuItem}><Ionicons name={mode === 'dark' ? 'moon' : 'sunny-outline'} size={21} color={theme.text} /><Text style={[styles.menuText, { color: theme.text }]}>Dark mode</Text><Switch value={mode === 'dark'} onValueChange={toggle} trackColor={{ false: theme.borderStrong, true: theme.accent }} thumbColor="#fff" /></View>
-      <TouchableOpacity style={styles.menuItem} onPress={() => { setMenu(false); Alert.alert('Log out', 'Are you sure?', [{ text: 'Cancel', style: 'cancel' }, { text: 'Log out', style: 'destructive', onPress: logout }]); }}><Ionicons name="log-out-outline" size={21} color="#D95B68" /><Text style={[styles.menuText, { color: '#D95B68' }]}>Log out</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.menuItem} onPress={() => { setMenu(false); Alert.alert('Sign out', 'Are you sure you want to sign out?', [{ text: 'Cancel', style: 'cancel' }, { text: 'Sign Out', style: 'destructive', onPress: logout }]); }}><Ionicons name="log-out-outline" size={21} color="#D95B68" /><Text style={[styles.menuText, { color: '#D95B68' }]}>Sign Out</Text></TouchableOpacity>
       <TouchableOpacity style={styles.menuItem} onPress={() => { setMenu(false); setDel(true); }}><Ionicons name="trash-outline" size={21} color="#D95B68" /><Text style={[styles.menuText, { color: '#D95B68' }]}>Delete account</Text></TouchableOpacity>
     </View></TouchableOpacity></Modal>
 
@@ -86,21 +99,31 @@ export default function ProfileScreen() {
 
     <Modal visible={edit} transparent animationType="slide" onRequestClose={closeEdit}><View style={styles.backdrop}><View style={[styles.dialog, { backgroundColor: theme.raised, borderColor: theme.border }]}><View style={styles.dialogHead}><Text style={[styles.dialogTitle, { color: theme.text }]}>Edit profile</Text><TouchableOpacity onPress={closeEdit}><Ionicons name="close" size={24} color={theme.text} /></TouchableOpacity></View>
       <View style={styles.avatarEditRow}>
-        <View>
-          <Avatar displayName={user.displayName} username={user.username} avatarUrl={previewAvatarUrl} size={64} />
+        <View style={styles.avatarEditWrap}>
+          <Avatar displayName={user.displayName} username={user.username} avatarUrl={previewAvatarUrl} size={84} />
           {processingAvatar && <View style={[styles.avatarSpinner, { backgroundColor: theme.raised }]}><ActivityIndicator color={theme.accent} size="small" /></View>}
-        </View>
-        <View style={styles.avatarEditActions}>
-          <TouchableOpacity onPress={changeAvatar} disabled={processingAvatar}><Text style={[styles.avatarEditLink, { color: theme.accent }]}>Change photo</Text></TouchableOpacity>
-          {previewAvatarUrl && <TouchableOpacity onPress={() => setAvatarUri(null)} disabled={processingAvatar}><Text style={[styles.avatarEditLink, { color: '#D95B68' }]}>Remove photo</Text></TouchableOpacity>}
+          <TouchableOpacity
+            style={[styles.avatarCameraBadge, { backgroundColor: theme.accent, borderColor: theme.raised }]}
+            onPress={editAvatar}
+            disabled={processingAvatar}
+            accessibilityLabel="Change profile photo"
+          >
+            <Ionicons name="camera" size={15} color="#fff" />
+          </TouchableOpacity>
         </View>
       </View>
       <Text style={[styles.label, { color: theme.muted }]}>Display name</Text><TextInput value={displayName} onChangeText={setDisplayName} maxLength={60} style={[styles.input, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surface }]} /><Text style={[styles.label, { color: theme.muted }]}>Bio</Text><TextInput value={bio} onChangeText={setBio} maxLength={200} multiline style={[styles.input, styles.bioInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surface }]} /><TouchableOpacity disabled={saving} style={[styles.save, { backgroundColor: theme.accent }]} onPress={save}><Text style={styles.white}>{saving ? 'Saving…' : 'Save profile'}</Text></TouchableOpacity></View></View></Modal>
 
-    <Modal visible={qr} transparent animationType="fade" onRequestClose={() => setQr(false)}><TouchableOpacity activeOpacity={1} style={[styles.backdrop, { justifyContent: 'center' }]} onPress={() => setQr(false)}><View style={[styles.qrCard, { backgroundColor: theme.raised }]}><View style={styles.qrWhite}><QRCode value={user.qrCode} size={190} /></View><Text style={[styles.qrTitle, { color: theme.text }]}>@{user.username}</Text><Text style={[styles.qrHint, { color: theme.muted }]}>Scan to connect on Merror</Text></View></TouchableOpacity></Modal>
+    <Modal visible={qr} transparent animationType="fade" onRequestClose={() => setQr(false)}><TouchableOpacity activeOpacity={1} style={[styles.backdrop, { justifyContent: 'center' }]} onPress={() => setQr(false)}><View style={[styles.qrCard, { backgroundColor: theme.raised }]}>
+      <View style={styles.qrWhite}><QRCode value={user.qrCode} size={190} /></View>
+      <Text style={[styles.qrTitle, { color: theme.text }]}>@{user.username}</Text>
+      <Text style={[styles.qrHint, { color: theme.muted }]}>Scan to connect on Merror</Text>
+      <View style={[styles.qrLinkRow, { borderColor: theme.border, backgroundColor: theme.background }]}><Text numberOfLines={1} style={[styles.qrLinkText, { color: theme.textSecondary }]}>{profileLink}</Text></View>
+      <TouchableOpacity style={[styles.qrShareBtn, { backgroundColor: theme.accent }]} onPress={shareProfile}><Ionicons name="share-outline" size={16} color="#fff" /><Text style={styles.white}>Share link</Text></TouchableOpacity>
+    </View></TouchableOpacity></Modal>
   </View>;
 }
 
 const styles = StyleSheet.create({
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 14 }, signIn: { paddingHorizontal: 22, paddingVertical: 11, borderRadius: 10 }, white: { color: '#fff', fontWeight: '800' }, header: { alignItems: 'center', paddingHorizontal: 20, paddingTop: 18, paddingBottom: 10, position: 'relative' }, more: { position: 'absolute', right: 16, top: 10, padding: 9, zIndex: 2 }, name: { fontSize: 21, fontWeight: '800', marginTop: 10 }, uname: { fontSize: 13, marginTop: 1 }, bio: { fontSize: 13, lineHeight: 18, textAlign: 'center', marginTop: 8, paddingHorizontal: 22 }, points: { flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 12 }, pointsNum: { fontSize: 20, fontWeight: '900' }, lumens: { fontSize: 11, fontWeight: '800', textTransform: 'uppercase' }, tabs: { flexDirection: 'row', borderBottomWidth: 1, marginTop: 8 }, tab: { flex: 1, alignItems: 'center', paddingVertical: 13 }, tabText: { fontSize: 14, fontWeight: '800' }, list: { padding: 12 }, empty: { textAlign: 'center', marginTop: 35 }, backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.52)', justifyContent: 'flex-end', padding: 12 }, sheet: { borderRadius: 18, borderWidth: 1, padding: 8, marginBottom: 8 }, menuItem: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 13 }, menuText: { flex: 1, fontSize: 15, fontWeight: '700' }, dialog: { borderWidth: 1, borderRadius: 20, padding: 18, marginBottom: 8 }, dialogHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }, dialogTitle: { fontSize: 19, fontWeight: '900' }, avatarEditRow: { flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 12 }, avatarSpinner: { position: 'absolute', top: 0, left: 0, width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center', opacity: 0.85 }, avatarEditActions: { gap: 6 }, avatarEditLink: { fontSize: 13, fontWeight: '700' }, label: { fontSize: 11, fontWeight: '800', textTransform: 'uppercase', marginBottom: 5, marginTop: 7 }, input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14 }, bioInput: { height: 90, textAlignVertical: 'top' }, save: { alignItems: 'center', borderRadius: 10, paddingVertical: 12, marginTop: 16 }, qrCard: { alignItems: 'center', borderRadius: 20, padding: 24, marginHorizontal: 24 }, qrWhite: { backgroundColor: '#fff', padding: 15, borderRadius: 14 }, qrTitle: { fontSize: 18, fontWeight: '900', marginTop: 16 }, qrHint: { fontSize: 13, marginTop: 3 },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 14 }, signIn: { paddingHorizontal: 22, paddingVertical: 11, borderRadius: 10 }, white: { color: '#fff', fontWeight: '800' }, header: { alignItems: 'center', paddingHorizontal: 20, paddingTop: 18, paddingBottom: 10, position: 'relative' }, more: { position: 'absolute', right: 16, top: 10, padding: 9, zIndex: 2 }, name: { fontSize: 21, fontWeight: '800', marginTop: 10 }, uname: { fontSize: 13, marginTop: 1 }, bio: { fontSize: 13, lineHeight: 18, textAlign: 'center', marginTop: 8, paddingHorizontal: 22 }, points: { flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 12 }, pointsNum: { fontSize: 20, fontWeight: '900' }, lumens: { fontSize: 11, fontWeight: '800', textTransform: 'uppercase' }, tabs: { flexDirection: 'row', borderBottomWidth: 1, marginTop: 8 }, tab: { flex: 1, alignItems: 'center', paddingVertical: 13 }, tabText: { fontSize: 14, fontWeight: '800' }, list: { padding: 12 }, empty: { textAlign: 'center', marginTop: 35 }, backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.52)', justifyContent: 'flex-end', padding: 12 }, sheet: { borderRadius: 18, borderWidth: 1, padding: 8, marginBottom: 8 }, menuItem: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 13 }, menuText: { flex: 1, fontSize: 15, fontWeight: '700' }, dialog: { borderWidth: 1, borderRadius: 20, padding: 18, marginBottom: 8 }, dialogHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }, dialogTitle: { fontSize: 19, fontWeight: '900' }, avatarEditRow: { alignItems: 'center', marginBottom: 16 }, avatarEditWrap: { position: 'relative', width: 84, height: 84 }, avatarSpinner: { position: 'absolute', top: 0, left: 0, width: 84, height: 84, borderRadius: 42, alignItems: 'center', justifyContent: 'center', opacity: 0.85 }, avatarCameraBadge: { position: 'absolute', bottom: 0, right: 0, width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 2 }, label: { fontSize: 11, fontWeight: '800', textTransform: 'uppercase', marginBottom: 5, marginTop: 7 }, input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14 }, bioInput: { height: 90, textAlignVertical: 'top' }, save: { alignItems: 'center', borderRadius: 10, paddingVertical: 12, marginTop: 16 }, qrCard: { alignItems: 'center', borderRadius: 20, padding: 24, marginHorizontal: 24 }, qrWhite: { backgroundColor: '#fff', padding: 15, borderRadius: 14 }, qrTitle: { fontSize: 18, fontWeight: '900', marginTop: 16 }, qrHint: { fontSize: 13, marginTop: 3 }, qrLinkRow: { marginTop: 14, width: '100%', borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 9 }, qrLinkText: { fontSize: 12 }, qrShareBtn: { marginTop: 12, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: 10, paddingVertical: 11 },
 });

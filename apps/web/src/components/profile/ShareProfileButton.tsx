@@ -39,7 +39,7 @@ export function ShareProfileButton({ username, displayName, locale }: ShareProfi
   return (
     <>
       <Button variant="secondary" size="sm" onClick={() => setOpen(true)}>
-        <Share2 className="h-3.5 w-3.5" /> Share Profile
+        Share Profile
       </Button>
 
       {open && (

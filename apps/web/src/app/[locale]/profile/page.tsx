@@ -107,16 +107,20 @@ export default function OwnProfilePage(): JSX.Element {
         actions={
           !editing && (
             <>
-              <ShareProfileButton username={user.username} displayName={user.displayName} locale={locale} />
               <Button variant="secondary" size="sm" onClick={() => setEditing(true)}>
                 Edit Profile
               </Button>
+              <ShareProfileButton username={user.username} displayName={user.displayName} locale={locale} />
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={async () => { await logout(); router.push(`/${locale}/login`); }}
+                onClick={async () => {
+                  if (!window.confirm('Are you sure you want to sign out?')) return;
+                  await logout();
+                  router.push(`/${locale}/login`);
+                }}
               >
-                Logout
+                Sign Out
               </Button>
             </>
           )
