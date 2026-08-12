@@ -1,4 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
+import type { CommentItem } from '@merror/shared';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -117,6 +118,9 @@ export const feedbackApi = {
   getGiven: () => apiFetch('/api/feedback/given'),
   approve: (id: string) => apiFetch(`/api/feedback/${id}/approve`, { method: 'PATCH' }),
   reject: (id: string) => apiFetch(`/api/feedback/${id}/reject`, { method: 'PATCH' }),
+  toggleLike: (id: string) => apiFetch<{ liked: boolean; likeCount: number }>(`/api/feedback/${id}/like`, { method: 'POST' }),
+  getComments: (id: string) => apiFetch<CommentItem[]>(`/api/feedback/${id}/comments`),
+  addComment: (id: string, message: string) => apiFetch<CommentItem>(`/api/feedback/${id}/comments`, { method: 'POST', body: JSON.stringify({ message }) }),
   create: (receiverId: string, type: string, message: string, isPublic: boolean, imageUrl?: string) =>
     apiFetch('/api/feedback', {
       method: 'POST',

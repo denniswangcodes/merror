@@ -1,6 +1,7 @@
 'use client';
 
 import { forwardRef } from 'react';
+import type { ReactNode } from 'react';
 import { motion, type HTMLMotionProps } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -12,7 +13,7 @@ interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'ref' | 'children'
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 const variantClasses: Record<ButtonVariant, string> = {

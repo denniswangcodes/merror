@@ -7,12 +7,13 @@
     "scheme": "merror",
     "userInterfaceStyle": "light",
     "backgroundColor": "#FAFAF9",
+    "icon": "./assets/icon.png",
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.merror.app",
+      "bundleIdentifier": "com.merrorios.app",
       "buildNumber": "1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -20,10 +21,24 @@
     },
     "android": {
       "package": "com.merror.app",
-      "versionCode": 1
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FAFAF9"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
-      "bundler": "metro"
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FAFAF9"
     },
     "plugins": [
       "expo-router",
@@ -41,7 +56,12 @@
     },
     "extra": {
       "privacyUrl": "https://merror.vercel.app/en/privacy",
-      "supportUrl": "https://merror.vercel.app/en/support"
-    }
+      "supportUrl": "https://merror.vercel.app/en/support",
+      "router": {},
+      "eas": {
+        "projectId": "595aa4fa-90b2-4a45-a9e5-f36e404db30a"
+      }
+    },
+    "owner": "denniswangexpo"
   }
 }

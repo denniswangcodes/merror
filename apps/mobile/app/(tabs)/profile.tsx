@@ -1,279 +1,56 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator,
-  TextInput, Alert, RefreshControl, Linking, Switch,
-} from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Modal, RefreshControl, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import QRCode from 'react-native-qrcode-svg';
-import { useRouter, useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
-import { Badge } from '../../src/components/Badge';
+import { ProfileReflectionCard } from '../../src/components/ProfileReflectionCard';
 import { TierBadge } from '../../src/components/TierBadge';
 import { useAuth } from '../../src/context/auth.context';
-import { authApi, feedbackApi, usersApi } from '../../src/lib/api';
+import { feedbackApi, usersApi } from '../../src/lib/api';
 import { useAppTheme, useThemeMode } from '../../src/lib/theme';
-import { formatReflectionDate } from '@merror/shared';
 import type { FeedbackItem, PaginatedResponse } from '@merror/shared';
 
 export default function ProfileScreen() {
-  const router = useRouter();
-  const theme = useAppTheme();
-  const { mode, toggle: toggleTheme } = useThemeMode();
-  const { user, loading: authLoading, logout, refreshUser } = useAuth();
-  const [received, setReceived] = useState<FeedbackItem[]>([]);
-  const [tab, setTab] = useState<'received' | 'given'>('received');
-  const [given, setGiven] = useState<FeedbackItem[]>([]);
-  const [editing, setEditing] = useState(false);
-  const [bio, setBio] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  const [saving, setSaving] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
-  const [deletePassword, setDeletePassword] = useState('');
-  const [deleting, setDeleting] = useState(false);
-
-  const loadFeedback = useCallback(async () => {
-    if (!user) return;
-    await Promise.all([
-      feedbackApi.getReceived().then((r) => setReceived((r as PaginatedResponse<FeedbackItem>).data)),
-      feedbackApi.getGiven().then((r) => setGiven((r as PaginatedResponse<FeedbackItem>).data)),
-    ]);
-  }, [user]);
-
-  useFocusEffect(useCallback(() => {
-    if (!user) return;
-    setBio(user.bio || '');
-    setDisplayName(user.displayName || '');
-    loadFeedback();
-  }, [user, loadFeedback]));
-
-  useEffect(() => {
-    if (!user) return;
-    setBio(user.bio || '');
-    setDisplayName(user.displayName || '');
-  }, [user]);
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await Promise.all([refreshUser(), loadFeedback()]);
-    setRefreshing(false);
-  }, [refreshUser, loadFeedback]);
-
-  if (authLoading) return <View style={[styles.center, { backgroundColor: theme.background }]}><ActivityIndicator color={theme.accent} /></View>;
-
-  if (!user) {
-    return (
-      <View style={[styles.center, { backgroundColor: theme.background }]}>
-        <Text style={[styles.hint, { color: theme.muted }]}>Sign in to see your profile</Text>
-        <TouchableOpacity style={[styles.btn, { backgroundColor: theme.accent }]} onPress={() => router.push('/auth/login')}>
-          <Text style={styles.btnText}>Sign In</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  const handleSave = async () => {
-    setSaving(true);
-    try { await usersApi.updateProfile({ displayName, bio }); await refreshUser(); }
-    catch { /* noop */ }
-    setSaving(false);
-  };
-
-  const handleLogout = async () => {
-    Alert.alert('Log Out', 'Are you sure?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Log Out', style: 'destructive', onPress: async () => { await logout(); } },
-    ]);
-  };
-
+  const router = useRouter(); const theme = useAppTheme(); const { mode, toggle } = useThemeMode(); const { user, loading, logout, refreshUser } = useAuth();
+  const [received, setReceived] = useState<FeedbackItem[]>([]); const [given, setGiven] = useState<FeedbackItem[]>([]); const [tab, setTab] = useState<'received' | 'given'>('received');
+  const [refreshing, setRefreshing] = useState(false); const [menu, setMenu] = useState(false); const [edit, setEdit] = useState(false); const [qr, setQr] = useState(false); const [saving, setSaving] = useState(false);
+  const [displayName, setDisplayName] = useState(''); const [bio, setBio] = useState('');
+  const loadFeedback = useCallback(async () => { if (!user) return; await Promise.all([feedbackApi.getReceived().then((r) => setReceived((r as PaginatedResponse<FeedbackItem>).data)), feedbackApi.getGiven().then((r) => setGiven((r as PaginatedResponse<FeedbackItem>).data))]); }, [user]);
+  useFocusEffect(useCallback(() => { void loadFeedback(); }, [loadFeedback]));
+  useEffect(() => { if (user) { setDisplayName(user.displayName || ''); setBio(user.bio || ''); } }, [user]);
+  const refresh = async () => { setRefreshing(true); await Promise.all([refreshUser(), loadFeedback()]); setRefreshing(false); };
+  const save = async () => { setSaving(true); try { await usersApi.updateProfile({ displayName, bio }); await refreshUser(); setEdit(false); } catch (error) { Alert.alert('Could not save profile', (error as Error).message); } finally { setSaving(false); } };
+  if (loading) return <View style={[styles.center, { backgroundColor: theme.background }]}><ActivityIndicator color={theme.accent} /></View>;
+  if (!user) return <View style={[styles.center, { backgroundColor: theme.background }]}><Text style={{ color: theme.muted }}>Sign in to see your profile</Text><TouchableOpacity style={[styles.signIn, { backgroundColor: theme.accent }]} onPress={() => router.push('/auth/login')}><Text style={styles.white}>Sign In</Text></TouchableOpacity></View>;
   const items = tab === 'received' ? received : given;
-
-  return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: theme.background }}
-      contentContainerStyle={{ paddingBottom: 32 }}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.accent} />}
-    >
+  return <View style={{ flex: 1, backgroundColor: theme.background }}>
+    <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={theme.accent} />} contentContainerStyle={{ paddingBottom: 32 }}>
       <View style={styles.header}>
-        <Avatar displayName={user.displayName} username={user.username} size={72} />
-
-        {editing ? (
-          <View style={{ width: '100%', marginTop: 12 }}>
-            <Text style={[styles.label, { color: theme.muted }]}>Display Name</Text>
-            <TextInput
-              style={[styles.input, { borderColor: theme.border, backgroundColor: theme.surface, color: theme.text }]}
-              value={displayName}
-              onChangeText={setDisplayName}
-              maxLength={60}
-              placeholderTextColor={theme.muted}
-            />
-            <Text style={[styles.label, { color: theme.muted }]}>Bio</Text>
-            <TextInput
-              style={[styles.input, { height: 70, borderColor: theme.border, backgroundColor: theme.surface, color: theme.text }]}
-              value={bio}
-              onChangeText={setBio}
-              maxLength={200}
-              multiline
-              placeholderTextColor={theme.muted}
-            />
-            <View style={{ flexDirection: 'row', gap: 10, marginTop: 8 }}>
-              <TouchableOpacity style={[styles.btn, { flex: 1, backgroundColor: theme.accent }]} onPress={handleSave} disabled={saving}>
-                <Text style={styles.btnText}>{saving ? 'Saving...' : 'Save'}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.outlineBtn, { flex: 1, borderColor: theme.accent }]} onPress={() => setEditing(false)}>
-                <Text style={[styles.outlineBtnText, { color: theme.accent }]}>Done</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ) : (
-          <>
-            <Text style={[styles.name, { color: theme.text }]}>{user.displayName || user.username}</Text>
-            {user.bio ? <Text style={[styles.bio, { color: theme.textSecondary }]}>{user.bio}</Text> : null}
-            <Text style={[styles.uname, { color: theme.muted }]}>@{user.username}</Text>
-          </>
-        )}
-
-        <View style={styles.pointsRow}>
-          <Text style={[styles.pointsNum, { color: theme.accent }]}>{user.totalPoints}</Text>
-          <Text style={[styles.lumenMark, { color: theme.accent }]} accessibilityLabel="lumens">✦</Text>
-          <TierBadge points={user.totalPoints} />
-        </View>
-
-        {/* QR Code */}
-        <View style={[styles.qrContainer, { backgroundColor: '#fff', borderColor: theme.border }]}>
-          <QRCode value={user.qrCode} size={120} />
-          <Text style={[styles.qrHint, { color: theme.muted }]}>Your Merror code</Text>
-        </View>
-
-        {!editing && (
-          <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
-            <TouchableOpacity style={[styles.outlineBtn, { borderColor: theme.accent }]} onPress={() => setEditing(true)}>
-              <Text style={[styles.outlineBtnText, { color: theme.accent }]}>Edit Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.outlineBtn, { borderColor: theme.accent }]} onPress={handleLogout}>
-              <Text style={[styles.outlineBtnText, { color: theme.accent }]}>Log Out</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {/* Settings — revealed once you tap Edit Profile */}
-        {editing && (
-          <View style={[styles.settingsPanel, { borderColor: theme.border, backgroundColor: theme.surface }]}>
-            <View style={styles.settingRow}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <Ionicons name={mode === 'dark' ? 'moon' : 'sunny'} size={16} color={theme.textSecondary} />
-                <Text style={[styles.settingLabel, { color: theme.text }]}>Dark Mode</Text>
-              </View>
-              <Switch value={mode === 'dark'} onValueChange={toggleTheme} trackColor={{ false: theme.borderStrong, true: theme.accent }} thumbColor="#fff" />
-            </View>
-
-            <View style={[styles.accountSection, { borderTopColor: theme.border }]}>
-              <Text style={[styles.accountTitle, { color: theme.text }]}>Account and safety</Text>
-              <View style={styles.legalRow}>
-                <TouchableOpacity onPress={() => Linking.openURL('https://merror.vercel.app/en/community-guidelines')}><Text style={styles.legalLink}>Guidelines</Text></TouchableOpacity>
-                <TouchableOpacity onPress={() => Linking.openURL('https://merror.vercel.app/en/privacy')}><Text style={styles.legalLink}>Privacy</Text></TouchableOpacity>
-                <TouchableOpacity onPress={() => Linking.openURL('https://merror.vercel.app/en/terms')}><Text style={styles.legalLink}>Terms</Text></TouchableOpacity>
-                <TouchableOpacity onPress={() => Linking.openURL('https://merror.vercel.app/en/support')}><Text style={styles.legalLink}>Support</Text></TouchableOpacity>
-              </View>
-              {!showDelete ? (
-                <TouchableOpacity style={styles.deleteOutline} onPress={() => setShowDelete(true)}><Text style={styles.deleteText}>Delete account</Text></TouchableOpacity>
-              ) : (
-                <View style={styles.deletePanel}>
-                  <Text style={styles.deleteTitle}>Permanently delete your account?</Text>
-                  <Text style={styles.deleteCopy}>Your profile, reflections, friendships, and associated content will be removed. This cannot be undone.</Text>
-                  <TextInput secureTextEntry autoCapitalize="none" style={[styles.input, { borderColor: theme.border, backgroundColor: theme.surface, color: theme.text }]} value={deletePassword} onChangeText={setDeletePassword} placeholder="Confirm your password" placeholderTextColor={theme.muted} />
-                  <View style={styles.deleteActions}>
-                    <TouchableOpacity disabled={!deletePassword || deleting} style={[styles.deleteButton, (!deletePassword || deleting) && { opacity: 0.5 }]} onPress={async () => {
-                      setDeleting(true);
-                      try { await authApi.deleteAccount(deletePassword); await logout(); router.replace('/auth/signup'); }
-                      catch (error) { Alert.alert('Could not delete account', (error as Error).message); }
-                      finally { setDeleting(false); }
-                    }}><Text style={styles.deleteButtonText}>{deleting ? 'Deleting…' : 'Delete permanently'}</Text></TouchableOpacity>
-                    <TouchableOpacity style={[styles.cancelDelete, { borderColor: theme.border }]} onPress={() => { setShowDelete(false); setDeletePassword(''); }}><Text style={[styles.outlineBtnText, { color: theme.accent }]}>Cancel</Text></TouchableOpacity>
-                  </View>
-                </View>
-              )}
-            </View>
-          </View>
-        )}
+        <TouchableOpacity style={styles.more} onPress={() => setMenu(true)} accessibilityLabel="Profile settings"><Ionicons name="ellipsis-horizontal" size={26} color={theme.text} /></TouchableOpacity>
+        <Avatar displayName={user.displayName} username={user.username} avatarUrl={user.avatarUrl} size={82} />
+        <Text style={[styles.name, { color: theme.text }]}>{user.displayName || user.username}</Text>
+        <Text style={[styles.uname, { color: theme.muted }]}>@{user.username}</Text>
+        {user.bio ? <Text style={[styles.bio, { color: theme.textSecondary }]}>{user.bio}</Text> : null}
+        <View style={styles.points}><Text style={[styles.pointsNum, { color: theme.text }]}>{user.totalPoints}</Text><Text style={[styles.lumens, { color: theme.muted }]}>Lumens</Text><TierBadge points={user.totalPoints} onPress={() => router.push('/points')} /></View>
       </View>
-
-      {/* Tabs */}
-      <View style={[styles.tabs, { borderBottomColor: theme.border }]}>
-        {(['received', 'given'] as const).map((t) => (
-          <TouchableOpacity key={t} style={[styles.tab, tab === t && { borderBottomWidth: 2, borderBottomColor: theme.accent }]} onPress={() => setTab(t)}>
-            <Text style={[styles.tabText, { color: theme.muted }, tab === t && { fontWeight: '700', color: theme.accent }]}>
-              {t === 'received' ? `Received (${received.length})` : `Given (${given.length})`}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <View style={{ paddingHorizontal: 12, paddingTop: 8 }}>
-        {items.length === 0 ? (
-          <Text style={[styles.empty, { color: theme.muted }]}>No {tab} feedback yet</Text>
-        ) : (
-          items.map((item) => {
-            const other = tab === 'received' ? item.giver : item.receiver;
-            const otherLabel = other ? (other.displayName || other.username) : (tab === 'given' ? item.recipientName || 'someone' : null);
-            return (
-              <View key={item.id} style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-                <View style={styles.cardHeader}>
-                  {otherLabel && <Text style={[styles.cardUser, { color: theme.textSecondary }]}>{otherLabel}</Text>}
-                  <Badge type={item.type} />
-                  <Text style={[styles.cardTime, { color: theme.muted }]}>{formatReflectionDate(item.createdAt)}</Text>
-                </View>
-                <Text style={[styles.cardMsg, { color: theme.text }]}>&ldquo;{item.message}&rdquo;</Text>
-              </View>
-            );
-          })
-        )}
-      </View>
+      <View style={[styles.tabs, { borderBottomColor: theme.border }]}>{(['received', 'given'] as const).map((value) => <TouchableOpacity key={value} style={[styles.tab, tab === value && { borderBottomColor: theme.accent, borderBottomWidth: 2 }]} onPress={() => setTab(value)}><Text style={[styles.tabText, { color: tab === value ? theme.text : theme.muted }]}>{value === 'received' ? `Received (${received.length})` : `Given (${given.length})`}</Text></TouchableOpacity>)}</View>
+      <View style={styles.list}>{items.length ? items.map((item) => { const other = tab === 'received' ? item.giver : item.receiver; return <ProfileReflectionCard key={item.id} item={item} personLabel={other?.displayName || other?.username || item.recipientName} />; }) : <Text style={[styles.empty, { color: theme.muted }]}>No {tab} reflections yet</Text>}</View>
     </ScrollView>
-  );
+
+    <Modal visible={menu} transparent animationType="fade" onRequestClose={() => setMenu(false)}><TouchableOpacity activeOpacity={1} style={styles.backdrop} onPress={() => setMenu(false)}><View style={[styles.sheet, { backgroundColor: theme.raised, borderColor: theme.border }]}>
+      <TouchableOpacity style={styles.menuItem} onPress={() => { setMenu(false); setEdit(true); }}><Ionicons name="create-outline" size={21} color={theme.text} /><Text style={[styles.menuText, { color: theme.text }]}>Edit profile</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.menuItem} onPress={() => { setMenu(false); setQr(true); }}><Ionicons name="qr-code-outline" size={21} color={theme.text} /><Text style={[styles.menuText, { color: theme.text }]}>Your Merror code</Text></TouchableOpacity>
+      <View style={styles.menuItem}><Ionicons name={mode === 'dark' ? 'moon' : 'sunny-outline'} size={21} color={theme.text} /><Text style={[styles.menuText, { color: theme.text }]}>Dark mode</Text><Switch value={mode === 'dark'} onValueChange={toggle} trackColor={{ false: theme.borderStrong, true: theme.accent }} thumbColor="#fff" /></View>
+      <TouchableOpacity style={styles.menuItem} onPress={() => { setMenu(false); Alert.alert('Log out', 'Are you sure?', [{ text: 'Cancel', style: 'cancel' }, { text: 'Log out', style: 'destructive', onPress: logout }]); }}><Ionicons name="log-out-outline" size={21} color="#D95B68" /><Text style={[styles.menuText, { color: '#D95B68' }]}>Log out</Text></TouchableOpacity>
+    </View></TouchableOpacity></Modal>
+
+    <Modal visible={edit} transparent animationType="slide" onRequestClose={() => setEdit(false)}><View style={styles.backdrop}><View style={[styles.dialog, { backgroundColor: theme.raised, borderColor: theme.border }]}><View style={styles.dialogHead}><Text style={[styles.dialogTitle, { color: theme.text }]}>Edit profile</Text><TouchableOpacity onPress={() => setEdit(false)}><Ionicons name="close" size={24} color={theme.text} /></TouchableOpacity></View><Text style={[styles.label, { color: theme.muted }]}>Display name</Text><TextInput value={displayName} onChangeText={setDisplayName} maxLength={60} style={[styles.input, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surface }]} /><Text style={[styles.label, { color: theme.muted }]}>Bio</Text><TextInput value={bio} onChangeText={setBio} maxLength={200} multiline style={[styles.input, styles.bioInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surface }]} /><TouchableOpacity disabled={saving} style={[styles.save, { backgroundColor: theme.accent }]} onPress={save}><Text style={styles.white}>{saving ? 'Saving…' : 'Save profile'}</Text></TouchableOpacity></View></View></Modal>
+
+    <Modal visible={qr} transparent animationType="fade" onRequestClose={() => setQr(false)}><TouchableOpacity activeOpacity={1} style={[styles.backdrop, { justifyContent: 'center' }]} onPress={() => setQr(false)}><View style={[styles.qrCard, { backgroundColor: theme.raised }]}><View style={styles.qrWhite}><QRCode value={user.qrCode} size={190} /></View><Text style={[styles.qrTitle, { color: theme.text }]}>@{user.username}</Text><Text style={[styles.qrHint, { color: theme.muted }]}>Scan to connect on Merror</Text></View></TouchableOpacity></Modal>
+  </View>;
 }
 
 const styles = StyleSheet.create({
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
-  hint: { fontSize: 15 },
-  btn: { paddingHorizontal: 20, paddingVertical: 11, borderRadius: 12, alignItems: 'center' },
-  btnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
-  outlineBtn: { borderWidth: 1.5, paddingHorizontal: 16, paddingVertical: 9, borderRadius: 12, alignItems: 'center' },
-  outlineBtnText: { fontWeight: '700', fontSize: 13 },
-  header: { alignItems: 'center', padding: 20, paddingBottom: 8 },
-  name: { fontSize: 20, fontWeight: '700', marginTop: 10 },
-  uname: { fontSize: 12, marginTop: 4 },
-  bio: { fontSize: 13, textAlign: 'center', marginTop: 4, paddingHorizontal: 20, lineHeight: 18 },
-  pointsRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 },
-  pointsNum: { fontSize: 22, fontWeight: '800' },
-  lumenMark: { fontSize: 17, fontWeight: '700' },
-  qrContainer: { alignItems: 'center', padding: 16, borderRadius: 14, marginTop: 14, borderWidth: 1 },
-  qrHint: { fontSize: 11, marginTop: 8 },
-  label: { fontSize: 11, fontWeight: '600', marginBottom: 4, marginTop: 4 },
-  input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 9, fontSize: 14, width: '100%' },
-  settingsPanel: { width: '100%', marginTop: 16, borderRadius: 14, borderWidth: 1, padding: 14 },
-  settingRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  settingLabel: { fontSize: 13, fontWeight: '600' },
-  tabs: { flexDirection: 'row', borderBottomWidth: 1, marginTop: 16 },
-  tab: { flex: 1, paddingVertical: 13, alignItems: 'center' },
-  tabText: { fontSize: 13, fontWeight: '500' },
-  card: { borderRadius: 14, borderWidth: 1, padding: 14, marginBottom: 10 },
-  cardHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8, flexWrap: 'wrap' },
-  cardUser: { fontSize: 13, fontWeight: '600' },
-  cardTime: { fontSize: 11, marginLeft: 'auto' },
-  cardMsg: { fontSize: 15, lineHeight: 22 },
-  empty: { textAlign: 'center', fontSize: 14, marginTop: 40 },
-  accountSection: { marginTop: 16, paddingTop: 16, borderTopWidth: 1 },
-  accountTitle: { fontSize: 15, fontWeight: '700' },
-  legalRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 16, marginTop: 12 },
-  legalLink: { color: '#6D5BFF', fontSize: 12, fontWeight: '600' },
-  deleteOutline: { alignSelf: 'flex-start', borderWidth: 1, borderColor: '#DC6B75', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 9, marginTop: 18 },
-  deleteText: { color: '#B4232E', fontSize: 12, fontWeight: '700' },
-  deletePanel: { marginTop: 18, borderWidth: 1, borderColor: '#F0B9BE', backgroundColor: '#FFF7F7', borderRadius: 14, padding: 14 },
-  deleteTitle: { color: '#111827', fontSize: 14, fontWeight: '700' },
-  deleteCopy: { color: '#6B7280', fontSize: 12, lineHeight: 18, marginTop: 4, marginBottom: 12 },
-  deleteActions: { flexDirection: 'row', gap: 8, marginTop: 10 },
-  deleteButton: { backgroundColor: '#B4232E', borderRadius: 10, paddingHorizontal: 13, paddingVertical: 10 },
-  deleteButtonText: { color: '#FFFFFF', fontSize: 12, fontWeight: '700' },
-  cancelDelete: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 13, paddingVertical: 10 },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 14 }, signIn: { paddingHorizontal: 22, paddingVertical: 11, borderRadius: 10 }, white: { color: '#fff', fontWeight: '800' }, header: { alignItems: 'center', paddingHorizontal: 20, paddingTop: 18, paddingBottom: 10, position: 'relative' }, more: { position: 'absolute', right: 16, top: 10, padding: 9, zIndex: 2 }, name: { fontSize: 21, fontWeight: '800', marginTop: 10 }, uname: { fontSize: 13, marginTop: 1 }, bio: { fontSize: 13, lineHeight: 18, textAlign: 'center', marginTop: 8, paddingHorizontal: 22 }, points: { flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 12 }, pointsNum: { fontSize: 20, fontWeight: '900' }, lumens: { fontSize: 11, fontWeight: '800', textTransform: 'uppercase' }, tabs: { flexDirection: 'row', borderBottomWidth: 1, marginTop: 8 }, tab: { flex: 1, alignItems: 'center', paddingVertical: 13 }, tabText: { fontSize: 14, fontWeight: '800' }, list: { padding: 12 }, empty: { textAlign: 'center', marginTop: 35 }, backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.52)', justifyContent: 'flex-end', padding: 12 }, sheet: { borderRadius: 18, borderWidth: 1, padding: 8, marginBottom: 8 }, menuItem: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 13 }, menuText: { flex: 1, fontSize: 15, fontWeight: '700' }, dialog: { borderWidth: 1, borderRadius: 20, padding: 18, marginBottom: 8 }, dialogHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }, dialogTitle: { fontSize: 19, fontWeight: '900' }, label: { fontSize: 11, fontWeight: '800', textTransform: 'uppercase', marginBottom: 5, marginTop: 7 }, input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14 }, bioInput: { height: 90, textAlignVertical: 'top' }, save: { alignItems: 'center', borderRadius: 10, paddingVertical: 12, marginTop: 16 }, qrCard: { alignItems: 'center', borderRadius: 20, padding: 24, marginHorizontal: 24 }, qrWhite: { backgroundColor: '#fff', padding: 15, borderRadius: 14 }, qrTitle: { fontSize: 18, fontWeight: '900', marginTop: 16 }, qrHint: { fontSize: 13, marginTop: 3 },
 });

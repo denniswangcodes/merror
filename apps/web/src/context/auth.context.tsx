@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import type { ReactNode } from 'react';
 import type { PublicUser, AuthTokens } from '@merror/shared';
 import { authApi, setTokens, clearTokens } from '../lib/api';
 
@@ -27,7 +28,7 @@ const AuthContext = createContext<AuthContextValue>({
   refreshUser: async () => {},
 });
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<PublicUser | null>(null);
   const [loading, setLoading] = useState(true);
 

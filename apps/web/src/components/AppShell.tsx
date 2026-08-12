@@ -1,8 +1,9 @@
+import type { ReactNode } from 'react';
 import { NavBar } from '@/components/NavBar';
 import { LeftSidebar } from '@/components/LeftSidebar';
 import { RightSidebar } from '@/components/RightSidebar';
 
-export function AppShell({ locale, children }: { locale: string; children: React.ReactNode }) {
+export function AppShell({ locale, children }: { locale: string; children: ReactNode }) {
   return (
     <div className="h-screen h-[100dvh] min-h-0 bg-transparent flex flex-col overflow-hidden">
       <NavBar locale={locale} />

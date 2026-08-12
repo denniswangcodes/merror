@@ -44,7 +44,7 @@ export default function FeedScreen() {
             onShare={() => Share.share({ message: `${item.giver?.displayName || item.giver?.username || 'Someone'} recognized ${item.receiver?.displayName || item.receiver?.username || 'someone'} on Merror: “${item.message}”` })}
           />
         )}
-        contentContainerStyle={{ paddingVertical: 16 }}
+        contentContainerStyle={{ paddingTop: 0, paddingBottom: 16 }}
         onEndReached={() => { if (hasMore && !loading) load(page + 1, false); }}
         onEndReachedThreshold={0.4}
         refreshControl={

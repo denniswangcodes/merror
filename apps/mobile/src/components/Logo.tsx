@@ -1,23 +1,9 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import Svg, { Defs, LinearGradient, Stop, Rect, Path } from 'react-native-svg';
-import { LOGO_START, LOGO_END } from '../context/theme.context';
+import { View, Text, Image } from 'react-native';
 import { useAppTheme } from '../lib/theme';
 
 export function LogoMark({ size = 26 }: { size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 32 32" fill="none">
-      <Defs>
-        <LinearGradient id="merrorLogoGradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-          <Stop offset="0" stopColor={LOGO_START} />
-          <Stop offset="1" stopColor={LOGO_END} />
-        </LinearGradient>
-      </Defs>
-      <Rect width="32" height="32" rx="9" fill="url(#merrorLogoGradient)" />
-      <Path d="M16 6L22 16H10L16 6Z" fill="white" />
-      <Path d="M16 26L22 16H10L16 26Z" fill="white" fillOpacity="0.38" />
-    </Svg>
-  );
+  return <Image source={require('../../assets/icon.png')} style={{ width: size, height: size, borderRadius: size * 0.22 }} resizeMode="cover" />;
 }
 
 export function HeaderLogo() {

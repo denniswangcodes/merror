@@ -1,6 +1,7 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 
-export function LegalPage({ title, intro, locale, children }: { title: string; intro: string; locale: string; children: React.ReactNode }) {
+export function LegalPage({ title, intro, locale, children }: { title: string; intro: string; locale: string; children: ReactNode }): JSX.Element {
   return (
     <article className="pb-16 pt-6">
       <h1 className="m-0 font-display text-3xl font-extrabold text-text-primary">{title}</h1>

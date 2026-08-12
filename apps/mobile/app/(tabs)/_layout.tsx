@@ -2,7 +2,6 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useNotifications } from '../../src/context/notifications.context';
 import { useAppTheme } from '../../src/lib/theme';
-import { LOGO_START } from '../../src/context/theme.context';
 import { HeaderLogo } from '../../src/components/Logo';
 
 type IoniconName = keyof typeof Ionicons.glyphMap;
@@ -21,7 +20,7 @@ export default function TabsLayout() {
         headerShown: true,
         headerTitleAlign: 'left',
         headerTitle: () => <HeaderLogo />,
-        tabBarActiveTintColor: LOGO_START,
+        tabBarActiveTintColor: theme.accent,
         tabBarInactiveTintColor: theme.muted,
         tabBarLabelStyle: { fontSize: 10, fontWeight: '700', marginTop: 1 },
         tabBarItemStyle: { paddingTop: 5 },

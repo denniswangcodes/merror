@@ -25,6 +25,7 @@ function RootLayoutInner() {
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="give/[userId]" options={{ headerShown: true, title: 'Give Feedback', headerBackTitle: 'Back' }} />
       <Stack.Screen name="profile/[username]" options={{ headerShown: true, title: 'Profile', headerBackTitle: 'Back' }} />
+      <Stack.Screen name="points" options={{ headerShown: true, title: 'Lumens & Levels', headerBackTitle: 'Back' }} />
       <Stack.Screen name="auth/login" options={{ headerShown: true, title: 'Sign In', headerBackTitle: 'Back' }} />
       <Stack.Screen name="auth/signup" options={{ headerShown: true, title: 'Create Account', headerBackTitle: 'Back' }} />
     </Stack>

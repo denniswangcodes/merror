@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import type { ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth.context';
 import { AppShell } from '@/components/AppShell';
@@ -10,7 +11,7 @@ const PUBLIC_PATHS = ['/login', '/signup'];
 // full app shell once signed in. Each page owns its own signed-out experience/CTA.
 const SEMI_PUBLIC_PREFIXES = ['/profile/', '/reflection/'];
 
-export function AuthGuard({ children, locale }: { children: React.ReactNode; locale: string }) {
+export function AuthGuard({ children, locale }: { children: ReactNode; locale: string }) {
   const { user, loading } = useAuth();
   const pathname = usePathname();
   const router = useRouter();

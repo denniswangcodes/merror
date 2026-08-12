@@ -1,17 +1,18 @@
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 import './globals.css';
 import { AuthProvider } from '@/context/auth.context';
 import { ThemeProvider } from '@/context/theme.context';
 
 export const metadata: Metadata = {
-  title: 'Merror — A reflection of the good in people',
-  description: 'Send and receive positive feedback, compliments, and kind memories.',
+  title: 'Merror — Make good impossible to overlook',
+  description: 'Turn real acts of kindness into lasting reflections, verified lumens, and visible community impact.',
   icons: {
     icon: '/icon.svg',
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function RootLayout({ children }: { children: ReactNode }): JSX.Element {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
