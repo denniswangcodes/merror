@@ -6,6 +6,7 @@ import {
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
+import { GradientButton } from '../../src/components/GradientButton';
 import { usersApi } from '../../src/lib/api';
 import { useAppTheme } from '../../src/lib/theme';
 import type { PublicUser } from '@merror/shared';
@@ -107,9 +108,7 @@ export default function ScanScreen() {
           {!permission?.granted ? (
             <View style={styles.permContainer}>
               <Text style={[styles.permText, { color: theme.textSecondary }]}>Camera permission needed to scan QR codes</Text>
-              <TouchableOpacity style={[styles.permBtn, { backgroundColor: theme.accent }]} onPress={requestPermission}>
-                <Text style={styles.permBtnText}>Grant Permission</Text>
-              </TouchableOpacity>
+              <GradientButton style={styles.permBtn} onPress={requestPermission} label="Grant Permission" textStyle={styles.permBtnText} />
             </View>
           ) : (
             <CameraView

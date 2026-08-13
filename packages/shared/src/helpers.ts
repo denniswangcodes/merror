@@ -23,8 +23,8 @@ export const TIERS: readonly TierInfo[] = [
   },
   {
     id: 'bright-spark', label: 'Beacon', tagline: 'Kindness people notice', minPoints: 10, nextTierAt: 50,
-    color: '#344054', bg: '#E7EAEE', mobileBg: '#E7EAEE', border: '#B6BEC9',
-    darkColor: '#EEF1F4', darkBg: '#303741', darkBorder: '#626C79',
+    color: '#EA580C', bg: '#FFEDD5', mobileBg: '#FFEDD5', border: '#FB923C',
+    darkColor: '#FED7AA', darkBg: '#8A3410', darkBorder: '#F97316',
   },
   {
     id: 'beacon', label: 'Luminary', tagline: 'A light in your community', minPoints: 50, nextTierAt: 100,

@@ -3,6 +3,7 @@ import { ActivityIndicator, Alert, Modal, RefreshControl, ScrollView, StyleSheet
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
+import { GradientButton } from '../../src/components/GradientButton';
 import { ProfileReflectionCard } from '../../src/components/ProfileReflectionCard';
 import { TierBadge } from '../../src/components/TierBadge';
 import { useAuth } from '../../src/context/auth.context';
@@ -53,7 +54,7 @@ export default function PublicProfileScreen() {
         {profile.bio ? <Text style={[styles.bio, { color: theme.textSecondary }]}>{profile.bio}</Text> : null}
         <View style={styles.points}><Text style={[styles.pointsNum, { color: theme.text }]}>{profile.totalPoints}</Text><Text style={[styles.lumens, { color: theme.muted }]}>Lumens</Text><TierBadge points={profile.totalPoints} onPress={() => router.push('/points')} /></View>
         {me && me.id !== profile.id && <View style={styles.actions}>
-          <TouchableOpacity style={[styles.primary, { backgroundColor: theme.accent }]} onPress={() => router.push(`/give/${profile.id}`)}><Text style={styles.primaryText}>Reflect</Text></TouchableOpacity>
+          <GradientButton style={styles.primary} onPress={() => router.push(`/give/${profile.id}`)} label="Reflect" textStyle={styles.primaryText} />
           <TouchableOpacity disabled={busy} style={[styles.secondary, { backgroundColor: theme.surface, borderColor: theme.borderStrong }]} onPress={changeFriendship}><Text style={[styles.secondaryText, { color: friendship ? '#D95B68' : theme.text }]}>{friendship ? 'Unfriend' : 'Add Friend'}</Text></TouchableOpacity>
         </View>}
       </View>

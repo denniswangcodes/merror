@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import QRCode from 'react-native-qrcode-svg';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
+import { GradientButton } from '../../src/components/GradientButton';
 import { ProfileReflectionCard } from '../../src/components/ProfileReflectionCard';
 import { TierBadge } from '../../src/components/TierBadge';
 import { useAuth } from '../../src/context/auth.context';
@@ -55,7 +56,7 @@ export default function ProfileScreen() {
     finally { setDeleting(false); setDelPassword(''); }
   };
   if (loading) return <View style={[styles.center, { backgroundColor: theme.background }]}><ActivityIndicator color={theme.accent} /></View>;
-  if (!user) return <View style={[styles.center, { backgroundColor: theme.background }]}><Text style={{ color: theme.muted }}>Sign in to see your profile</Text><TouchableOpacity style={[styles.signIn, { backgroundColor: theme.accent }]} onPress={() => router.push('/auth/login')}><Text style={styles.white}>Sign In</Text></TouchableOpacity></View>;
+  if (!user) return <View style={[styles.center, { backgroundColor: theme.background }]}><Text style={{ color: theme.muted }}>Sign in to see your profile</Text><GradientButton style={styles.signIn} onPress={() => router.push('/auth/login')} label="Sign In" /></View>;
   const items = tab === 'received' ? received : given;
   return <View style={{ flex: 1, backgroundColor: theme.background }}>
     <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={theme.accent} />} contentContainerStyle={{ paddingBottom: 32 }}>
@@ -112,14 +113,14 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
       </View>
-      <Text style={[styles.label, { color: theme.muted }]}>Display name</Text><TextInput value={displayName} onChangeText={setDisplayName} maxLength={60} style={[styles.input, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surface }]} /><Text style={[styles.label, { color: theme.muted }]}>Bio</Text><TextInput value={bio} onChangeText={setBio} maxLength={200} multiline style={[styles.input, styles.bioInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surface }]} /><TouchableOpacity disabled={saving} style={[styles.save, { backgroundColor: theme.accent }]} onPress={save}><Text style={styles.white}>{saving ? 'Saving…' : 'Save profile'}</Text></TouchableOpacity></View></View></Modal>
+      <Text style={[styles.label, { color: theme.muted }]}>Display name</Text><TextInput value={displayName} onChangeText={setDisplayName} maxLength={60} style={[styles.input, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surface }]} /><Text style={[styles.label, { color: theme.muted }]}>Bio</Text><TextInput value={bio} onChangeText={setBio} maxLength={200} multiline style={[styles.input, styles.bioInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surface }]} /><GradientButton style={styles.save} loading={saving} onPress={save} label={saving ? 'Saving…' : 'Save profile'} /></View></View></Modal>
 
     <Modal visible={qr} transparent animationType="fade" onRequestClose={() => setQr(false)}><TouchableOpacity activeOpacity={1} style={[styles.backdrop, { justifyContent: 'center' }]} onPress={() => setQr(false)}><View style={[styles.qrCard, { backgroundColor: theme.raised }]}>
       <View style={styles.qrWhite}><QRCode value={user.qrCode} size={190} /></View>
       <Text style={[styles.qrTitle, { color: theme.text }]}>@{user.username}</Text>
       <Text style={[styles.qrHint, { color: theme.muted }]}>Scan to connect on Merror</Text>
       <View style={[styles.qrLinkRow, { borderColor: theme.border, backgroundColor: theme.background }]}><Text numberOfLines={1} style={[styles.qrLinkText, { color: theme.textSecondary }]}>{profileLink}</Text></View>
-      <TouchableOpacity style={[styles.qrShareBtn, { backgroundColor: theme.accent }]} onPress={shareProfile}><Ionicons name="share-outline" size={16} color="#fff" /><Text style={styles.white}>Share link</Text></TouchableOpacity>
+      <GradientButton style={styles.qrShareBtn} onPress={shareProfile} icon={<Ionicons name="share-outline" size={16} color="#fff" />} label="Share link" />
     </View></TouchableOpacity></Modal>
   </View>;
 }

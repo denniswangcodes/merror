@@ -16,6 +16,9 @@ export const darkTheme = {
 export const LOGO_START = '#6D5BFF';
 export const LOGO_END = '#FF7A6B';
 
+/** Purple → pink → orange brand gradient used for primary CTA buttons, constant across light/dark. */
+export const BRAND_GRADIENT = ['#6D5BFF', '#EC4899', '#FF7A6B'] as const;
+
 export type ThemeMode = 'light' | 'dark';
 const STORAGE_KEY = 'merror_theme_mode';
 

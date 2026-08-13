@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
+import { GradientButton } from '../../src/components/GradientButton';
 import { feedbackApi, notificationsApi } from '../../src/lib/api';
 import { useNotifications } from '../../src/context/notifications.context';
 import { useAppTheme } from '../../src/lib/theme';
@@ -120,9 +121,7 @@ export default function NotificationsScreen() {
               </View>
               {isReview && (
                 <View style={styles.reviewRow}>
-                  <TouchableOpacity disabled={reviewing === item.id} style={[styles.approveBtn, { backgroundColor: theme.accent }]} onPress={() => review(item, true)}>
-                    <Text style={styles.approveText}>Approve</Text>
-                  </TouchableOpacity>
+                  <GradientButton style={styles.approveBtn} disabled={reviewing === item.id} onPress={() => review(item, true)} label="Approve" textStyle={styles.approveText} />
                   <TouchableOpacity disabled={reviewing === item.id} style={[styles.rejectBtn, { borderColor: theme.border }]} onPress={() => review(item, false)}>
                     <Text style={[styles.rejectText, { color: theme.textSecondary }]}>Reject</Text>
                   </TouchableOpacity>

@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../src/context/auth.context';
+import { GradientButton } from '../../src/components/GradientButton';
 import { Link } from 'expo-router';
 
 export default function SignupScreen() {
@@ -49,9 +50,7 @@ export default function SignupScreen() {
         </View>
       ))}
 
-      <TouchableOpacity style={[styles.btn, { marginTop: 8 }]} onPress={handleSignup} disabled={loading}>
-        <Text style={styles.btnText}>{loading ? 'Creating account...' : 'Create Account'}</Text>
-      </TouchableOpacity>
+      <GradientButton style={styles.btn} onPress={handleSignup} loading={loading} label={loading ? 'Creating account...' : 'Create Account'} />
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>Already have an account? </Text>
@@ -77,8 +76,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginBottom: 14,
   },
-  btn: { backgroundColor: '#BE5B8E', paddingVertical: 14, borderRadius: 14, alignItems: 'center' },
-  btnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  btn: { paddingVertical: 14, borderRadius: 14, marginTop: 8 },
   footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 20 },
   footerText: { fontSize: 13, color: '#6B7280' },
   link: { fontSize: 13, color: '#BE5B8E', fontWeight: '700' },

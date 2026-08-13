@@ -17,7 +17,7 @@ interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'ref' | 'children'
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-accent text-white hover:bg-accent-hover shadow-[0_1px_2px_rgba(16,24,40,.12),0_4px_12px_rgb(var(--color-accent)/.2)]',
+  primary: 'brand-gradient-bg text-white hover:brightness-105 shadow-[0_1px_2px_rgba(16,24,40,.12),0_4px_12px_rgb(var(--color-accent)/.25)]',
   secondary: 'bg-surface-raised text-text-primary border border-border hover:border-border-strong hover:bg-background',
   ghost: 'bg-transparent text-text-secondary hover:bg-surface-raised hover:text-text-primary',
   destructive: 'bg-transparent text-danger border border-danger/30 hover:bg-danger/10',

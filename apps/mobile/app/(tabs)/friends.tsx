@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Avatar } from '../../src/components/Avatar';
+import { GradientButton } from '../../src/components/GradientButton';
 import { useAuth } from '../../src/context/auth.context';
 import { friendsApi } from '../../src/lib/api';
 import { useNotifications } from '../../src/context/notifications.context';
@@ -66,9 +67,7 @@ export default function FriendsScreen() {
     return (
       <View style={[styles.center, { backgroundColor: theme.background }]}>
         <Text style={[styles.hint, { color: theme.muted }]}>Sign in to see your friends</Text>
-        <TouchableOpacity style={[styles.btn, { backgroundColor: theme.accent }]} onPress={() => router.push('/auth/login')}>
-          <Text style={styles.btnText}>Sign In</Text>
-        </TouchableOpacity>
+        <GradientButton style={styles.btn} onPress={() => router.push('/auth/login')} label="Sign In" textStyle={styles.btnText} />
       </View>
     );
   }
@@ -133,9 +132,7 @@ export default function FriendsScreen() {
                   <Text style={[styles.name, { color: theme.text }]}>{requester.displayName || requester.username}</Text>
                   <Text style={[styles.uname, { color: theme.muted }]}>@{requester.username}</Text>
                 </View>
-                <TouchableOpacity style={[styles.acceptBtn, { backgroundColor: theme.accent }]} onPress={() => handleAccept(item.id)}>
-                  <Text style={{ color: '#fff', fontWeight: '700', fontSize: 12 }}>Accept</Text>
-                </TouchableOpacity>
+                <GradientButton style={styles.acceptBtn} onPress={() => handleAccept(item.id)} label="Accept" textStyle={{ fontSize: 12 }} />
                 <TouchableOpacity style={[styles.declineBtn, { backgroundColor: theme.background }]} onPress={() => handleDecline(item.id)}>
                   <Text style={{ color: theme.textSecondary, fontWeight: '700', fontSize: 12 }}>✕</Text>
                 </TouchableOpacity>

@@ -31,7 +31,7 @@ export function Logo({ size = 28, showWordmark = true, className, wordmarkClassN
           className={cn('font-display font-bold tracking-tight leading-none', wordmarkClassName ?? 'text-text-primary')}
           style={{ fontSize: size * 0.82 }}
         >
-          Merror
+          merror
         </span>
       )}
     </span>

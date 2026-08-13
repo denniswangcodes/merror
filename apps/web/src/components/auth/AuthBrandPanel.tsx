@@ -19,7 +19,7 @@ export function AuthBrandPanel() {
 
       <Link href="/" className="relative z-10 inline-flex items-center gap-2 no-underline w-fit">
         <LogoMark size={30} />
-        <span className="font-display font-bold text-lg text-white">Merror</span>
+        <span className="font-display font-bold text-lg text-white">merror</span>
       </Link>
 
       <div className="relative z-10 max-w-sm">
@@ -47,7 +47,7 @@ export function AuthBrandPanel() {
         </div>
       </div>
 
-      <p className="relative z-10 hidden lg:block text-xs text-white/60">© {new Date().getFullYear()} Merror</p>
+      <p className="relative z-10 hidden lg:block text-xs text-white/60">© {new Date().getFullYear()} merror</p>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import type { FeedbackType, PublicUser } from '@merror/shared';
 import { MAX_REFLECTION_IMAGE_CHARS } from '@merror/shared';
 import { Avatar } from '../../src/components/Avatar';
+import { GradientButton } from '../../src/components/GradientButton';
 import { useAuth } from '../../src/context/auth.context';
 import { feedbackApi, usersApi } from '../../src/lib/api';
 import { compressToDataUrl, pickImage, showImageSourceSheet } from '../../src/lib/image';
@@ -56,7 +57,7 @@ export default function GiveScreen() {
     }
   };
 
-  if (!user) return <View style={styles.center}><Text style={styles.hint}>Sign in to give a reflection</Text><TouchableOpacity style={styles.primary} onPress={() => router.push('/auth/login')}><Text style={styles.primaryText}>Sign in</Text></TouchableOpacity></View>;
+  if (!user) return <View style={styles.center}><Text style={styles.hint}>Sign in to give a reflection</Text><GradientButton style={styles.primary} onPress={() => router.push('/auth/login')} label="Sign in" textStyle={styles.primaryText} /></View>;
   if (!receiver) return <View style={styles.center}><ActivityIndicator color="#6D5BFF" /></View>;
 
   return <ScrollView style={styles.screen} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
@@ -86,7 +87,7 @@ export default function GiveScreen() {
     )}
 
     <View style={styles.visibility}><View><Text style={styles.visibilityTitle}>Public reflection</Text><Text style={styles.visibilityCopy}>Show this in the community feed</Text></View><Switch value={isPublic} onValueChange={setIsPublic} trackColor={{ false: '#D7D5DB', true: '#A99FFF' }} thumbColor={isPublic ? '#6D5BFF' : '#FFFFFF'} /></View>
-    <TouchableOpacity disabled={submitting || !message.trim()} style={[styles.primary, (!message.trim() || submitting) && styles.disabled]} onPress={submit}><Text style={styles.primaryText}>{submitting ? 'Sending…' : 'Send reflection'}</Text></TouchableOpacity>
+    <GradientButton disabled={submitting || !message.trim()} loading={submitting} style={styles.primary} onPress={submit} label="Send reflection" textStyle={styles.primaryText} />
   </ScrollView>;
 }
 
@@ -102,5 +103,5 @@ const styles = StyleSheet.create({
   photoChangeBtn: { position: 'absolute', top: 8, right: 42, width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(0,0,0,0.6)', alignItems: 'center', justifyContent: 'center' },
   photoRemoveBtn: { position: 'absolute', top: 8, right: 8, width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(0,0,0,0.6)', alignItems: 'center', justifyContent: 'center' },
   visibility: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: '#E5E2E8', borderRadius: 14, backgroundColor: '#FFFFFF', padding: 14, marginBottom: 20 }, visibilityTitle: { color: '#19171C', fontSize: 14, fontWeight: '600' }, visibilityCopy: { color: '#8A8791', fontSize: 11, marginTop: 2 },
-  primary: { minHeight: 48, borderRadius: 14, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20, backgroundColor: '#6D5BFF' }, primaryText: { color: '#FFFFFF', fontSize: 15, fontWeight: '700' }, disabled: { opacity: 0.5 },
+  primary: { minHeight: 48, borderRadius: 14, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }, primaryText: { color: '#FFFFFF', fontSize: 15, fontWeight: '700' },
 });

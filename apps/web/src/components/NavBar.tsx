@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Sparkles, Users, Search, ShieldCheck, Sun, Moon, type LucideIcon } from 'lucide-react';
+import { Home, Sparkles, Users, Search, ShieldCheck, Sun, Moon, User, LogOut, type LucideIcon } from 'lucide-react';
 import { useAuth } from '@/context/auth.context';
 import { useTheme } from '@/context/theme.context';
 import { usersApi } from '@/lib/api';
@@ -23,23 +23,35 @@ interface Tab {
 export function NavBar({ locale }: { locale: string }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { theme, toggle } = useTheme();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<PublicUser[]>([]);
   const [open, setOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
     }
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
+
+  const handleSignOut = async () => {
+    setUserMenuOpen(false);
+    if (!window.confirm('Are you sure you want to sign out?')) return;
+    await logout();
+    router.push(`/${locale}/login`);
+  };
 
   const handleSearch = (q: string) => {
     setQuery(q);
@@ -166,9 +178,40 @@ export function NavBar({ locale }: { locale: string }) {
             </AnimatePresence>
           </button>
           {user && (
-            <Link href={`/${locale}/profile`} className="ml-3 no-underline shrink-0 flex items-center">
-              <Avatar displayName={user.displayName} username={user.username} avatarUrl={user.avatarUrl} size={34} />
-            </Link>
+            <div ref={userMenuRef} className="relative ml-3 shrink-0">
+              <button
+                onClick={() => setUserMenuOpen((value) => !value)}
+                aria-label="Account menu"
+                className="flex items-center rounded-full ring-offset-2 ring-offset-surface transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
+                <Avatar displayName={user.displayName} username={user.username} avatarUrl={user.avatarUrl} size={34} />
+              </button>
+              <AnimatePresence>
+                {userMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute top-full right-0 z-[200] mt-2 w-44 overflow-hidden rounded-xl border border-border bg-surface-raised p-1 shadow-card-hover dark:shadow-card-hover-dark"
+                  >
+                    <Link
+                      href={`/${locale}/profile`}
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium text-text-secondary no-underline transition-colors hover:bg-background"
+                    >
+                      <User className="h-4 w-4" /> Profile
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-danger transition-colors hover:bg-danger/10"
+                    >
+                      <LogOut className="h-4 w-4" /> Sign out
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           )}
         </div>
       </nav>
