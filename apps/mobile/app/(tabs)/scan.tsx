@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { Avatar } from '../../src/components/Avatar';
 import { GradientButton } from '../../src/components/GradientButton';
 import { usersApi } from '../../src/lib/api';
@@ -100,6 +101,20 @@ export default function ScanScreen() {
                   <Text style={[styles.empty, { color: theme.muted }]}>No users found</Text>
                 ) : null
               }
+              ListFooterComponent={
+                <TouchableOpacity
+                  style={[styles.journalRow, { borderColor: theme.border }]}
+                  onPress={() => router.push('/give/journal')}
+                >
+                  <View style={[styles.journalIcon, { backgroundColor: `${theme.accent}1A` }]}>
+                    <Ionicons name="book-outline" size={16} color={theme.accent} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[styles.journalTitle, { color: theme.text }]}>Not on Merror yet?</Text>
+                    <Text style={[styles.journalCopy, { color: theme.muted }]}>Journal the good deed anyway — it's just for you</Text>
+                  </View>
+                </TouchableOpacity>
+              }
             />
           )}
         </View>
@@ -157,6 +172,10 @@ const styles = StyleSheet.create({
   displayName: { fontSize: 14, fontWeight: '600' },
   username: { fontSize: 12 },
   empty: { textAlign: 'center', fontSize: 14, marginTop: 40 },
+  journalRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 12, marginHorizontal: 12, borderWidth: 1, borderStyle: 'dashed', borderRadius: 12, padding: 14 },
+  journalIcon: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
+  journalTitle: { fontSize: 13, fontWeight: '700' },
+  journalCopy: { fontSize: 11, marginTop: 2 },
   overlay: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.35)' },
   scanBox: {
     width: 220,
