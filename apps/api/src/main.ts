@@ -26,6 +26,23 @@ async function bootstrap() {
   app.use(cookieParser());
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
 
+  // Registered before any middleware that can short-circuit a response (e.g. the rate
+  // limiter's 429s below) so those responses still carry CORS headers instead of showing
+  // up in the browser as an opaque CORS failure.
+  const allowedOrigins = [
+    process.env.WEB_ORIGIN,
+    'https://merror.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:8081',
+  ].filter(Boolean) as string[];
+
+  app.enableCors({
+    origin: allowedOrigins,
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Refresh-Token'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  });
+
   const rateBuckets = new Map<string, { count: number; resetAt: number }>();
   app.use((req: Request, res: Response, next: NextFunction) => {
     const now = Date.now();
@@ -53,20 +70,6 @@ async function bootstrap() {
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     res.setHeader('Permissions-Policy', 'camera=(self), microphone=(), geolocation=()');
     next();
-  });
-
-  const allowedOrigins = [
-    process.env.WEB_ORIGIN,
-    'https://merror.vercel.app',
-    'http://localhost:3000',
-    'http://localhost:8081',
-  ].filter(Boolean) as string[];
-
-  app.enableCors({
-    origin: allowedOrigins,
-    credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Refresh-Token'],
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   });
 
   app.useGlobalPipes(
